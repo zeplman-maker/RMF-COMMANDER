@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}eMASS common mistakes{% endblock %}
+{% block ai_context %}28 common eMASS mistakes{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-3.3</div>
+    <h1>The 28 most common eMASS data-entry mistakes</h1>
+    <p class="subtitle">Reviewed against your live data on each system's readiness page. Use this list as a
+       pre-submission checklist.</p>
+  </div>
+  <a href="{{ url_for('emass_hub') }}" class="btn btn-ghost">&larr; eMASS hub</a>
+</div>
+
+<div class="emass-disclaimer">{{ disclaimer }}</div>
+
+{% for area, items in by_area.items() %}
+<section class="card">
+  <div class="card-head"><h2>{{ area|capitalize }} ({{ items|length }})</h2></div>
+  <table class="data-table">
+    <thead>
+      <tr><th>#</th><th>Mistake</th><th>Why it matters</th></tr>
+    </thead>
+    <tbody>
+      {% for m in items %}
+      <tr>
+        <td><strong>#{{ m.id }}</strong></td>
+        <td><strong>{{ m.title }}</strong></td>
+        <td>{{ m.desc }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endfor %}
+
+{% endblock %}

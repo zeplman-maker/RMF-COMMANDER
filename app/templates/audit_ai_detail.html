@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}AI interaction {{ ai.interaction_id[:8] }}{% endblock %}
+{% block ai_context %}AI interaction {{ ai.interaction_id[:8] }}{% endblock %}
+{% block content %}
+
+<div class="page-head no-print">
+  <div>
+    <div class="doc-label">AI interaction {{ ai.interaction_id[:8] }}</div>
+    <h1>{{ ai_modes_labels.get(ai.assistant_mode, ai.assistant_mode) }}</h1>
+    <p class="subtitle">
+      Logged {{ ai.timestamp.strftime('%Y-%m-%d %H:%M') if ai.timestamp else '-' }}
+      {% if user_obj %}&middot; user <strong>{{ user_obj.name }}</strong> ({{ user_obj.role_name }}){% endif %}
+      {% if sys_obj %}&middot; system <strong>{{ sys_obj.name }}</strong>{% endif %}
+    </p>
+  </div>
+  <div class="head-actions">
+    <span class="status-pill review-{{ ai.review_status }}">{{ review_labels.get(ai.review_status, ai.review_status) }}</span>
+    <a href="{{ url_for('audit_ai_list') }}" class="btn btn-ghost">&larr; Audit log</a>
+  </div>
+</div>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Prompt</h2></div>
+    <pre class="ai-block">{{ ai.prompt_text or '(no prompt)' }}</pre>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Response</h2><span class="muted-small">confidence {% if ai.confidence_score is not none %}{{ '%.0f'|format(ai.confidence_score * 100) }}%{% else %}-{% endif %}</span></div>
+    <pre class="ai-block">{{ ai.response_text or '(no response)' }}</pre>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Sources cited</h2></div>
+    {% if sources %}
+    <div class="chip-row">
+      {% for s in sources %}<span class="ai-ref">{{ s }}</span>{% endfor %}
+    </div>
+    {% else %}<p class="muted-small">No sources recorded.</p>{% endif %}
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Review history</h2></div>
+    {% if ai.reviewer_name %}
+      <p>
+        <strong>{{ review_labels.get(ai.review_status, ai.review_status) }}</strong>
+        by {{ ai.reviewer_name }}
+        on {{ ai.review_timestamp.strftime('%Y-%m-%d %H:%M') if ai.review_timestamp else '-' }}.
+      </p>
+      {% if ai.review_notes %}
+        <p><strong>Notes:</strong> {{ ai.review_notes }}</p>
+      {% endif %}
+    {% else %}
+      <p class="muted-small">No review action recorded yet.</p>
+    {% endif %}
+
+    {% if current_user and current_user.role_name in ('ISSM','SCA','AO','Admin') %}
+    <hr class="divider">
+    <form method="post" action="{{ url_for('audit_ai_review', interaction_id=ai.interaction_id) }}" class="form form-compact">
+      <label>Set status
+        <select name="status">
+          {% for st in review_statuses %}
+            <option value="{{ st }}" {% if st == ai.review_status %}selected{% endif %}>{{ review_labels[st] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Notes
+        <textarea name="notes" rows="2" placeholder="Reviewer notes (optional)"></textarea>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Record review</button>
+      </div>
+    </form>
+    {% else %}
+    <p class="muted-small">Only ISSM, SCA, AO, or Admin can record a review action.</p>
+    {% endif %}
+  </section>
+
+  <section class="card grid2-span">
+    <div class="card-head"><h2>Audit metadata</h2></div>
+    <dl class="kv">
+      <dt>Interaction ID</dt><dd><code>{{ ai.interaction_id }}</code></dd>
+      <dt>User ID</dt><dd><code>{{ ai.user_id or '-' }}</code></dd>
+      <dt>System ID</dt><dd><code>{{ ai.system_id or '-' }}</code></dd>
+      <dt>Mode</dt><dd>{{ ai.assistant_mode }}</dd>
+      <dt>Flagged for review</dt><dd>{{ 'Yes' if ai.flagged_for_review else 'No' }}</dd>
+      <dt>Confidence</dt><dd>{% if ai.confidence_score is not none %}{{ '%.2f'|format(ai.confidence_score) }}{% else %}-{% endif %}</dd>
+      <dt>Retention</dt><dd>3 years minimum (NFR-2.8 / AU-11)</dd>
+    </dl>
+  </section>
+</div>
+
+{% endblock %}

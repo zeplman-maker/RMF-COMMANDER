@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .sys-card { background:#fff; border:1px solid var(--slate-300); border-left-width:3px; border-radius:6px; padding:14px 16px; box-shadow:0 1px 2px 0 rgba(15,26,61,0.06); display:flex; flex-direction:column; gap:8px; }
+  .sys-card .name { font-family:var(--font-mono); font-size:12px; font-weight:500; color:var(--mission-navy-900); }
+  .sys-card .title { font-family:var(--font-sans); font-weight:600; font-size:15px; color:var(--slate-900); }
+  .sys-card .meta { font-family:var(--font-mono); font-feature-settings:'tnum'; font-size:11px; color:var(--slate-500); display:flex; gap:10px; }
+  .ato { font-family:var(--font-mono); font-feature-settings:'tnum'; font-size:22px; font-weight:600; }
+  .pill { display:inline-flex; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:600; letter-spacing:0.08em; border:1px solid; }
+</style>
+</head>
+<body><div class="card">
+  <div class="label-eyebrow" style="margin-bottom:12px;">System status card &middot; the signature component</div>
+  <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
+    <div class="sys-card" style="border-left-color:#15803D;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="name">AFSVC-FITNESS-WEB-01</div>
+          <div class="title">Fitness portal</div>
+        </div>
+        <span class="pill" style="background:#DCFCE7; color:#052E16; border-color:#86EFAC;">VALID</span>
+      </div>
+      <div class="ato" style="color:#15803D;">274 <span style="font-size:11px; color:var(--slate-500); font-weight:500;">days to ATO</span></div>
+      <div class="meta"><span>POA&amp;M 0/2/5</span><span>·</span><span>SCAN 2d</span></div>
+    </div>
+    <div class="sys-card" style="border-left-color:#B45309;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="name">AFSVC-LODGING-API-04</div>
+          <div class="title">Lodging reservations API</div>
+        </div>
+        <span class="pill" style="background:#FEF3C7; color:#451A03; border-color:#FCD34D;">60-DAY</span>
+      </div>
+      <div class="ato" style="color:#B45309;">052 <span style="font-size:11px; color:var(--slate-500); font-weight:500;">days to ATO</span></div>
+      <div class="meta"><span>POA&amp;M 1/4/9</span><span>·</span><span>SCAN 6d</span></div>
+    </div>
+    <div class="sys-card" style="border-left-color:#B91C1C;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="name">AFSVC-MWR-INTRANET-02</div>
+          <div class="title">MWR intranet</div>
+        </div>
+        <span class="pill" style="background:#FEE2E2; color:#450A0A; border-color:#FCA5A5;">30-DAY</span>
+      </div>
+      <div class="ato" style="color:#B91C1C;">023 <span style="font-size:11px; color:var(--slate-500); font-weight:500;">days to ATO</span></div>
+      <div class="meta"><span>POA&amp;M 3/7/12</span><span>·</span><span>SCAN 11d</span></div>
+    </div>
+  </div>
+</div></body></html>

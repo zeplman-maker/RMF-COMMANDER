@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          navy:  { 900: '#0a0f1e', 800: '#0d1530', 700: '#111d45', 600: '#1a2a5c' },
+          gold:  { 400: '#f5c842', 500: '#e6b800', 300: '#fad95c' },
+          slate: { 300: '#cbd5e1', 400: '#94a3b8' }
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: #0a0f1e; color: #e2e8f0; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body.light { background: #f8fafc; color: #0f172a; }
+
+  .grid-bg {
+    background-image: linear-gradient(rgba(245,200,66,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,200,66,.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  body.light .grid-bg {
+    background-image: linear-gradient(rgba(10,15,30,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(10,15,30,.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .glow-gold { box-shadow: 0 0 40px rgba(245,200,66,.25), 0 0 80px rgba(245,200,66,.10); }
+  .text-glow  { text-shadow: 0 0 24px rgba(245,200,66,.45); }
+  .grad-text { background: linear-gradient(135deg, #f5c842 0%, #ffd700 40%, #ffe680 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .glass { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(12px); }
+  body.light .glass { background: rgba(255,255,255,.8); border-color: rgba(0,0,0,.1); }
+
+  .btn-buy {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    padding: 1rem 2.25rem; background: linear-gradient(135deg, #f5c842 0%, #e6b800 100%);
+    color: #0a0f1e; font-weight: 800; font-size: 1.05rem; border-radius: .75rem;
+    cursor: pointer; border: none; transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    text-decoration: none; letter-spacing: .01em;
+  }
+  .btn-buy:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 8px 32px rgba(245,200,66,.45); filter: brightness(1.06); }
+  .btn-buy:active { transform: translateY(0) scale(.99); }
+
+  .btn-sec {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    padding: .85rem 1.75rem; background: transparent; color: #f5c842; font-weight: 700;
+    font-size: .95rem; border-radius: .75rem; cursor: pointer; border: 1.5px solid rgba(245,200,66,.4);
+    transition: all .18s ease; text-decoration: none;
+  }
+  .btn-sec:hover { background: rgba(245,200,66,.08); border-color: #f5c842; }
+
+  .file-card { border-left: 3px solid rgba(245,200,66,.5); transition: border-color .2s, background .2s; }
+  .file-card:hover { border-color: #f5c842; background: rgba(245,200,66,.04); }
+
+  .divider { border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(245,200,66,.25), transparent); margin: 0; }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .55s ease, transform .55s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(245,200,66,.5); } 70% { box-shadow: 0 0 0 12px rgba(245,200,66,0); } 100% { box-shadow: 0 0 0 0 rgba(245,200,66,0); } }
+  .pulse { animation: pulse-ring 2.4s ease infinite; }
+
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .marquee-inner { animation: marquee 22s linear infinite; white-space: nowrap; }
+
+  #theme-toggle { cursor: pointer; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: .35rem .75rem; font-size: .78rem; font-weight: 600; color: #94a3b8; transition: all .2s; }
+  #theme-toggle:hover { color: #f5c842; border-color: rgba(245,200,66,.35); }
+  body.light #theme-toggle { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12); color: #475569; }
+
+  body.light h1, body.light h2, body.light h3 { color: #0f172a; }
+  body.light .text-slate-300 { color: #334155; }
+  body.light .text-slate-400 { color: #475569; }
+
+  /* Light mode overrides for inline style colors — !important overrides inline styles */
+  body.light [style*="color:#f1f5f9"] { color: #0f172a !important; }
+  body.light [style*="color:#e2e8f0"] { color: #0f172a !important; }
+  body.light [style*="color:#cbd5e1"] { color: #1e293b !important; }
+  body.light [style*="color:#94a3b8"] { color: #334155 !important; }
+  body.light [style*="color:#64748b"] { color: #475569 !important; }
+  body.light [style*="color:#334155"] { color: #1e293b !important; }
+  body.light [style*="color:#475569"] { color: #334155 !important; }
+  body.light .doc-preview .filled-in { color: #334155 !important; }
+  body.light .doc-preview { color: #475569; }
+
+  .nav-bar { position: sticky; top: 0; z-index: 50; background: rgba(10,15,30,.88); border-bottom: 1px solid rgba(245,200,66,.1); backdrop-filter: blur(16px); }
+  body.light .nav-bar { background: rgba(248,250,252,.92); border-color: rgba(0,0,0,.08); }
+
+  /* Document preview visual */
+  .doc-preview {
+    background: #0d1530; border: 1px solid rgba(245,200,66,.2); border-radius: 1rem;
+    padding: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+    line-height: 1.7; color: #64748b;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(245,200,66,.1);
+  }
+  body.light .doc-preview { background: #f1f5f9; border-color: rgba(0,0,0,.12); }
+  .doc-preview .section-label { color: #f5c842; font-weight: 600; }
+  .doc-preview .filled-in { color: #94a3b8; }
+  .doc-preview .highlight { color: #34d399; }
+
+  .faq-item summary { list-style: none; cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item[open] summary .faq-icon { transform: rotate(45deg); }
+  .faq-icon { transition: transform .2s ease; font-size: 1.25rem; color: #f5c842; }
+  .faq-item .faq-body { padding-top: .75rem; color: #94a3b8; line-height: 1.7; }
+  body.light .faq-item .faq-body { color: #475569; }
+
+  .file-badge { display: inline-flex; align-items: center; gap: .35rem; padding: .2rem .6rem; border-radius: .35rem; font-size: .65rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: .04em; }
+  .badge-docx { background: rgba(59,130,246,.15); color: #93c5fd; border: 1px solid rgba(59,130,246,.25); }
+  .badge-xlsx { background: rgba(34,197,94,.15); color: #86efac; border: 1px solid rgba(34,197,94,.25); }
+</style>
+
+<!-- STICKY NAV -->
+<nav class="nav-bar px-4 py-3">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <span class="font-mono font-semibold text-sm tracking-widest" style="color:#f5c842">SSP TEMPLATE PACK</span>
+    <div class="flex items-center gap-3">
+      <button id="theme-toggle" onclick="toggleTheme()">☀ Light</button>
+      <a class="btn-buy pulse" data-gumroad-action="buy" style="padding:.6rem 1.25rem;font-size:.85rem;border-radius:.6rem">
+        Get It — <span data-gumroad-field="price">$47</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div style="background:rgba(245,200,66,.1);border-bottom:1px solid rgba(245,200,66,.2);overflow:hidden;padding:.4rem 0">
+  <div class="marquee-inner inline-flex gap-12 text-xs font-mono" style="color:#f5c842">
+    <span>✦ SSP OUTLINE TEMPLATE</span><span>✦ CONTROL STATEMENT LIBRARY</span>
+    <span>✦ POA&amp;M TRACKER</span><span>✦ NIST 800-53 REV 5 ALIGNED</span>
+    <span>✦ IMMEDIATE DOWNLOAD</span><span>✦ 3 WORKING FILES</span>
+    <span>✦ SSP OUTLINE TEMPLATE</span><span>✦ CONTROL STATEMENT LIBRARY</span>
+    <span>✦ POA&amp;M TRACKER</span><span>✦ NIST 800-53 REV 5 ALIGNED</span>
+    <span>✦ IMMEDIATE DOWNLOAD</span><span>✦ 3 WORKING FILES</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="grid-bg relative overflow-hidden">
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse 70% 60% at 50% -10%, rgba(245,200,66,.10) 0%, transparent 70%)"></div>
+  <div class="max-w-6xl mx-auto px-4 py-20 lg:py-28 relative z-10">
+    <div class="flex flex-col lg:flex-row items-center gap-14">
+
+      <!-- Copy -->
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 font-mono" style="background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.3);color:#f5c842">
+          ★ FOR RMF ANALYSTS &amp; CONTRACTOR ISSOs
+        </div>
+        <h1 class="text-4xl lg:text-6xl font-black leading-tight mb-6" style="color:#f1f5f9">
+          Stop Writing Control<br>
+          Statements <span class="grad-text text-glow">From Scratch</span>
+        </h1>
+        <p class="text-lg lg:text-xl mb-8 max-w-xl mx-auto lg:mx-0" style="color:#94a3b8;line-height:1.7">
+          The SSP outline is blank. The control statements need to be written. The POA&amp;M has no structure. These three files fix that.
+        </p>
+        <p class="text-base mb-10 max-w-xl mx-auto lg:mx-0" style="color:#cbd5e1">
+          One pack. <strong style="color:#f5c842">Three working files.</strong> Draft your SSP, fill in your control statements, and track your POA&amp;Ms — without building anything from scratch.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+          <a class="btn-buy glow-gold" data-gumroad-action="buy">
+            🔓 Get Instant Access — <span data-gumroad-field="price">$47</span>
+          </a>
+          <a class="btn-sec" href="#files">See What's Inside ↓</a>
+        </div>
+        <p class="mt-4 text-xs" style="color:#475569">Immediate download · 3 files · Yours to keep.</p>
+      </div>
+
+      <!-- Document preview mockup -->
+      <div class="flex-shrink-0 w-full max-w-sm lg:max-w-md reveal">
+        <div class="doc-preview">
+          <div class="mb-3 pb-2" style="border-bottom:1px solid rgba(245,200,66,.15)">
+            <span class="section-label">CONTROL: AC-2 — Account Management</span>
+          </div>
+          <div class="mb-1"><span style="color:#475569">Implementation Status: </span><span class="highlight">Implemented</span></div>
+          <div class="mb-3"><span style="color:#475569">Control Origination: </span><span class="filled-in">System-Specific</span></div>
+          <div class="mb-1 section-label">Implementation Statement:</div>
+          <div class="filled-in mb-3">
+            The [Organization] uses [IAM Solution] to manage user accounts on [System Name]. Accounts are provisioned by the ISSO upon receipt of a signed access request form (SF-800 equivalent). Account types include individual, service, and shared accounts, each governed by a role-based access matrix maintained in [document reference]...
+          </div>
+          <div class="mb-1 section-label">Evidence:</div>
+          <div class="filled-in">→ Account management policy (ref: POL-IAM-001)<br>→ Access request log (quarterly review)<br>→ SIEM screenshot — last access audit [date]</div>
+          <div class="mt-3 pt-2" style="border-top:1px solid rgba(245,200,66,.1);color:#334155;font-size:.65rem">
+            ← from Control-Implementation-Statement-Library.docx
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PAIN -->
+<section class="py-20 reveal">
+  <div class="max-w-5xl mx-auto px-4 text-center">
+    <h2 class="text-3xl lg:text-4xl font-black mb-4" style="color:#f1f5f9">Writing This by Hand is Killing Your Schedule</h2>
+    <p class="text-lg mb-14 max-w-2xl mx-auto" style="color:#64748b">The SSP has dozens of required sections. Each control needs a narrative. The POA&amp;M needs structure before you can track anything. Most people start from zero — every time.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="glass rounded-xl p-6 text-left">
+        <div class="text-3xl mb-3">📝</div>
+        <h3 class="font-bold text-base mb-2" style="color:#fbbf24">SSP Blank Page Problem</h3>
+        <p class="text-sm leading-relaxed" style="color:#64748b">NIST 800-18 has 18 sections. eMASS adds its own requirements. Most ISSOs rebuild the structure from a previous job's template or a Google search.</p>
+      </div>
+      <div class="glass rounded-xl p-6 text-left">
+        <div class="text-3xl mb-3">⌛</div>
+        <h3 class="font-bold text-base mb-2" style="color:#fbbf24">Control Statement Rework</h3>
+        <p class="text-sm leading-relaxed" style="color:#64748b">Writing 150+ control statements with proper what/how/who/proof structure takes weeks. Generic narratives get flagged. Then you rewrite them anyway.</p>
+      </div>
+      <div class="glass rounded-xl p-6 text-left">
+        <div class="text-3xl mb-3">🗃️</div>
+        <h3 class="font-bold text-base mb-2" style="color:#fbbf24">POA&amp;M Tracking Chaos</h3>
+        <p class="text-sm leading-relaxed" style="color:#64748b">Findings tracked in email threads, spreadsheets without risk ratings, milestones not mapped. No structure means no visibility into what's actually closing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FILES -->
+<section id="files" class="py-20">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-14 reveal">
+      <span class="text-xs font-mono font-semibold tracking-widest mb-3 block" style="color:#f5c842">WHAT'S INSIDE</span>
+      <h2 class="text-3xl lg:text-4xl font-black mb-4" style="color:#f1f5f9">3 Working Files. No Filler.</h2>
+      <p class="text-base max-w-xl mx-auto" style="color:#64748b">Templates you fill in, not frameworks you decode. Each file is structured for the work, not for the shelf.</p>
+    </div>
+
+    <div class="space-y-6">
+
+      <!-- File 1: SSP Outline -->
+      <div class="file-card glass rounded-xl p-6 reveal">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-5">
+          <div class="flex-shrink-0">
+            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2)">📄</div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-base" style="color:#f1f5f9">SSP Outline Drafting Template</h3>
+              <span class="file-badge badge-docx">DOCX</span>
+            </div>
+            <p class="text-sm mb-4" style="color:#64748b">Pre-structured Word document with all required SSP sections per NIST SP 800-18 and eMASS expectations. Every section header, subsection, and fill-in prompt is already in place. You add your system details — you don't rebuild the structure.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div class="text-xs" style="color:#94a3b8">→ All 18 NIST 800-18 sections pre-built</div>
+              <div class="text-xs" style="color:#94a3b8">→ System characterization fields templated</div>
+              <div class="text-xs" style="color:#94a3b8">→ eMASS-aligned section structure</div>
+              <div class="text-xs" style="color:#94a3b8">→ Instructional prompts for each field</div>
+              <div class="text-xs" style="color:#94a3b8">→ Interconnection table and boundary diagram placeholder</div>
+              <div class="text-xs" style="color:#94a3b8">→ Rules of behavior and access control sections included</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File 2: Control Statement Library -->
+      <div class="file-card glass rounded-xl p-6 reveal" style="border-left-color:rgba(245,200,66,.8)">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-5">
+          <div class="flex-shrink-0">
+            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.25)">📋</div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-base" style="color:#f5c842">Control Implementation Statement Library</h3>
+              <span class="file-badge badge-docx">DOCX</span>
+              <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded" style="background:rgba(245,200,66,.15);color:#f5c842;border:1px solid rgba(245,200,66,.3)">CORE FILE</span>
+            </div>
+            <p class="text-sm mb-4" style="color:#64748b">Pre-written implementation statements for common NIST 800-53 Rev 5 controls, structured with the what/how/who/proof formula. Use as-is for controls your system handles the standard way, or adapt for your specific implementation. Cuts first-draft time from weeks to hours.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div class="text-xs" style="color:#94a3b8">→ Statements structured: what / how / who / proof</div>
+              <div class="text-xs" style="color:#94a3b8">→ Common control families covered (AC, AU, CM, IA, SI, SC...)</div>
+              <div class="text-xs" style="color:#94a3b8">→ Placeholder fields for system-specific detail</div>
+              <div class="text-xs" style="color:#94a3b8">→ Evidence pointers included with each statement</div>
+              <div class="text-xs" style="color:#94a3b8">→ Aligned to NIST 800-53 Rev 5 control text</div>
+              <div class="text-xs" style="color:#94a3b8">→ SCA-ready phrasing — avoids common rejection patterns</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- File 3: POA&M Tracker -->
+      <div class="file-card glass rounded-xl p-6 reveal">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-5">
+          <div class="flex-shrink-0">
+            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2)">📊</div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-base" style="color:#f1f5f9">POA&amp;M Tracker Template</h3>
+              <span class="file-badge badge-xlsx">XLSX</span>
+            </div>
+            <p class="text-sm mb-4" style="color:#64748b">Excel spreadsheet with all required POA&amp;M fields per OMB M-02-01 and eMASS conventions. Risk ratings, scheduled completion dates, milestone tracking, and status columns all pre-built. Drop in your findings and start tracking instead of building the format.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div class="text-xs" style="color:#94a3b8">→ All required POA&amp;M data fields pre-configured</div>
+              <div class="text-xs" style="color:#94a3b8">→ Risk-rating columns (Very High through Low)</div>
+              <div class="text-xs" style="color:#94a3b8">→ Milestone and scheduled completion date tracking</div>
+              <div class="text-xs" style="color:#94a3b8">→ Status indicators (Open / In Progress / Closed)</div>
+              <div class="text-xs" style="color:#94a3b8">→ Source field (assessment finding, audit, self-identified)</div>
+              <div class="text-xs" style="color:#94a3b8">→ eMASS import-ready column structure</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- WHO IT'S FOR -->
+<section class="py-20 reveal">
+  <div class="max-w-4xl mx-auto px-4">
+    <div class="text-center mb-12">
+      <span class="text-xs font-mono font-semibold tracking-widest mb-3 block" style="color:#f5c842">WHO THIS IS FOR</span>
+      <h2 class="text-3xl lg:text-4xl font-black" style="color:#f1f5f9">For People Doing the Actual Work</h2>
+    </div>
+    <div class="glass rounded-2xl p-8 lg:p-10">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h3 class="font-bold mb-4 text-base" style="color:#f5c842">✓ This is for you if:</h3>
+          <ul class="space-y-3">
+            <li class="flex gap-3 text-sm" style="color:#cbd5e1"><span style="color:#34d399;flex-shrink:0">✔</span>You're drafting or revising an SSP and need a solid starting structure</li>
+            <li class="flex gap-3 text-sm" style="color:#cbd5e1"><span style="color:#34d399;flex-shrink:0">✔</span>You're writing control statements and want something better than a blank page</li>
+            <li class="flex gap-3 text-sm" style="color:#cbd5e1"><span style="color:#34d399;flex-shrink:0">✔</span>You need a POA&amp;M tracker that's ready to use, not ready to build</li>
+            <li class="flex gap-3 text-sm" style="color:#cbd5e1"><span style="color:#34d399;flex-shrink:0">✔</span>You're a contractor ISSO, RMF analyst, or compliance lead at a GovCon firm</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-bold mb-4 text-base" style="color:#ef4444">✗ This is NOT for you if:</h3>
+          <ul class="space-y-3">
+            <li class="flex gap-3 text-sm" style="color:#64748b"><span style="color:#ef4444;flex-shrink:0">✘</span>You want an introductory course on what an SSP is</li>
+            <li class="flex gap-3 text-sm" style="color:#64748b"><span style="color:#ef4444;flex-shrink:0">✘</span>You want video content or slides</li>
+            <li class="flex gap-3 text-sm" style="color:#64748b"><span style="color:#ef4444;flex-shrink:0">✘</span>You're not currently working on a live authorization package</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PRICE / VALUE -->
+<section class="py-20 reveal" style="background:radial-gradient(ellipse 60% 80% at 50% 50%, rgba(245,200,66,.05) 0%, transparent 70%)">
+  <div class="max-w-4xl mx-auto px-4 text-center">
+    <span class="text-xs font-mono font-semibold tracking-widest mb-3 block" style="color:#f5c842">THE MATH</span>
+    <h2 class="text-3xl lg:text-4xl font-black mb-6" style="color:#f1f5f9">Less Than 20 Minutes of Outside Consulting</h2>
+    <p class="text-lg mb-12 max-w-2xl mx-auto" style="color:#64748b">At $150–$300/hr, a consultant costs more than this pack just to review your SSP outline. These templates let you show up with a draft — not a blank document.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="glass rounded-xl p-6">
+        <div class="text-3xl font-black mb-1" style="color:#ef4444">$150–300/hr</div>
+        <div class="text-xs" style="color:#64748b">RMF consultant hourly rate</div>
+      </div>
+      <div class="glass rounded-xl p-6">
+        <div class="text-3xl font-black mb-1" style="color:#fb923c">Weeks</div>
+        <div class="text-xs" style="color:#64748b">To write 150+ control statements from scratch</div>
+      </div>
+      <div class="glass rounded-xl p-6" style="border:1.5px solid rgba(245,200,66,.4)">
+        <div class="text-3xl font-black mb-1 grad-text">$47 once</div>
+        <div class="text-xs" style="color:#64748b">3 working files. Start today.</div>
+      </div>
+    </div>
+    <a class="btn-buy glow-gold" data-gumroad-action="buy" style="font-size:1.1rem;padding:1.1rem 2.5rem">
+      🔐 Get the Pack — <span data-gumroad-field="price">$47</span>
+    </a>
+    <p class="mt-3 text-xs" style="color:#475569">Immediate access · Download instantly · Yours to keep.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FAQ -->
+<section class="py-20 reveal">
+  <div class="max-w-3xl mx-auto px-4">
+    <div class="text-center mb-10">
+      <h2 class="text-3xl font-black" style="color:#f1f5f9">Common Questions</h2>
+    </div>
+    <div class="space-y-3">
+      <details class="faq-item glass rounded-xl p-5">
+        <summary><span class="font-semibold text-sm" style="color:#cbd5e1">What format are the files?</span><span class="faq-icon">+</span></summary>
+        <div class="faq-body text-sm">Two Word documents (.docx) and one Excel spreadsheet (.xlsx). No special software beyond Microsoft Office or Google Docs/Sheets.</div>
+      </details>
+      <details class="faq-item glass rounded-xl p-5">
+        <summary><span class="font-semibold text-sm" style="color:#cbd5e1">Which NIST controls does the statement library cover?</span><span class="faq-icon">+</span></summary>
+        <div class="faq-body text-sm">Common control families including AC, AU, CM, IA, SC, SI, and others from the NIST SP 800-53 Rev 5 Moderate baseline. Statements are structured with the what/how/who/proof formula and include evidence pointers.</div>
+      </details>
+      <details class="faq-item glass rounded-xl p-5">
+        <summary><span class="font-semibold text-sm" style="color:#cbd5e1">Is this for DoD or civilian agency work?</span><span class="faq-icon">+</span></summary>
+        <div class="faq-body text-sm">Aligned to NIST SP 800-53 Rev 5, which applies across DoD and federal civilian contractor engagements. The SSP structure follows NIST 800-18 and eMASS conventions.</div>
+      </details>
+      <details class="faq-item glass rounded-xl p-5">
+        <summary><span class="font-semibold text-sm" style="color:#cbd5e1">When do I get access?</span><span class="faq-icon">+</span></summary>
+        <div class="faq-body text-sm">Immediately after your purchase clears. All three files are available for download as soon as payment is confirmed.</div>
+      </details>
+      <details class="faq-item glass rounded-xl p-5">
+        <summary><span class="font-semibold text-sm" style="color:#cbd5e1">How is this different from the full RMF ATO Navigator toolkit?</span><span class="faq-icon">+</span></summary>
+        <div class="faq-body text-sm">The full toolkit ($297) covers the entire DoD RMF lifecycle across 7 modules plus the ATO Workflow App. This pack ($47) focuses specifically on the documentation layer — SSP drafting, control statement writing, and POA&M tracking. It's a focused, lower-cost entry point for the most time-intensive paperwork tasks.</div>
+      </details>
+      <details class="faq-item glass rounded-xl p-5">
+        <summary><span class="font-semibold text-sm" style="color:#cbd5e1">Questions before buying?</span><span class="faq-icon">+</span></summary>
+        <div class="faq-body text-sm">DM <strong style="color:#f5c842">"TEMPLATES"</strong> on Instagram or reply to the checklist email.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FINAL CTA -->
+<section class="py-24 grid-bg reveal">
+  <div class="max-w-3xl mx-auto px-4 text-center">
+    <h2 class="text-4xl lg:text-5xl font-black mb-4" style="color:#f1f5f9">Stop Starting From Zero.<br>Start From a Template.</h2>
+    <p class="text-lg mb-10" style="color:#64748b">SSP outline. Control statement library. POA&amp;M tracker. Three files, one download, $47.</p>
+    <a class="btn-buy glow-gold pulse" data-gumroad-action="buy" style="font-size:1.15rem;padding:1.2rem 2.75rem">
+      🔓 Get the SSP &amp; Control Statement Pack — <span data-gumroad-field="price">$47</span>
+    </a>
+    <p class="mt-4 text-xs" style="color:#475569">Immediate download · Aligned to NIST SP 800-53 Rev 5 · Built for contractor RMF practitioners</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-8 text-center text-xs" style="border-top:1px solid rgba(255,255,255,.06);color:#334155">
+  <p>Built by Leo Christie · Aligned to NIST SP 800-53 Rev 5 for DoD and federal civilian contractor engagements.</p>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const b = document.body;
+    const btn = document.getElementById('theme-toggle');
+    if (b.classList.contains('light')) {
+      b.classList.remove('light');
+      btn.textContent = '☀ Light';
+    } else {
+      b.classList.add('light');
+      btn.textContent = '🌙 Dark';
+    }
+  }
+  if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.body.classList.add('light');
+    document.getElementById('theme-toggle').textContent = '🌙 Dark';
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</html>

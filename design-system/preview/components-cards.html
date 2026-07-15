@@ -1,0 +1,119 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+
+  .sys-card {
+    background: var(--surface-1);
+    border: 1.5px solid var(--stroke-2);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sys-card.active { background: var(--surface-2); }
+  .sys-card.active::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--cyan-400); }
+
+  .sys-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  .sys-name { font-family: var(--font-sans); font-weight:600; font-size:14px; color:var(--fg-1); letter-spacing:-0.005em; }
+  .sys-id { font-family: var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.05em; margin-top:2px; }
+
+  .badge {
+    font-family: var(--font-mono); font-size:10px; font-weight:600;
+    letter-spacing:0.06em; text-transform:uppercase;
+    padding:3px 8px; border-radius:999px;
+    display:inline-flex; align-items:center; gap:5px; line-height:1;
+    border:1px solid transparent;
+  }
+  .badge::before { content:''; width:5px; height:5px; border-radius:50%; background: currentColor; }
+  .b-success { color: var(--success-400); background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.28); }
+  .b-warning { color: var(--warning-400); background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.30); }
+  .b-critical { color: var(--critical-400); background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.32); }
+
+  .stat-row { display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-top:6px; border-top:1px solid var(--stroke-1); }
+  .stat-num { font-family:var(--font-sans); font-weight:600; font-size:22px; line-height:1; letter-spacing:-0.011em; color:var(--fg-1); font-variant-numeric:tabular-nums; }
+  .stat-num.warn { color: var(--warning-400); }
+  .stat-num.crit { color: var(--critical-400); }
+  .stat-label { font-family:var(--font-mono); font-size:9.5px; color:var(--fg-3); letter-spacing:.08em; text-transform:uppercase; margin-top:3px; }
+
+  .meta { font-family: var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.04em; display:flex; align-items:center; gap:6px; }
+  .meta .dot { width:3px; height:3px; border-radius:50%; background:currentColor; opacity:.5; }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">System Cards</div><div class="sub">DEFAULT · ACTIVE (LEFT RULE) · WARNING · CRITICAL</div></div>
+
+  <div class="grid2">
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-name">AFSVC-VTOS-001</div>
+          <div class="sys-id">SYS-ID 0042 · MODERATE</div>
+        </div>
+        <span class="badge b-success">ATO 247 d</span>
+      </div>
+      <div class="stat-row">
+        <div><div class="stat-num">0</div><div class="stat-label">CAT I</div></div>
+        <div><div class="stat-num">3</div><div class="stat-label">CAT II</div></div>
+        <div><div class="stat-num">14</div><div class="stat-label">CAT III</div></div>
+      </div>
+      <div class="meta">SCAN 02:47 AGO <span class="dot"></span> RAG OK</div>
+    </div>
+
+    <div class="sys-card active">
+      <div class="sys-head">
+        <div>
+          <div class="sys-name">AFSVC-NAFI-014</div>
+          <div class="sys-id">SYS-ID 0114 · MODERATE</div>
+        </div>
+        <span class="badge b-warning">ATO 47 d</span>
+      </div>
+      <div class="stat-row">
+        <div><div class="stat-num">0</div><div class="stat-label">CAT I</div></div>
+        <div><div class="stat-num warn">7</div><div class="stat-label">CAT II</div></div>
+        <div><div class="stat-num">22</div><div class="stat-label">CAT III</div></div>
+      </div>
+      <div class="meta">SCAN 14:02 AGO <span class="dot"></span> RAG STALE</div>
+    </div>
+
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-name">AFSVC-MWR-007</div>
+          <div class="sys-id">SYS-ID 0207 · HIGH</div>
+        </div>
+        <span class="badge b-critical">ATO 12 d</span>
+      </div>
+      <div class="stat-row">
+        <div><div class="stat-num crit">2</div><div class="stat-label">CAT I</div></div>
+        <div><div class="stat-num">11</div><div class="stat-label">CAT II</div></div>
+        <div><div class="stat-num">38</div><div class="stat-label">CAT III</div></div>
+      </div>
+      <div class="meta">SCAN 04:11 AGO <span class="dot"></span> ACTION REQ</div>
+    </div>
+
+    <div class="sys-card">
+      <div class="sys-head">
+        <div>
+          <div class="sys-name">AFSVC-FSS-021</div>
+          <div class="sys-id">SYS-ID 0321 · LOW</div>
+        </div>
+        <span class="badge b-critical">Expired</span>
+      </div>
+      <div class="stat-row">
+        <div><div class="stat-num">1</div><div class="stat-label">CAT I</div></div>
+        <div><div class="stat-num">5</div><div class="stat-label">CAT II</div></div>
+        <div><div class="stat-num">9</div><div class="stat-label">CAT III</div></div>
+      </div>
+      <div class="meta" style="color:var(--critical-400)">IATT NEEDED <span class="dot"></span> ESCALATE</div>
+    </div>
+  </div>
+</div>
+</body></html>

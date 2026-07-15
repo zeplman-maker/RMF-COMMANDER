@@ -1,0 +1,40 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .elv-row { display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; }
+  .elv { background:var(--surface-1); border:1.5px solid var(--stroke-2); border-radius:10px; padding:18px; display:flex; flex-direction:column; gap:8px; }
+  .elv .tag { font-family:var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.08em; text-transform:uppercase; }
+  .elv .role { font-family:var(--font-sans); font-size:12px; color:var(--fg-1); font-weight:500; }
+  .elv-1 { box-shadow: none; }
+  .elv-2 { background:var(--surface-2); box-shadow: 0 4px 12px rgba(3,8,19,0.5); }
+  .elv-3 { background:var(--surface-3); box-shadow: 0 12px 32px rgba(3,8,19,0.6); }
+
+  .border-row { display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin-top:14px; }
+  .border-row .box { padding:14px; border-radius:10px; background:var(--surface-1); }
+  .border-row .b1 { border:1px solid rgba(255,255,255,.06); }
+  .border-row .b2 { border:1.5px solid rgba(255,255,255,.10); }
+  .border-row .b3 { border:2px solid var(--cyan-400); }
+  .border-row .tag { font-family:var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; }
+  .border-row .role { font-size:12px; color:var(--fg-1); }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">Elevation & Borders</div><div class="sub">BORDERS CARRY THE DESIGN · SHADOWS MINIMAL</div></div>
+
+  <div class="elv-row">
+    <div class="elv elv-1"><div class="tag">ELV 0</div><div class="role">Flat · default card</div></div>
+    <div class="elv elv-2"><div class="tag">ELV 1</div><div class="role">Hover · sheet</div></div>
+    <div class="elv elv-3"><div class="tag">ELV 2</div><div class="role">Modal · command palette</div></div>
+  </div>
+
+  <div class="border-row">
+    <div class="box b1"><div class="tag">STROKE-1 · 1 px / 6%</div><div class="role">Interior dividers</div></div>
+    <div class="box b2"><div class="tag">STROKE-2 · 1.5 px / 10%</div><div class="role">Card border default</div></div>
+    <div class="box b3"><div class="tag">FOCUS · 2 px CYAN-400</div><div class="role">Federal a11y focus ring</div></div>
+  </div>
+</div>
+</body></html>

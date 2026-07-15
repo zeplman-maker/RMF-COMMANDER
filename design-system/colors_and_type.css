@@ -1,0 +1,348 @@
+/* ============================================================
+   RMF COMMANDER — DESIGN TOKENS
+   Single source of truth for color + type.
+   Mode-aware via [data-theme="light"] override at end.
+   Default surface = command navy (dark).
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap');
+
+:root {
+  /* ---------- Brand: Command Navy ---------- */
+  --navy-50:  #E8ECF3;
+  --navy-100: #C9D2E0;
+  --navy-200: #93A3C0;
+  --navy-300: #5D74A0;
+  --navy-400: #344968;
+  --navy-500: #1F3357;   /* core brand navy */
+  --navy-600: #152A47;
+  --navy-700: #0F1F36;
+  --navy-800: #0A1628;   /* primary dark surface */
+  --navy-900: #060E1C;   /* deepest — page bg */
+  --navy-950: #030813;
+
+  /* ---------- Brand: Cyber Cyan ---------- */
+  --cyan-50:  #ECFEFF;
+  --cyan-100: #CFFAFE;
+  --cyan-200: #A5F3FC;
+  --cyan-300: #67E8F9;
+  --cyan-400: #22D3EE;   /* primary accent */
+  --cyan-500: #06B6D4;
+  --cyan-600: #0EA5C7;   /* hover accent */
+  --cyan-700: #0E7C94;
+  --cyan-800: #155E73;
+  --cyan-900: #164E64;
+
+  /* ---------- Semantic ---------- */
+  --critical-300: #FCA5A5;
+  --critical-400: #F87171;
+  --critical-500: #EF4444;   /* ATO expired, critical CVE */
+  --critical-600: #DC2626;
+  --critical-700: #B91C1C;
+
+  --warning-300: #FCD34D;
+  --warning-400: #FBBF24;
+  --warning-500: #F59E0B;    /* 90/60/30-day windows */
+  --warning-600: #D97706;
+  --warning-700: #B45309;
+
+  --success-300: #86EFAC;
+  --success-400: #4ADE80;
+  --success-500: #22C55E;    /* control posture passing */
+  --success-600: #16A34A;
+  --success-700: #15803D;
+
+  --info-300: #93C5FD;
+  --info-400: #60A5FA;
+  --info-500: #3B82F6;       /* AI-drafted, informational */
+  --info-600: #2563EB;
+  --info-700: #1D4ED8;
+
+  /* ---------- Neutrals (slate-cool) ---------- */
+  --neutral-0:   #FFFFFF;
+  --neutral-50:  #F4F6FA;
+  --neutral-100: #E5E9F0;
+  --neutral-200: #CBD3DF;
+  --neutral-300: #9AA5B8;
+  --neutral-400: #6B7689;
+  --neutral-500: #4B5468;
+  --neutral-600: #343B4D;
+  --neutral-700: #232A3C;
+  --neutral-800: #161C2C;
+  --neutral-900: #0C111C;
+
+  /* ---------- Semantic surface tokens (dark default) ---------- */
+  --surface-0: var(--navy-900);   /* page background */
+  --surface-1: var(--navy-800);   /* default card */
+  --surface-2: var(--navy-700);   /* hovered/elevated card */
+  --surface-3: var(--navy-600);   /* sheet/modal */
+  --surface-inverse: var(--neutral-50);
+
+  --fg-1: #F2F5FA;                /* primary text */
+  --fg-2: #B7C0D1;                /* secondary text */
+  --fg-3: #7E8AA2;                /* tertiary / labels */
+  --fg-4: #4F5970;                /* disabled / hint */
+  --fg-on-accent: var(--navy-900);
+  --fg-inverse: var(--navy-900);
+
+  --stroke-1: rgba(255,255,255,0.06);  /* interior dividers */
+  --stroke-2: rgba(255,255,255,0.10);  /* card borders */
+  --stroke-3: rgba(255,255,255,0.18);  /* hover borders */
+  --stroke-focus: var(--cyan-400);
+
+  --accent: var(--cyan-400);
+  --accent-hover: var(--cyan-300);
+  --accent-press: var(--cyan-600);
+  --accent-soft:  rgba(34,211,238,0.12);
+
+  /* ---------- Classification banner palette ---------- */
+  --class-fouo-bg: #006400;          /* UNCLASSIFIED // FOUO */
+  --class-fouo-fg: #FFFFFF;
+  --class-cui-bg:  #502B85;          /* CUI (reserved, future) */
+  --class-cui-fg:  #FFFFFF;
+  --class-unclass-bg: #006400;
+  --class-unclass-fg: #FFFFFF;
+
+  /* ---------- Radius scale ---------- */
+  --radius-sm: 2px;     /* inputs, chips */
+  --radius-md: 6px;     /* buttons, badges */
+  --radius-lg: 10px;    /* cards */
+  --radius-xl: 14px;    /* sheets, modals */
+  --radius-pill: 999px; /* status badges only */
+
+  /* ---------- Spacing scale (8px grid) ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-14: 56px;
+  --space-20: 80px;
+
+  /* ---------- Shadow scale (used sparingly on dark) ---------- */
+  --shadow-0: none;
+  --shadow-1: 0 1px 2px rgba(3,8,19,0.4);
+  --shadow-2: 0 4px 12px rgba(3,8,19,0.5);
+  --shadow-3: 0 12px 32px rgba(3,8,19,0.6);
+  --shadow-focus-ring: 0 0 0 2px var(--surface-0), 0 0 0 4px var(--cyan-400);
+
+  /* ---------- Motion ---------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-instant: 120ms;
+  --dur-fast: 200ms;
+  --dur-mid: 320ms;
+  --dur-slow: 600ms;
+
+  /* ---------- Type families ---------- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+
+  /* ---------- Type scale (rem; 1rem = 16px) ---------- */
+  --fs-11: 0.6875rem;  /* 11 — mono labels, classification */
+  --fs-12: 0.75rem;    /* 12 — fine print */
+  --fs-13: 0.8125rem;  /* 13 — secondary UI */
+  --fs-14: 0.875rem;   /* 14 — body small / default UI */
+  --fs-16: 1rem;       /* 16 — body */
+  --fs-18: 1.125rem;   /* 18 — body large / card title */
+  --fs-20: 1.25rem;    /* 20 — h5 */
+  --fs-24: 1.5rem;     /* 24 — h4 */
+  --fs-30: 1.875rem;   /* 30 — h3 */
+  --fs-36: 2.25rem;    /* 36 — h2 */
+  --fs-48: 3rem;       /* 48 — h1 */
+  --fs-60: 3.75rem;    /* 60 — display */
+
+  /* Stat numeric pairs */
+  --fs-stat-sm: 1.5rem;
+  --fs-stat-md: 2.25rem;
+  --fs-stat-lg: 3.5rem;
+
+  /* ---------- Tracking ---------- */
+  --tracking-display: -0.011em;
+  --tracking-ui: -0.005em;
+  --tracking-allcaps: 0.08em;
+  --tracking-mono: 0;
+
+  /* ---------- Line heights ---------- */
+  --lh-display: 1.05;
+  --lh-heading: 1.15;
+  --lh-ui: 1.35;
+  --lh-body: 1.55;
+}
+
+/* ============================================================
+   Light mode override
+   ============================================================ */
+[data-theme="light"] {
+  --surface-0: var(--neutral-50);
+  --surface-1: var(--neutral-0);
+  --surface-2: var(--neutral-50);
+  --surface-3: var(--neutral-0);
+  --surface-inverse: var(--navy-900);
+
+  --fg-1: var(--navy-900);
+  --fg-2: var(--navy-500);
+  --fg-3: var(--neutral-500);
+  --fg-4: var(--neutral-300);
+  --fg-on-accent: var(--navy-900);
+  --fg-inverse: var(--neutral-0);
+
+  --stroke-1: rgba(15,31,54,0.08);
+  --stroke-2: rgba(15,31,54,0.14);
+  --stroke-3: rgba(15,31,54,0.22);
+
+  --accent: var(--cyan-600);
+  --accent-hover: var(--cyan-700);
+  --accent-press: var(--cyan-800);
+  --accent-soft:  rgba(14,165,199,0.10);
+
+  --shadow-1: 0 1px 2px rgba(10,22,40,0.06);
+  --shadow-2: 0 8px 24px rgba(10,22,40,0.08);
+  --shadow-3: 0 24px 56px rgba(10,22,40,0.12);
+}
+
+/* ============================================================
+   Semantic element rules
+   ============================================================ */
+
+html, body {
+  background: var(--surface-0);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-16);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tracking-ui);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+}
+
+h1, .h1 {
+  font-family: var(--font-sans);
+  font-size: var(--fs-48);
+  font-weight: 700;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h2, .h2 {
+  font-size: var(--fs-36);
+  font-weight: 700;
+  line-height: var(--lh-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h3, .h3 {
+  font-size: var(--fs-30);
+  font-weight: 600;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-display);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h4, .h4 {
+  font-size: var(--fs-24);
+  font-weight: 600;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-ui);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h5, .h5 {
+  font-size: var(--fs-20);
+  font-weight: 600;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--tracking-ui);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h6, .h6 {
+  font-size: var(--fs-16);
+  font-weight: 600;
+  line-height: var(--lh-ui);
+  letter-spacing: var(--tracking-ui);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+p { color: var(--fg-2); line-height: var(--lh-body); margin: 0; }
+
+small, .small { font-size: var(--fs-13); color: var(--fg-3); }
+
+/* ---------- Mono / tokens ---------- */
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-13);
+  letter-spacing: var(--tracking-mono);
+  color: var(--fg-2);
+}
+
+.label, .eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-allcaps);
+  color: var(--fg-3);
+}
+
+/* ---------- Serif (briefing PDFs only) ---------- */
+.serif { font-family: var(--font-serif); }
+
+/* ---------- Stat pair ---------- */
+.stat-num {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--fs-stat-md);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+  color: var(--fg-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-allcaps);
+  color: var(--fg-3);
+  margin-top: var(--space-1);
+}
+
+/* ---------- Classification banner ---------- */
+.banner-class {
+  font-family: var(--font-mono);
+  font-size: var(--fs-11);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-allcaps);
+  background: var(--class-fouo-bg);
+  color: var(--class-fouo-fg);
+  text-align: center;
+  padding: 4px 12px;
+  line-height: 1.3;
+}
+
+/* ---------- Focus ring (federal a11y) ---------- */
+*:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- Selection ---------- */
+::selection {
+  background: var(--cyan-400);
+  color: var(--navy-900);
+}

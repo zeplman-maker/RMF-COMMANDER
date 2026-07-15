@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}RMF ATO Navigator{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="banner banner-unclass">UNCLASSIFIED // FOR DEMONSTRATION ONLY // LOCAL VALIDATION REQUIRED</div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">RMF</div>
+    <div>
+      <div class="brand-title">ATO Navigator</div>
+      <div class="brand-sub">DoD / DAF RMF lifecycle workbench &middot; v0.1 prototype</div>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a href="{{ url_for('index') }}">ISSO</a>
+    <a href="{{ url_for('dashboard_issm') }}">ISSM</a>
+    <a href="{{ url_for('dashboard_sca') }}">SCA</a>
+    <a href="{{ url_for('dashboard_ao') }}">AO</a>
+    <a href="{{ url_for('system_new') }}" class="cta">+ Register System</a>
+    {% if current_user %}
+    <span class="user-chip">
+      <a class="user-name" href="{{ url_for('me_queue') }}" title="Open my queue">{{ current_user.name }}</a>
+      <span class="user-role role-{{ (current_user.role_name or '')|replace(' ','')|lower }}">{{ current_user.role_name }}</span>
+      <a href="{{ url_for('logout') }}" class="user-logout" title="Sign out">sign out</a>
+    </span>
+    {% endif %}
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-section">
+      <div class="side-title">Me</div>
+      {% if current_user %}
+      <a href="{{ url_for('me_queue') }}">My queue</a>
+      <a href="{{ url_for('me_systems') }}">My systems</a>
+      {% else %}
+      <a class="muted">Sign in to use</a>
+      {% endif %}
+    </div>
+    <div class="side-section">
+      <div class="side-title">Dashboards</div>
+      <a href="{{ url_for('index') }}">ISSO (FR-9.1)</a>
+      <a href="{{ url_for('dashboard_issm') }}">ISSM (FR-9.2)</a>
+      <a href="{{ url_for('dashboard_sca') }}">SCA (FR-9.3)</a>
+      <a href="{{ url_for('dashboard_ao') }}">AO (FR-9.4)</a>
+    </div>
+    <div class="side-section">
+      <div class="side-title">Workspace</div>
+      <a href="{{ url_for('index') }}">All systems</a>
+      <a href="{{ url_for('system_new') }}">Register new system</a>
+    </div>
+    <div class="side-section">
+      <div class="side-title">Reference</div>
+      <a href="{{ url_for('controls') }}">800-53 Rev. 5 catalog</a>
+      <a href="{{ url_for('artifacts') }}">Artifact library (42)</a>
+      <a href="{{ url_for('emass_hub') }}">eMASS prep guides</a>
+      <a href="{{ url_for('audit_ai_list') }}">AI audit log</a>
+    </div>
+    <div class="side-section">
+      <div class="side-title">Compliance</div>
+      <span class="pill pill-green">UNCLASSIFIED only</span>
+      <span class="pill pill-amber">eMASS not replaced</span>
+      <span class="pill pill-coral">AI = human review required</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        {% for cat, msg in msgs %}
+          <div class="flash flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <aside class="ai-panel">
+    <div class="ai-header">
+      <span class="ai-title">AI Assistant</span>
+      <span class="ai-badge" id="ai-provider-chip" data-real="false">8 modes &middot; loading...</span>
+    </div>
+    <div class="ai-tabs" id="ai-tabs">
+      <button class="ai-tab active" data-mode="isso_coach">ISSO Coach</button>
+      <button class="ai-tab" data-mode="control_analyst">Control Analyst</button>
+      <button class="ai-tab" data-mode="artifact_gen">Artifact Gen</button>
+      <button class="ai-tab" data-mode="evidence_review">Evidence Review</button>
+      <button class="ai-tab" data-mode="poam_builder">POA&amp;M Builder</button>
+      <button class="ai-tab" data-mode="topology">Topology</button>
+      <button class="ai-tab" data-mode="sbom">SBOM</button>
+      <button class="ai-tab" data-mode="ato_readiness">ATO Readiness</button>
+    </div>
+    <div class="ai-context">
+      Context: <span id="ai-context-text">{% block ai_context %}No system selected{% endblock %}</span>
+    </div>
+    <div class="ai-log" id="ai-log">
+      <div class="ai-msg ai-msg-system">
+        Ask a question about RMF, controls, evidence, POA&amp;Ms, topology, SBOM, or
+        ATO readiness. All AI output is flagged for human review (FR-4.5, FR-4.7).
+      </div>
+    </div>
+    <form class="ai-form" id="ai-form" data-system="{% block ai_system %}{% endblock %}">
+      <textarea id="ai-prompt" rows="2" placeholder="Ask the assistant..."></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <div class="ai-disclaimer">
+      AI-generated content. Local validation required. Never replaces an
+      AO authorization decision.
+    </div>
+  </aside>
+</div>
+
+<footer class="page-footer">
+  <span>RMF ATO Navigator &middot; NIST SP 800-37 Rev. 2 &middot; DoDI 8510.01 &middot; AFI 17-101</span>
+  <span>This application does NOT replace eMASS &middot; LOCAL VALIDATION REQUIRED</span>
+</footer>
+
+<script>
+(function () {
+  const tabs = document.querySelectorAll('.ai-tab');
+  const form = document.getElementById('ai-form');
+  const log = document.getElementById('ai-log');
+  const promptEl = document.getElementById('ai-prompt');
+  const providerChip = document.getElementById('ai-provider-chip');
+  let activeMode = 'isso_coach';
+
+  // Resolve provider label once on load
+  fetch('/api/ai-status')
+    .then(r => r.json())
+    .then(d => {
+      providerChip.dataset.real = d.real ? 'true' : 'false';
+      providerChip.textContent = (d.real ? 'real LLM' : 'mocked') + ' · ' + d.label;
+    })
+    .catch(() => {
+      providerChip.textContent = '8 modes · unknown';
+    });
+
+  tabs.forEach(t => t.addEventListener('click', () => {
+    tabs.forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    activeMode = t.dataset.mode;
+  }));
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const prompt = promptEl.value.trim();
+    const sysId = form.dataset.system || null;
+    appendMsg('user', prompt || '(no prompt - showing default guidance)');
+    promptEl.value = '';
+    const placeholder = appendMsg('assistant', 'Thinking...');
+    try {
+      const res = await fetch('/api/ai-chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({mode: activeMode, prompt: prompt, system_id: sysId})
+      });
+      const data = await res.json();
+      placeholder.innerHTML = '';
+
+      // Provider + confidence header line
+      const meta = document.createElement('div');
+      meta.className = 'ai-msg-mode';
+      const providerTag = data.blocked ? 'BLOCKED'
+        : (data.provider === 'anthropic' ? 'real LLM'
+           : (data.provider === 'mocked' ? 'mocked'
+              : (data.provider === 'error' ? 'error' : data.provider)));
+      meta.textContent = data.mode + ' · ' + providerTag
+        + ' · confidence ' + Math.round((data.confidence || 0) * 100) + '%';
+      placeholder.appendChild(meta);
+
+      // Body
+      const body = document.createElement('div');
+      body.className = 'ai-msg-body';
+      body.textContent = data.response;
+      placeholder.appendChild(body);
+
+      // Sources chips
+      if (data.sources && data.sources.length) {
+        const refs = document.createElement('div');
+        refs.className = 'ai-msg-refs';
+        data.sources.forEach(src => {
+          const span = document.createElement('span');
+          span.className = 'ai-ref';
+          span.textContent = src;
+          refs.appendChild(span);
+        });
+        placeholder.appendChild(refs);
+      }
+
+      // Footer per FR-4.5 / FR-4.7
+      const review = document.createElement('div');
+      review.className = data.blocked ? 'ai-msg-review ai-msg-blocked' : 'ai-msg-review';
+      review.textContent = data.blocked
+        ? 'BLOCKED BY DLP. Redact and resubmit.'
+        : 'HUMAN REVIEW REQUIRED before saving to package.';
+      placeholder.appendChild(review);
+    } catch (err) {
+      placeholder.textContent = 'Error contacting assistant: ' + err;
+    }
+    log.scrollTop = log.scrollHeight;
+  });
+
+  function appendMsg(kind, text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'ai-msg ai-msg-' + kind;
+    wrap.textContent = text;
+    log.appendChild(wrap);
+    log.scrollTop = log.scrollHeight;
+    return wrap;
+  }
+})();
+</script>
+</body>
+</html>

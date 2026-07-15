@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Register System &middot; RMF ATO Navigator{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-1.1.1 / 1.1.2 / 1.1.3 / 1.1.4 / 1.1.5</div>
+    <h1>Register system</h1>
+    <p class="subtitle">Captures system metadata, FIPS 199 categorization, ATO type, mission,
+       authorization boundary, and data types. Required before any RMF step can advance.</p>
+  </div>
+</div>
+
+<form method="post" class="card form">
+
+  <fieldset>
+    <legend>Identification</legend>
+    <label>System name <span class="req">*</span>
+      <input name="name" required maxlength="200" placeholder="e.g. Mission Planning System">
+    </label>
+    <label>Acronym
+      <input name="acronym" maxlength="40" placeholder="MPS">
+    </label>
+    <label>System type (FR-1.1.3)
+      <select name="system_type">
+        <option value="">-- select --</option>
+        {% for t in system_types %}<option>{{ t }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>ATO type (FR-1.1.2)
+      <select name="ato_type">
+        <option value="">-- select --</option>
+        {% for t in ato_types %}<option>{{ t }}</option>{% endfor %}
+      </select>
+    </label>
+    <label class="check">
+      <input type="checkbox" name="is_nss" value="1"> National Security System (CNSSI 1253, FR-1.1.9)
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>FIPS 199 categorization (FR-1.1.4)</legend>
+    <div class="row3">
+      <label>Confidentiality
+        <select name="cia_c">
+          <option value="">-- select --</option>
+          {% for c in cia_levels %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Integrity
+        <select name="cia_i">
+          <option value="">-- select --</option>
+          {% for c in cia_levels %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Availability
+        <select name="cia_a">
+          <option value="">-- select --</option>
+          {% for c in cia_levels %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </label>
+    </div>
+    <label>Overall impact level
+      <select name="impact_level">
+        <option value="">-- derived from CIA, override if needed --</option>
+        {% for c in impact_levels %}<option>{{ c }}</option>{% endfor %}
+      </select>
+    </label>
+    <fieldset class="checkgrid">
+      <legend>Data types (CUI / PII / etc)</legend>
+      {% for d in data_types %}
+        <label class="check"><input type="checkbox" name="data_types" value="{{ d }}"> {{ d }}</label>
+      {% endfor %}
+    </fieldset>
+  </fieldset>
+
+  <fieldset>
+    <legend>Mission and boundary (FR-1.1.4 / 1.1.5)</legend>
+    <label>Mission description
+      <textarea name="mission_desc" rows="3" placeholder="What this system does and which mission it supports."></textarea>
+    </label>
+    <label>Authorization boundary statement
+      <textarea name="boundary_statement" rows="4" placeholder="Hosts, services, network segments, external connections, trust zones."></textarea>
+    </label>
+  </fieldset>
+
+  <div class="form-actions">
+    <a href="{{ url_for('index') }}" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">Register system</button>
+  </div>
+</form>
+
+{% endblock %}

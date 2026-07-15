@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Control catalog &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}NIST SP 800-53 Rev. 5 catalog browser{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-6.1 / FR-6.3 / FR-6.4</div>
+    <h1>NIST SP 800-53 Rev. 5 catalog</h1>
+    <p class="subtitle">{{ total }} curated controls across all 20 families. Filter by family or
+       baseline, search by ID or text. Click a row to see the FR-6.2 deep-dive.</p>
+  </div>
+</div>
+
+<div class="catalog-disclaimer">
+  Statements are paraphrased summaries for prototype use. Authoritative text and full enhancements
+  live in NIST SP 800-53 Rev. 5. Reconcile against the publication and any DoD CCI mappings before
+  operational use.
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Family roll-up</h2><span class="muted-small">click a family to filter</span></div>
+  <div class="family-grid">
+    {% for code, info in families %}
+      <a class="family-tile {% if active_family == code %}active{% endif %}"
+         href="{{ url_for('controls', family=code, baseline=active_baseline or '', q=search or '') }}">
+        <div class="family-code">{{ code }}</div>
+        <div class="family-name">{{ info.name }}</div>
+        <div class="family-counts">
+          <span class="family-count-total">{{ info.count }}</span>
+          <span class="muted-small">L:{{ info.low }} M:{{ info.mod }} H:{{ info.high }}</span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Filters</h2>
+    <a href="{{ url_for('controls') }}" class="muted-small">clear all</a>
+  </div>
+  <form method="get" class="filter-bar">
+    <input name="q" value="{{ search }}" placeholder="Search ID, title, or statement (e.g. AC-2, MFA, FIPS)">
+    <select name="family">
+      <option value="">All families</option>
+      {% for code, info in families %}
+        <option value="{{ code }}" {% if active_family == code %}selected{% endif %}>{{ code }} {{ info.name }}</option>
+      {% endfor %}
+    </select>
+    <select name="baseline">
+      <option value="">Any baseline</option>
+      <option value="low"      {% if active_baseline == 'low' %}selected{% endif %}>Low</option>
+      <option value="moderate" {% if active_baseline == 'moderate' %}selected{% endif %}>Moderate</option>
+      <option value="high"     {% if active_baseline == 'high' %}selected{% endif %}>High</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Apply</button>
+  </form>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Controls ({{ controls|length }}{% if active_family or active_baseline or search %} filtered{% endif %})</h2>
+  </div>
+  {% if controls %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th><th>Title</th><th>Family</th><th>Baseline</th><th>Default type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in controls %}
+      <tr onclick="location.href='{{ url_for('control_detail', nist_id=c.nist_id) }}'">
+        <td><strong>{{ c.nist_id }}</strong></td>
+        <td>{{ c.title }}</td>
+        <td><span class="family-chip">{{ c.family }}</span> <span class="muted-small">{{ c.family_name }}</span></td>
+        <td>
+          {% if c.baseline_low %}<span class="baseline-chip baseline-low">L</span>{% endif %}
+          {% if c.baseline_mod %}<span class="baseline-chip baseline-mod">M</span>{% endif %}
+          {% if c.baseline_high %}<span class="baseline-chip baseline-high">H</span>{% endif %}
+          {% if not (c.baseline_low or c.baseline_mod or c.baseline_high) %}<span class="muted-small">-</span>{% endif %}
+        </td>
+        <td><span class="ctype-chip">{{ c.control_type_default or '-' }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty">No controls match the current filters.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

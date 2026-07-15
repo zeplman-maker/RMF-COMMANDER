@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Step {{ step }} {{ step_name }} &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; Step {{ step }} {{ step_name }}{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">RMF Step {{ step }} &middot; FR-2.{{ step }}.x</div>
+    <h1>{{ step_name }} <span class="acronym">{{ system.name }}</span></h1>
+    <p class="subtitle">
+      {% if step == 0 %}Lay the foundation. Assign roles, open the eMASS record, draft the project charter.
+      {% elif step == 1 %}Categorize information types and finalize the FIPS 199 impact decision.
+      {% elif step == 2 %}Select the 800-53B baseline, tailor controls, classify, and assign owners.
+      {% elif step == 3 %}Implement controls, document statements, attach evidence, capture gaps as POA&Ms.
+      {% elif step == 4 %}Develop the SAP, record findings, generate the SAR, update POA&Ms.
+      {% elif step == 5 %}Build the executive risk summary, document residual risk, record the AO decision.
+      {% elif step == 6 %}Maintain ConMon, monitor scan trends, run annual assessments, sustain the ATO.
+      {% endif %}
+    </p>
+  </div>
+  <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Step rail</h2></div>
+  <div class="step-rail">
+    {% for n, label in rmf_steps %}
+      <a class="step-node {% if n == step %}active{% elif n < system.current_step %}done{% endif %}"
+         href="{{ url_for('rmf_step', system_id=system.system_id, step=n) }}">
+        <div class="step-num">{{ n }}</div>
+        <div class="step-lbl">{{ label }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Tasks</h2>
+      <span class="muted-small">
+        {% set done_count = 0 %}{% for t, c in tasks %}{% if c %}{% set done_count = done_count + 1 %}{% endif %}{% endfor %}
+        {{ done_count }} / {{ tasks|length }} complete
+      </span>
+    </div>
+    <ul class="task-list">
+      {% for t, completed in tasks %}
+      <li class="task-item {% if completed %}task-done{% endif %}">
+        <form method="post" action="{{ url_for('rmf_task_toggle', system_id=system.system_id, step=step, task_key=t.key) }}">
+          <button type="submit" class="task-check {% if completed %}checked{% endif %}"
+                  aria-label="Toggle {{ t.title }}">
+            {% if completed %}&#10003;{% else %}&nbsp;{% endif %}
+          </button>
+        </form>
+        <div class="task-body">
+          <div class="task-title">
+            {{ t.title }}
+            {% if t.gate %}<span class="gate-tag">GATE</span>{% endif %}
+            <span class="fr-tag">{{ t.fr }}</span>
+          </div>
+          <div class="task-desc">{{ t.desc }}</div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Gate criteria</h2>
+      <span class="gate-count gate-{{ 'met' if gate_total > 0 and gate_met == gate_total else 'open' }}">
+        {{ gate_met }} / {{ gate_total }}
+      </span>
+    </div>
+    <p class="gate-desc">{{ gate_desc }}</p>
+    {% if gate_missing %}
+      <div class="gate-missing">
+        <div class="muted-small">Open gate items:</div>
+        <ul>
+          {% for m in gate_missing %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% else %}
+      <div class="gate-clear">All gate items met for this step.</div>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Expected outputs</h2></div>
+    <ul class="output-list">
+      {% for o in outputs %}<li>{{ o }}</li>{% endfor %}
+    </ul>
+    <p class="muted-small">Artifact templates and exports land in Module 5 (FR-5.x).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Advance</h2></div>
+    <p class="muted-small">Gates are advisory in this prototype. You can advance with open items, but the message will note what is still open.</p>
+    <div class="advance-row">
+      {% if step > 0 %}
+        <form method="post" action="{{ url_for('rmf_advance_step', system_id=system.system_id) }}">
+          <input type="hidden" name="target" value="{{ step - 1 }}">
+          <button type="submit" class="btn btn-ghost">&larr; Step {{ step - 1 }}</button>
+        </form>
+      {% endif %}
+      <span class="current-step">Currently on Step {{ system.current_step }}</span>
+      {% if step < 6 %}
+        <form method="post" action="{{ url_for('rmf_advance_step', system_id=system.system_id) }}">
+          <input type="hidden" name="target" value="{{ step + 1 }}">
+          <button type="submit" class="btn btn-primary">Step {{ step + 1 }} &rarr;</button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER Concept Paper
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER Concept Paper
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Purpose
+This concept paper requests support for a controlled RMF COMMANDER prototype and 90-day pilot. The pilot uses mock, sandbox, or test data only. It does not access production eMASS data, process classified information, submit artifacts, or make authorization decisions.
+2. Operational Need
+ISSMs and ISSOs lack purpose-built mobile tooling for RMF portfolio visibility.
+Authorization status, POA&amp;M counts, control posture, and scan freshness currently require desktop eMASS review.
+Routine control statements, POA&amp;M language, and monitoring summaries consume an estimated 40 to 60 percent of ISSM time.
+ATO expiration windows, POA&amp;M milestone slips, CVE activity, and STIG updates are often tracked manually or reactively.
+An ISSM managing 26 systems and supporting more than one million end users needs faster portfolio visibility without changing AO, SCA, ISSM, or ISSO authority.
+3. Proposed Solution
+RMF COMMANDER is a controlled mobile and web platform that gives authorized RMF personnel secure visibility into portfolio status, ATO timelines, POA&amp;M risk, vulnerability awareness, and documentation support. The AI layer assists. It does not decide.
+Capability
+What It Provides
+Pilot Boundary
+Portfolio Dashboard
+ATO status, days to expiration, POA&amp;M counts by severity, control implementation posture, and scan freshness.
+Read-only test, sandbox, or mock data.
+Smart Alerts
+90/60/30-day ATO alerts, POA&amp;M milestone slip alerts, and eMASS workflow state change notifications.
+Notification payload limited to system name and alert type.
+AI Documentation Assistant
+Draft control statements, POA&amp;M language, monitoring summaries, and briefing language grounded in approved references.
+Draft only. Visible AI-drafted label. Human approval required before use.
+Natural Language Query
+Plain-language questions answered using authorized RMF data only.
+No cross-system inference outside role scope.
+Executive Briefing Generator
+Portfolio posture summaries formatted for AO, PM, and leadership updates.
+Validated against the current test dataset during pilot.
+4. AI Governance
+NIST AI RMF Function
+RMF COMMANDER Control
+GOVERN
+Human-in-the-loop mandate, role-scoped access, audit logs, and no AI authority to make compliance decisions.
+MAP
+Use case limited to assistive drafting and query. No authorization decisions, no SCA replacement, no AO replacement.
+MEASURE
+Pilot metrics include AI draft acceptance, source citation accuracy, alert accuracy, user confidence, and gate adherence.
+MANAGE
+Flagged AI outputs reviewed within 24 hours. AO receives 30-day touchpoint briefings. Scope changes require separate approval.
+5. Approval Requested
+Approve controlled prototype development and a 90-day pilot using mock, sandbox, or test data only.
+Authorize stakeholder validation, architecture review, and test data coordination.
+Endorse eMASS REST API access request for test/sandbox provisioning only.
+Approve Phase 1 activities: DoD cloud tenant planning, MDM development-device enrollment, and eMASS system registration for RMF COMMANDER itself.
+Establish recurring 30-day AO touchpoints throughout the pilot.
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

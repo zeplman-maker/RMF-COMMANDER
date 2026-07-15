@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Artifact library &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}42-artifact library browser{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-5.1 / FR-5.2</div>
+    <h1>Artifact library</h1>
+    <p class="subtitle">{{ total }} artifact templates aligned to NIST SP 800-37 Rev. 2 and DoDI 8510.01.
+       Each entry documents purpose, owner, inputs, approval path, control mappings, evidence, completion criteria, and eMASS location.</p>
+  </div>
+</div>
+
+<div class="catalog-disclaimer">
+  Templates aggregated across NIST SP 800-37 Rev. 2, NIST SP 800-53 Rev. 5, DoDI 8510.01, and AFI 17-101.
+  Validate the set against your local AO and ISSM guidance before treating any artifact as required.
+</div>
+
+{% for cat_key, cat_name in categories.items() %}
+  {% if by_category[cat_key] %}
+  <section class="card">
+    <div class="card-head">
+      <h2>{{ cat_name }}</h2>
+      <span class="muted-small">{{ by_category[cat_key]|length }} templates</span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Format</th><th>Owner</th><th>Control mappings</th><th>Generator</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in by_category[cat_key] %}
+        <tr onclick="location.href='{{ url_for('artifact_template_detail', key=t.key) }}'">
+          <td><strong>{{ t.name }}</strong></td>
+          <td><span class="format-chip format-{{ t.format }}">{{ t.format }}</span></td>
+          <td>{{ t.owner }}</td>
+          <td>
+            {% for cm in t.control_mappings %}<span class="ctrl-chip">{{ cm }}</span>{% endfor %}
+          </td>
+          <td>{% if t.generator %}<span class="gen-chip">live data</span>{% else %}<span class="muted-small">manual</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+  {% endif %}
+{% endfor %}
+
+{% endblock %}

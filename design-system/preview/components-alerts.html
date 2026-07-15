@@ -1,0 +1,85 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .alert {
+    border: 1.5px solid var(--stroke-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--surface-1);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+  .alert::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; }
+  .alert.crit::before { background: var(--critical-500); }
+  .alert.warn::before { background: var(--warning-500); }
+  .alert.info::before { background: var(--info-500); }
+  .alert.ai::before  { background: var(--cyan-400); }
+  .alert .ico-wrap { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .alert .body { flex:1; min-width:0; }
+  .alert .title { font-family:var(--font-sans); font-weight:600; font-size:14px; color:var(--fg-1); letter-spacing:-0.005em; }
+  .alert .desc { font-family:var(--font-sans); font-size:13px; color:var(--fg-2); line-height:1.45; margin-top:3px; }
+  .alert .meta { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.05em; text-transform:uppercase; margin-top:6px; display:flex; gap:8px; align-items:center; }
+  .alert .meta .dot { width:3px; height:3px; border-radius:50%; background:currentColor; opacity:.5; }
+
+  .crit .ico-wrap { background: rgba(239,68,68,0.12); color: var(--critical-400); }
+  .warn .ico-wrap { background: rgba(245,158,11,0.14); color: var(--warning-400); }
+  .info .ico-wrap { background: rgba(59,130,246,0.14); color: var(--info-400); }
+  .ai   .ico-wrap { background: rgba(34,211,238,0.14); color: var(--cyan-400); }
+
+  .ai-tag {
+    font-family: var(--font-mono); font-size:9.5px; font-weight:700;
+    letter-spacing:.12em; text-transform:uppercase;
+    color: var(--info-300); background: rgba(59,130,246,0.18);
+    padding: 2px 6px; border-radius: 3px;
+    border: 1px solid rgba(59,130,246,0.4);
+    display:inline-flex; align-items:center; gap:4px;
+  }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">Smart Alerts</div><div class="sub">ATO · POA&amp;M · CVE · AI-DRAFTED</div></div>
+
+  <div class="alert crit">
+    <div class="ico-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+    <div class="body">
+      <div class="title">ATO expires in 12 days — AFSVC-MWR-007</div>
+      <div class="desc">System enters the 30-day window. Renewal package draft is recommended now to avoid IATT extension.</div>
+      <div class="meta">CRITICAL <span class="dot"></span> ISSM ACTION <span class="dot"></span> 14:02:11 Z</div>
+    </div>
+  </div>
+
+  <div class="alert warn">
+    <div class="ico-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div>
+    <div class="body">
+      <div class="title">POA&amp;M slip — AFSVC-NAFI-014 / V-217884</div>
+      <div class="desc">CAT II finding missed its scheduled completion. New estimated date proposed by ISSO.</div>
+      <div class="meta">WARNING <span class="dot"></span> POA&amp;M <span class="dot"></span> CM-6</div>
+    </div>
+  </div>
+
+  <div class="alert info">
+    <div class="ico-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+    <div class="body">
+      <div class="title">eMASS workflow state changed — AFSVC-VTOS-001</div>
+      <div class="desc">SCA returned the SAR with two items for ISSM response. View source: eMASS package #88421.</div>
+      <div class="meta">INFO <span class="dot"></span> WORKFLOW <span class="dot"></span> 02:47 AGO</div>
+    </div>
+  </div>
+
+  <div class="alert ai">
+    <div class="ico-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg></div>
+    <div class="body">
+      <div class="title">Draft ready — Control statement for AC-2(3)</div>
+      <div class="desc">Grounded in NIST SP 800-53 Rev. 5 and three prior system precedents. Source citations included.</div>
+      <div class="meta"><span class="ai-tag">AI-DRAFTED</span> REQUIRES ISSM APPROVAL</div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:8px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .space-grid { display:flex; align-items:flex-end; gap:14px; padding:10px 6px; }
+  .space-item { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .space-item .bar { background:var(--cyan-400); border-radius:2px; width:100%; }
+  .space-item .tag { font-family:var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.05em; text-transform:uppercase; }
+  .space-item .px { font-family:var(--font-mono); font-size:11px; color:var(--fg-1); }
+
+  .radius-row { display:flex; gap:14px; align-items:flex-end; }
+  .radius-item { display:flex; flex-direction:column; align-items:center; gap:6px; flex:1; }
+  .radius-item .box { width:72px; height:54px; background:var(--surface-2); border:1.5px solid var(--stroke-2); }
+  .radius-item .tag { font-family:var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.05em; text-transform:uppercase; }
+  .radius-item .v { font-family:var(--font-mono); font-size:11px; color:var(--fg-1); }
+</style></head>
+<body>
+<div class="card">
+  <div>
+    <div class="head"><div class="h">Spacing Scale</div><div class="sub">8-PX GRID · 4 → 80</div></div>
+    <div class="space-grid">
+      <div class="space-item" style="width:32px"><div class="bar" style="height:4px;"></div><div class="tag">SP-1</div><div class="px">4</div></div>
+      <div class="space-item" style="width:32px"><div class="bar" style="height:8px;"></div><div class="tag">SP-2</div><div class="px">8</div></div>
+      <div class="space-item" style="width:38px"><div class="bar" style="height:12px;"></div><div class="tag">SP-3</div><div class="px">12</div></div>
+      <div class="space-item" style="width:42px"><div class="bar" style="height:16px;"></div><div class="tag">SP-4</div><div class="px">16</div></div>
+      <div class="space-item" style="width:48px"><div class="bar" style="height:20px;"></div><div class="tag">SP-5</div><div class="px">20</div></div>
+      <div class="space-item" style="width:54px"><div class="bar" style="height:24px;"></div><div class="tag">SP-6</div><div class="px">24</div></div>
+      <div class="space-item" style="width:60px"><div class="bar" style="height:32px;"></div><div class="tag">SP-8</div><div class="px">32</div></div>
+      <div class="space-item" style="width:68px"><div class="bar" style="height:40px;"></div><div class="tag">SP-10</div><div class="px">40</div></div>
+      <div class="space-item" style="width:78px"><div class="bar" style="height:56px;"></div><div class="tag">SP-14</div><div class="px">56</div></div>
+      <div class="space-item" style="width:96px"><div class="bar" style="height:80px;"></div><div class="tag">SP-20</div><div class="px">80</div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="head" style="margin-top:14px"><div class="h">Radius Scale</div><div class="sub">SQUARED CONTROLS · ROUNDED SURFACES</div></div>
+    <div class="radius-row">
+      <div class="radius-item"><div class="box" style="border-radius:2px"></div><div class="tag">SM · INPUTS</div><div class="v">2 px</div></div>
+      <div class="radius-item"><div class="box" style="border-radius:6px"></div><div class="tag">MD · BTN/BADGE</div><div class="v">6 px</div></div>
+      <div class="radius-item"><div class="box" style="border-radius:10px"></div><div class="tag">LG · CARD</div><div class="v">10 px</div></div>
+      <div class="radius-item"><div class="box" style="border-radius:14px"></div><div class="tag">XL · SHEET</div><div class="v">14 px</div></div>
+      <div class="radius-item"><div class="box" style="border-radius:999px; height:32px; width:96px"></div><div class="tag">PILL · STATUS</div><div class="v">999</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

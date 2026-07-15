@@ -1,0 +1,99 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER Risk and Control Matrix
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER Risk and Control Matrix
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Risk Register
+The following risks are identified and actively mitigated by design. All risks are documented, owned, and tracked throughout the pilot.
+Risk
+Impact
+Control / Mitigation
+Owner
+Status
+AI output treated as official approval
+High
+Visible AI-drafted label, human approval gate, no automated submission, and user training.
+ISSM / Product Owner
+Open for pilot
+Unauthorized access to eMASS data
+High
+Role-scoped access, backend authorization checks, derived credential authentication, and audit logs.
+Security Architect
+Design control
+Sensitive data exposed through notifications
+Medium
+Notification payload limited to system name and alert type. Full details require an authenticated session.
+Mobile Lead
+Design control
+Client device compromise
+High
+No eMASS credentials on device, no local package storage, MDM enrollment, and session wipe.
+Security Architect
+Design control
+Production integration approved too early
+High
+Pilot limited to mock, test, or sandbox data. Production access requires separate approval and authorization path.
+AO / ISSM
+Governance control
+
+1. Risk Register, Continued
+Risk
+Impact
+Control / Mitigation
+Owner
+Status
+Model hallucination
+Medium
+RAG grounding, source citations, uncertainty flags, and mandatory human review before action.
+AI Lead
+Design control
+CUI mishandling
+High
+Data-handling rules, cloud-boundary enforcement, user warnings, upload restrictions, and audit logging.
+ISSM
+Policy control
+Scope creep into authorization decisions
+High
+Product language states support only. AO, SCA, and ISSM decision authority remains unchanged.
+Product Owner
+Governance control
+eMASS API dependency delay
+Medium
+Use mock dataset and sandbox workflow for pilot. Treat production API as later gate.
+Program Lead
+Schedule control
+Mobile app STIG findings
+Medium
+Early STIG review, secure coding checklist, and penetration test before operational deployment.
+Development Lead
+Technical control
+2. Control Principles
+Human-in-the-loop for every AI-generated RMF artifact.
+Least privilege access based on authenticated role scope.
+No client-side persistence of authorization package content.
+Full auditability for API calls, AI prompts, generated outputs, and approvals.
+Separate pilot approval from operational ATO approval. These are distinct gates.
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

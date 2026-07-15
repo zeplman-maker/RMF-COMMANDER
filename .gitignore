@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Flask runtime / instance data (do not commit the database)
+instance/
+*.db
+*.sqlite3
+
+# Secrets & local config
+.env
+.env.*
+*.key
+*.pem
+
+# Node
+node_modules/
+
+# Large media (kept out of the code repo)
+*.mp4
+*.mov
+*.wav
+*.mp3
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

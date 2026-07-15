@@ -1,0 +1,130 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER Product Requirements Document
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER Product Requirements Document
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Product Vision
+RMF COMMANDER is an AI-assisted mobile and web platform that gives authorized RMF personnel secure portfolio visibility, smart compliance alerts, AI-supported documentation drafting, natural-language RMF query, and executive briefing support. The system extends visibility and drafting support without replacing eMASS or authorization judgment.
+2. Target Users
+Role
+Primary Use Case
+Key Features
+ISSM
+Portfolio management, ATO oversight, POA&amp;M ownership.
+Dashboard, alerts, documentation assistant, briefing generator.
+ISSO
+System-level controls, continuous monitoring, POA&amp;M updates.
+Documentation assistant, alerts, NL query.
+AO Representative
+Portfolio-level risk review and package tracking.
+Dashboard, briefing generator, monthly status reports.
+SCA
+Assessment coordination and evidence review.
+Controls view and documentation review outputs.
+Program Manager
+High-level posture visibility and leadership reporting.
+Dashboard and briefing generator.
+3. MVP Functional Requirements
+ID
+Feature
+Priority
+Requirement
+FR-01
+Portfolio Dashboard
+MVP
+Display ATO status, expiration countdown, POA&amp;M severity counts, control posture, scan freshness, and categorization for assigned systems.
+FR-02
+Smart Alert Engine
+MVP
+Notify role-scoped users of 90/60/30-day ATO windows, POA&amp;M slips, and workflow state changes.
+FR-03
+AI Documentation Assistant
+Phase 2
+Generate draft control statements, POA&amp;M language, and monitoring summaries with source citations and human review.
+FR-04
+Vulnerability Triage
+Phase 3
+Map ACAS/Tenable findings to controls and POA&amp;Ms and suggest draft remediation language.
+FR-05
+Natural Language Query
+Phase 2
+Answer portfolio questions using authorized data only. Include source citations for every answer.
+FR-06
+Executive Briefing Generator
+Phase 3
+Generate AO, PM, and leadership posture summaries in mobile card, PDF, and PPTX-ready formats.
+4. Non-Functional Requirements
+Area
+Requirement
+Data classification
+IL4 handling in a DoW-authorized cloud boundary. No classified data in pilot.
+Authentication
+CAC/PIV-derived credential via Purebred on MDM-enrolled devices.
+Session management
+15-minute JWT and full wipe after 5 minutes backgrounded or logout.
+Data at rest
+No eMASS data persisted on the client device. Session memory only.
+Transport
+TLS 1.3 minimum and mTLS for backend-to-eMASS.
+AI boundary
+No IL4 data transmitted outside the DoW cloud boundary for AI processing.
+Audit logging
+All API calls, AI prompts, outputs, and approvals logged with 1-year minimum retention.
+STIG compliance
+DISA Mobile App STIG review before operational deployment.
+5. Roadmap
+Phase
+Timeline
+Deliverables
+Gate Criteria
+Phase 1
+Days 1-90
+Pilot kickoff, stakeholder validation, test/sandbox access, dashboard MVP, alert engine.
+ATO expiration alerts functional on test dataset.
+Phase 2
+Days 45-120
+Backend infrastructure, authentication service, API proxy, secrets management, logging/SIEM integration.
+Backend deployed in DoW cloud and role-scoped access validated.
+Phase 3
+Days 90-150
+Mobile app, ACAS integration, vulnerability triage, session security controls.
+App deployed to MDM test devices and STIG checks underway.
+Phase 4
+Days 120-180
+AI layer, RAG pipeline, documentation assistant, NL query, briefing generator.
+Drafts include citations and require human approval.
+Phase 5
+Days 150-240
+STIG remediation, control assessment, penetration test, authorization package assembly, ATO submission.
+Full package submitted to HRM AO via eMASS.
+6. Acceptance Criteria
+A pilot user can view full mock portfolio posture in less than five minutes.
+Configured 90/60/30-day ATO alerts fire with 100 percent accuracy in test.
+AI-generated drafts are labeled AI-drafted, source-cited, and blocked from use until human approval.
+No production eMASS data is used during pilot.
+No client device persists authorization package content.
+AO receives 30-day touchpoint briefings and final go/no-go report.
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

@@ -1,0 +1,2228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>RMF Commander — Operator Console</title>
+<meta name="viewport" content="width=1280"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@0.460.0"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<style>
+:root {
+  /* Mission Navy */
+  --mission-navy-950: #050d1a;
+  --mission-navy-900: #0a1628;
+  --mission-navy-800: #0f1f36;
+  --mission-navy-700: #152a47;
+  --mission-navy-600: #1f3357;
+  --mission-navy-500: #344968;
+  --mission-navy-400: #4a6282;
+
+  /* Cyber Blue (Tailwind sky-ish) */
+  --cyber-blue-50:  #f0f8ff;
+  --cyber-blue-100: #e0f0ff;
+  --cyber-blue-200: #baddff;
+  --cyber-blue-300: #7ec8f9;
+  --cyber-blue-400: #38b2f2;
+  --cyber-blue-500: #0e96d8;
+  --cyber-blue-600: #0674ae;
+  --cyber-blue-700: #075c8c;
+
+  /* Slate (Tailwind slate) */
+  --slate-50:  #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  /* Semantic status */
+  --status-ok:           #15803d;
+  --status-ok-fg:        #14532d;
+  --status-ok-bg:        #dcfce7;
+  --status-ok-border:    #86efac;
+  --status-warn:         #b45309;
+  --status-warn-fg:      #92400e;
+  --status-warn-bg:      #fef9c3;
+  --status-warn-border:  #fde047;
+  --status-crit:         #b91c1c;
+  --status-crit-fg:      #7f1d1d;
+  --status-crit-bg:      #fee2e2;
+  --status-crit-border:  #fca5a5;
+  --status-info:         #1d4ed8;
+  --status-info-fg:      #1e3a8a;
+  --status-info-bg:      #dbeafe;
+  --status-info-border:  #93c5fd;
+
+  /* AI draft */
+  --ai-draft:        #6d28d9;
+  --ai-draft-bg:     #f5f3ff;
+  --ai-draft-border: #c4b5fd;
+
+  /* Classification */
+  --class-fouo-bg: #166534;
+
+  /* Type */
+  --font-sans:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --font-display: 'Inter', system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.1);
+
+  /* Motion */
+  --dur-fast: 150ms;
+  --ease-out: ease-out;
+}
+/* RMF Commander — Web Operator Console kit styles */
+
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; background: var(--cyber-blue-50); }
+body { font-family: var(--font-sans); color: var(--slate-700); -webkit-font-smoothing: antialiased; }
+#root { height: 100%; }
+
+/* ---------- Classification banner ---------- */
+.class-banner {
+  background: var(--class-fouo-bg);
+  color: #fff;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-align: center;
+  padding: 6px 16px;
+  height: 28px;
+  line-height: 16px;
+  font-family: var(--font-sans);
+  user-select: none;
+}
+
+/* ---------- App shell ---------- */
+.app {
+  display: grid;
+  grid-template-rows: 28px 1fr 28px;
+  height: 100vh;
+}
+.shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 0;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  background: var(--mission-navy-950);
+  color: var(--cyber-blue-200);
+  display: flex; flex-direction: column;
+  border-right: 1px solid rgba(202,220,252,0.08);
+}
+.sidebar .brand {
+  padding: 16px 18px 18px;
+  border-bottom: 1px solid rgba(202,220,252,0.10);
+}
+.sidebar .brand img { height: 32px; display: block; }
+.sidebar nav { padding: 12px 8px; flex: 1; overflow: auto; }
+.sidebar .nav-section { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyber-blue-300); padding: 14px 12px 6px; }
+.sidebar .nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px; border-radius: 4px; cursor: pointer;
+  color: var(--cyber-blue-200);
+  font-size: 13px; font-weight: 500;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast);
+}
+.sidebar .nav-item:hover { background: rgba(74,144,217,0.10); color: #fff; }
+.sidebar .nav-item.active { background: var(--mission-navy-900); color: #fff; box-shadow: inset 2px 0 0 var(--cyber-blue-500); }
+.sidebar .nav-item .icon { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar .nav-item .badge { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--cyber-blue-300); }
+.sidebar .footer { padding: 12px 18px; border-top: 1px solid rgba(202,220,252,0.10); font-size: 11px; color: var(--cyber-blue-300); font-family: var(--font-mono); }
+
+/* ---------- Topbar ---------- */
+.topbar {
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid var(--slate-200);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 16px;
+}
+.topbar .breadcrumb { font-size: 13px; color: var(--slate-500); display: flex; gap: 8px; align-items: center; }
+.topbar .breadcrumb b { color: var(--slate-900); font-weight: 600; }
+.topbar .search {
+  flex: 1; max-width: 480px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--slate-50); border: 1px solid var(--slate-200);
+  border-radius: 4px; padding: 7px 12px;
+  font-size: 13px; color: var(--slate-700);
+}
+.topbar .search input { flex: 1; background: transparent; border: none; outline: none; font: inherit; color: inherit; }
+.topbar .search kbd { font-family: var(--font-mono); font-size: 10px; padding: 2px 5px; border: 1px solid var(--slate-300); border-radius: 3px; color: var(--slate-500); background: #fff; }
+.topbar .actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.topbar .icon-btn {
+  width: 36px; height: 36px; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--slate-700); border: none; background: transparent; cursor: pointer; position: relative;
+}
+.topbar .icon-btn:hover { background: var(--slate-100); color: var(--mission-navy-900); }
+.topbar .icon-btn .dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--status-crit); border: 2px solid #fff; }
+.topbar .user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 10px 4px 4px; border-radius: 4px; cursor: pointer;
+}
+.topbar .user:hover { background: var(--slate-100); }
+.topbar .user .avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--mission-navy-900); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+}
+.topbar .user .meta { line-height: 1.15; }
+.topbar .user .meta b { font-size: 12px; color: var(--slate-900); font-weight: 600; display: block; }
+.topbar .user .meta span { font-size: 10px; color: var(--slate-500); font-family: var(--font-mono); }
+
+/* ---------- Main content scroll ---------- */
+.main { overflow: auto; padding: 24px 32px; }
+.main h1.page { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--mission-navy-900); margin: 0; letter-spacing: -0.01em; }
+.main .page-subtitle { color: var(--slate-500); font-size: 14px; margin-top: 4px; }
+.main .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; gap: 24px; }
+.main .actions-row { display: flex; gap: 8px; }
+
+/* ---------- Section heading ---------- */
+.section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 12px; }
+.section-head .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyber-blue-500); white-space: nowrap; }
+.section-head .title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--mission-navy-900); white-space: nowrap; }
+.section-head .meta { font-size: 12px; color: var(--slate-500); margin-left: auto; font-family: var(--font-mono); white-space: nowrap; }
+
+/* ---------- Buttons ---------- */
+.btn { font: 600 13px/1 var(--font-sans); padding: 9px 14px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; transition: background var(--dur-fast) var(--ease-out); white-space: nowrap; }
+.btn-primary { background: var(--mission-navy-900); color: #fff; }
+.btn-primary:hover { background: var(--mission-navy-800); }
+.btn-secondary { background: #fff; border-color: var(--slate-300); color: var(--mission-navy-900); }
+.btn-secondary:hover { background: var(--slate-50); border-color: var(--mission-navy-700); }
+.btn-ghost { background: transparent; color: var(--mission-navy-700); }
+.btn-ghost:hover { background: var(--cyber-blue-100); }
+.btn-danger { background: var(--status-crit); color: #fff; }
+.btn:focus-visible { outline: 2px solid var(--cyber-blue-500); outline-offset: 2px; }
+
+/* ---------- Cards ---------- */
+.card {
+  background: #fff;
+  border: 1px solid var(--slate-300);
+  border-radius: 6px;
+  box-shadow: var(--shadow-xs);
+}
+
+/* ---------- KPI strip ---------- */
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.kpi {
+  background: #fff; border: 1px solid var(--slate-300); border-radius: 6px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.kpi .label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate-500); }
+.kpi .value { font-family: var(--font-mono); font-feature-settings: 'tnum'; font-size: 28px; font-weight: 600; color: var(--mission-navy-900); line-height: 1; }
+.kpi .sub { font-size: 11px; color: var(--slate-500); }
+
+/* ---------- Pills ---------- */
+.pill { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; letter-spacing: 0.10em; border: 1px solid; font-family: var(--font-sans); white-space: nowrap; }
+.pill .dot { width: 5px; height: 5px; border-radius: 50%; }
+.pill-ok   { background: var(--status-ok-bg); color: var(--status-ok-fg); border-color: var(--status-ok-border); }
+.pill-warn { background: var(--status-warn-bg); color: var(--status-warn-fg); border-color: var(--status-warn-border); }
+.pill-crit { background: var(--status-crit-bg); color: var(--status-crit-fg); border-color: var(--status-crit-border); }
+.pill-info { background: var(--status-info-bg); color: var(--status-info-fg); border-color: var(--status-info-border); }
+.pill-ai   { background: var(--ai-draft-bg); color: var(--ai-draft); border-color: var(--ai-draft-border); }
+.pill-neu  { background: var(--slate-100); color: var(--slate-700); border-color: var(--slate-300); }
+.pill-square { border-radius: 3px; padding: 2px 7px; letter-spacing: 0.05em; font-family: var(--font-mono); }
+
+/* ---------- System tile (signature) ---------- */
+.sys-card {
+  background: #fff; border: 1px solid var(--slate-300); border-left: 3px solid var(--slate-400);
+  border-radius: 6px; padding: 14px 16px; box-shadow: var(--shadow-xs);
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer; transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.sys-card:hover { border-color: var(--cyber-blue-500); box-shadow: var(--shadow-sm); }
+.sys-card.ok   { border-left-color: var(--status-ok); }
+.sys-card.warn { border-left-color: var(--status-warn); }
+.sys-card.crit { border-left-color: var(--status-crit); }
+.sys-card .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.sys-card .name { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--mission-navy-900); }
+.sys-card .title { font-family: var(--font-sans); font-weight: 600; font-size: 14px; color: var(--slate-900); line-height: 1.3; }
+.sys-card .countdown { font-family: var(--font-mono); font-feature-settings: 'tnum'; font-size: 26px; font-weight: 600; line-height: 1; }
+.sys-card .countdown .unit { font-size: 11px; color: var(--slate-500); font-weight: 500; margin-left: 4px; }
+.sys-card.ok .countdown { color: var(--status-ok); }
+.sys-card.warn .countdown { color: var(--status-warn); }
+.sys-card.crit .countdown { color: var(--status-crit); }
+.sys-card .meta { font-family: var(--font-mono); font-size: 11px; color: var(--slate-500); display: flex; flex-wrap: wrap; gap: 8px; }
+.sys-card .meta span.label { color: var(--slate-400); }
+
+/* ---------- Alerts feed ---------- */
+.alerts { background: #fff; border: 1px solid var(--slate-300); border-radius: 6px; box-shadow: var(--shadow-xs); }
+.alerts .alert-row {
+  display: grid; grid-template-columns: 32px 1fr auto;
+  gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--slate-100);
+  align-items: center;
+}
+.alerts .alert-row:last-child { border-bottom: none; }
+.alerts .alert-row .ico { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+.alerts .alert-row.ok .ico   { background: var(--status-ok-bg); color: var(--status-ok); }
+.alerts .alert-row.warn .ico { background: var(--status-warn-bg); color: var(--status-warn); }
+.alerts .alert-row.crit .ico { background: var(--status-crit-bg); color: var(--status-crit); }
+.alerts .alert-row.ai .ico   { background: var(--ai-draft-bg); color: var(--ai-draft); }
+.alerts .alert-row .body { line-height: 1.3; }
+.alerts .alert-row .body b { font-size: 13px; color: var(--slate-900); font-weight: 600; }
+.alerts .alert-row .body span { font-size: 12px; color: var(--slate-500); display: block; margin-top: 2px; }
+.alerts .alert-row .time { font-family: var(--font-mono); font-size: 11px; color: var(--slate-500); }
+
+/* ---------- Tables ---------- */
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table thead th {
+  text-align: left; padding: 10px 14px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--slate-500); border-bottom: 1px solid var(--slate-200); background: var(--slate-50);
+}
+.table tbody td {
+  padding: 12px 14px; border-bottom: 1px solid var(--slate-100); color: var(--slate-700); vertical-align: middle;
+}
+.table tbody tr:hover td { background: var(--slate-50); }
+.table tbody tr:last-child td { border-bottom: none; }
+.table td.mono, .table th.mono { font-family: var(--font-mono); font-feature-settings: 'tnum'; }
+.table td.num { text-align: right; font-family: var(--font-mono); font-feature-settings: 'tnum'; }
+
+/* ---------- AI Drafted block ---------- */
+.ai-block {
+  background: var(--ai-draft-bg); border: 1px solid var(--ai-draft-border);
+  border-radius: 6px; padding: 16px 18px;
+}
+.ai-block .header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ai-block .label {
+  background: var(--ai-draft); color: #fff;
+  padding: 3px 8px; border-radius: 3px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+}
+.ai-block .gate { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: #4C1D95; }
+.ai-block .source { margin-left: auto; font-size: 11px; color: var(--ai-draft); font-family: var(--font-mono); }
+.ai-block .draft-text { font-size: 14px; color: #2E1065; line-height: 1.55; }
+.ai-block .actions { display: flex; gap: 8px; margin-top: 14px; }
+
+/* ---------- Tabs ---------- */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--slate-200); margin-bottom: 20px; }
+.tabs .tab {
+  padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--slate-500);
+  border-bottom: 2px solid transparent; cursor: pointer; transition: color var(--dur-fast);
+  margin-bottom: -1px;
+}
+.tabs .tab:hover { color: var(--mission-navy-900); }
+.tabs .tab.active { color: var(--mission-navy-900); border-bottom-color: var(--cyber-blue-500); }
+
+/* ---------- NL Query bar ---------- */
+.nlq {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid var(--cyber-blue-200);
+  border-radius: 6px; padding: 12px 14px; box-shadow: var(--shadow-xs);
+}
+.nlq .ico { color: var(--cyber-blue-500); }
+.nlq input { flex: 1; border: none; outline: none; font: 400 14px var(--font-sans); color: var(--slate-900); background: transparent; }
+.nlq .hint { font-family: var(--font-mono); font-size: 10px; color: var(--slate-500); }
+
+/* utilities */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.stack { display: flex; flex-direction: column; gap: 14px; }
+.row { display: flex; gap: 10px; align-items: center; }
+.spacer { flex: 1; }
+.divider { height: 1px; background: var(--slate-200); margin: 16px 0; }
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// ===== Common.jsx =====
+/* Common — shared atoms for the RMF Commander web kit */
+
+const {
+  useState,
+  useEffect,
+  useMemo
+} = React;
+
+// Lucide icon helper — assumes lucide global script tag loaded.
+function Icon({
+  name,
+  size = 18,
+  color,
+  style
+}) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.innerHTML = '';
+      const i = document.createElement('i');
+      i.setAttribute('data-lucide', name);
+      ref.current.appendChild(i);
+      if (window.lucide) window.lucide.createIcons({
+        icons: window.lucide.icons
+      });
+    }
+  }, [name]);
+  return /*#__PURE__*/React.createElement("span", {
+    ref: ref,
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: size,
+      height: size,
+      color: color || 'currentColor',
+      ...style
+    }
+  });
+}
+
+// Pill
+function Pill({
+  tone = 'neu',
+  square,
+  dot,
+  children,
+  style
+}) {
+  const cls = `pill pill-${tone}${square ? ' pill-square' : ''}`;
+  const dotColor = {
+    ok: '#15803D',
+    warn: '#B45309',
+    crit: '#B91C1C',
+    info: '#1D4ED8',
+    ai: '#6D28D9',
+    neu: '#64748B'
+  }[tone];
+  return /*#__PURE__*/React.createElement("span", {
+    className: cls,
+    style: style
+  }, dot ? /*#__PURE__*/React.createElement("span", {
+    className: "dot",
+    style: {
+      background: dotColor
+    }
+  }) : null, children);
+}
+
+// Severity helpers
+function severityForDays(d) {
+  if (d <= 30) return 'crit';
+  if (d <= 60) return 'warn';
+  return 'ok';
+}
+function labelForDays(d) {
+  if (d <= 30) return '30-DAY';
+  if (d <= 60) return '60-DAY';
+  if (d <= 90) return '90-DAY';
+  return 'VALID';
+}
+
+// Padded number
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+
+// Mock systems dataset — 26 systems to match the proposal scale
+const MOCK_SYSTEMS = [{
+  id: 'AFSVC-FITNESS-WEB-01',
+  title: 'Fitness portal',
+  daysToATO: 274,
+  poam: {
+    high: 0,
+    med: 2,
+    low: 5
+  },
+  scanDays: 2,
+  cat: 'MOD·LOW·LOW'
+}, {
+  id: 'AFSVC-LODGING-API-04',
+  title: 'Lodging reservations API',
+  daysToATO: 52,
+  poam: {
+    high: 1,
+    med: 4,
+    low: 9
+  },
+  scanDays: 6,
+  cat: 'MOD·MOD·LOW'
+}, {
+  id: 'AFSVC-MWR-INTRANET-02',
+  title: 'MWR intranet',
+  daysToATO: 23,
+  poam: {
+    high: 3,
+    med: 7,
+    low: 12
+  },
+  scanDays: 11,
+  cat: 'MOD·MOD·MOD'
+}, {
+  id: 'AFSVC-CHILDCARE-WEB-09',
+  title: 'Childcare scheduling',
+  daysToATO: 198,
+  poam: {
+    high: 0,
+    med: 1,
+    low: 3
+  },
+  scanDays: 4,
+  cat: 'LOW·LOW·LOW'
+}, {
+  id: 'AFSVC-FOODSVC-POS-07',
+  title: 'Food services POS',
+  daysToATO: 67,
+  poam: {
+    high: 0,
+    med: 3,
+    low: 6
+  },
+  scanDays: 8,
+  cat: 'MOD·LOW·LOW'
+}, {
+  id: 'AFSVC-CEMETERY-DB-11',
+  title: 'Cemetery records DB',
+  daysToATO: 312,
+  poam: {
+    high: 0,
+    med: 0,
+    low: 2
+  },
+  scanDays: 1,
+  cat: 'MOD·LOW·LOW'
+}];
+const MOCK_ALERTS = [{
+  id: 1,
+  tone: 'crit',
+  title: 'AFSVC-MWR-INTRANET-02 — ATO expires in 23 days',
+  meta: 'Renewal package not yet drafted. Assigned: L. Christie (ISSM).',
+  time: '08:42 CT'
+}, {
+  id: 2,
+  tone: 'warn',
+  title: 'AFSVC-LODGING-API-04 — 60-day ATO window opened',
+  meta: 'POA&M slip: AC-2 control review overdue 4 days.',
+  time: '07:15 CT'
+}, {
+  id: 3,
+  tone: 'ai',
+  title: 'AI draft ready — SI-4 control statement',
+  meta: 'Grounded in NIST SP 800-53 Rev. 5. Awaiting ISSM review.',
+  time: 'Yesterday'
+}, {
+  id: 4,
+  tone: 'warn',
+  title: 'AFSVC-FOODSVC-POS-07 — Scan freshness past 7 days',
+  meta: 'ACAS Tenable scan due. Next scheduled: 24 May.',
+  time: 'Yesterday'
+}, {
+  id: 5,
+  tone: 'ok',
+  title: 'AFSVC-CEMETERY-DB-11 — Continuous monitoring nominal',
+  meta: 'No outstanding POA&Ms above LOW. Last assessment: 11 May.',
+  time: '21 May'
+}];
+const MOCK_POAMS = [{
+  id: 'POAM-2024-031',
+  sev: 'HIGH',
+  title: 'AC-2 — Privileged account inventory not reviewed within 30-day cadence',
+  owner: 'L. Christie',
+  milestone: '15 Jun 2026',
+  status: 'OPEN'
+}, {
+  id: 'POAM-2024-029',
+  sev: 'HIGH',
+  title: 'IA-5 — Service account password rotation not automated for 4 accounts',
+  owner: 'L. Christie',
+  milestone: '01 Jul 2026',
+  status: 'OPEN'
+}, {
+  id: 'POAM-2024-027',
+  sev: 'MED',
+  title: 'SI-4 — Continuous monitoring sensor coverage gap on staging subnet',
+  owner: 'R. Mendez',
+  milestone: '30 Jun 2026',
+  status: 'IN-WORK'
+}, {
+  id: 'POAM-2024-024',
+  sev: 'MED',
+  title: 'CM-6 — Baseline configuration drift on 2 web nodes',
+  owner: 'R. Mendez',
+  milestone: '22 Jun 2026',
+  status: 'IN-WORK'
+}, {
+  id: 'POAM-2024-021',
+  sev: 'LOW',
+  title: 'AU-6 — Audit review evidence retention falling below 30 days on 1 host',
+  owner: 'T. Park',
+  milestone: '12 Jul 2026',
+  status: 'OPEN'
+}];
+const MOCK_CONTROLS = [{
+  id: 'AC-2',
+  family: 'Access Control',
+  status: 'partial',
+  evidence: 'SSP §3.1 + IAM export 18 May 2026'
+}, {
+  id: 'AC-12',
+  family: 'Access Control',
+  status: 'compliant',
+  evidence: 'SSP §3.4 + session policy artifact'
+}, {
+  id: 'IA-5',
+  family: 'Identification',
+  status: 'partial',
+  evidence: 'Open POA&M-2024-029 — pending rotation'
+}, {
+  id: 'SI-4',
+  family: 'System Integrity',
+  status: 'compliant',
+  evidence: 'ConMon dashboard, ACAS Tenable scan'
+}, {
+  id: 'AU-6',
+  family: 'Audit & Accountability',
+  status: 'partial',
+  evidence: 'Splunk evidence link — last review 14 May'
+}, {
+  id: 'CM-6',
+  family: 'Configuration Mgmt',
+  status: 'noncompliant',
+  evidence: '2 hosts drifted from baseline'
+}, {
+  id: 'CA-7',
+  family: 'Assessment & Auth',
+  status: 'compliant',
+  evidence: 'Continuous monitoring strategy approved'
+}];
+Object.assign(window, {
+  Icon,
+  Pill,
+  severityForDays,
+  labelForDays,
+  pad3,
+  MOCK_SYSTEMS,
+  MOCK_ALERTS,
+  MOCK_POAMS,
+  MOCK_CONTROLS
+});
+
+// ===== ClassBanner.jsx =====
+/* ClassBanner — top + bottom classification strip. Fixed. */
+function ClassBanner({
+  level = 'UNCLASSIFIED // FOR OFFICIAL USE ONLY'
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "class-banner"
+  }, level);
+}
+Object.assign(window, {
+  ClassBanner
+});
+
+// ===== Chrome.jsx =====
+/* Chrome — Sidebar + TopBar */
+
+function Sidebar({
+  current,
+  onNav,
+  alertCount
+}) {
+  const items = [{
+    section: 'Portfolio'
+  }, {
+    id: 'dashboard',
+    icon: 'layout-dashboard',
+    label: 'Dashboard'
+  }, {
+    id: 'systems',
+    icon: 'server',
+    label: 'Systems',
+    badge: '26'
+  }, {
+    id: 'alerts',
+    icon: 'bell-ring',
+    label: 'Alerts',
+    badge: String(alertCount)
+  }, {
+    id: 'poams',
+    icon: 'clipboard-list',
+    label: 'POA&Ms',
+    badge: '47'
+  }, {
+    section: 'Workspace'
+  }, {
+    id: 'assistant',
+    icon: 'bot',
+    label: 'AI Assistant'
+  }, {
+    id: 'query',
+    icon: 'search',
+    label: 'NL Query'
+  }, {
+    id: 'briefings',
+    icon: 'file-text',
+    label: 'Briefings'
+  }, {
+    section: 'Governance'
+  }, {
+    id: 'audit',
+    icon: 'shield-check',
+    label: 'Audit log'
+  }, {
+    id: 'settings',
+    icon: 'settings',
+    label: 'Settings'
+  }];
+  return /*#__PURE__*/React.createElement("aside", {
+    className: "sidebar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "brand"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "../../assets/logos/wordmark-lockup-reversed.svg",
+    alt: "RMF Commander"
+  })), /*#__PURE__*/React.createElement("nav", null, items.map((it, i) => it.section ? /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "nav-section"
+  }, it.section) : /*#__PURE__*/React.createElement("div", {
+    key: it.id,
+    className: "nav-item" + (current === it.id ? " active" : ""),
+    onClick: () => onNav(it.id)
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: it.icon,
+    size: 16
+  }), /*#__PURE__*/React.createElement("span", null, it.label), it.badge ? /*#__PURE__*/React.createElement("span", {
+    className: "badge"
+  }, it.badge) : null))), /*#__PURE__*/React.createElement("div", {
+    className: "footer"
+  }, /*#__PURE__*/React.createElement("div", null, "SANDBOX \xB7 MOCK DATA"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 4,
+      color: 'var(--cyber-blue-200)'
+    }
+  }, "v0.4.0-pilot")));
+}
+function TopBar({
+  breadcrumb,
+  alertCount,
+  onBellClick,
+  bellOpen,
+  sessionMinutes = 15
+}) {
+  const totalSec = sessionMinutes * 60;
+  const mm = String(Math.floor(totalSec / 60)).padStart(2, '0');
+  const ss = String(totalSec % 60).padStart(2, '0');
+  return /*#__PURE__*/React.createElement("header", {
+    className: "topbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "breadcrumb"
+  }, breadcrumb.map((c, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: i
+  }, i > 0 ? /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron-right",
+    size: 12,
+    color: "var(--slate-400)"
+  }) : null, i === breadcrumb.length - 1 ? /*#__PURE__*/React.createElement("b", null, c) : /*#__PURE__*/React.createElement("span", null, c)))), /*#__PURE__*/React.createElement("div", {
+    className: "search"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "search",
+    size: 14,
+    color: "var(--slate-500)"
+  }), /*#__PURE__*/React.createElement("input", {
+    placeholder: "Ask portfolio (NL Query) or jump to a system\u2026"
+  }), /*#__PURE__*/React.createElement("kbd", null, "\u2318K")), /*#__PURE__*/React.createElement("div", {
+    className: "actions"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "session-timer",
+    title: "Session expires \u2014 data wipes on logout or timeout",
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: 5,
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      color: 'var(--slate-500)',
+      border: '1px solid var(--slate-200)',
+      borderRadius: 4,
+      padding: '3px 8px',
+      userSelect: 'none'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "timer",
+    size: 12
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: sessionMinutes <= 5 ? 'var(--status-crit)' : 'var(--slate-600)'
+    }
+  }, mm, ":", ss), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 10,
+      color: 'var(--slate-400)'
+    }
+  }, "SESSION")), /*#__PURE__*/React.createElement("button", {
+    className: "icon-btn",
+    title: "Help"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "circle-help",
+    size: 18
+  })), /*#__PURE__*/React.createElement("button", {
+    className: "icon-btn",
+    title: "Alerts",
+    onClick: onBellClick
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "bell",
+    size: 18
+  }), alertCount > 0 ? /*#__PURE__*/React.createElement("span", {
+    className: "dot"
+  }) : null), /*#__PURE__*/React.createElement("div", {
+    className: "user"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "avatar"
+  }, "LC"), /*#__PURE__*/React.createElement("div", {
+    className: "meta"
+  }, /*#__PURE__*/React.createElement("b", null, "Leo Christie"), /*#__PURE__*/React.createElement("span", null, "ISSM \xB7 NH-III")))));
+}
+Object.assign(window, {
+  Sidebar,
+  TopBar
+});
+
+// ===== SystemCard.jsx =====
+/* SystemCard — the signature tile */
+function SystemCard({
+  sys,
+  onClick
+}) {
+  const sev = severityForDays(sys.daysToATO);
+  const label = labelForDays(sys.daysToATO);
+  return /*#__PURE__*/React.createElement("div", {
+    className: `sys-card ${sev}`,
+    onClick: onClick
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "head"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "name"
+  }, sys.id), /*#__PURE__*/React.createElement("div", {
+    className: "title"
+  }, sys.title)), /*#__PURE__*/React.createElement(Pill, {
+    tone: sev
+  }, label)), /*#__PURE__*/React.createElement("div", {
+    className: "countdown"
+  }, pad3(sys.daysToATO), /*#__PURE__*/React.createElement("span", {
+    className: "unit"
+  }, "days to ATO")), /*#__PURE__*/React.createElement("div", {
+    className: "meta"
+  }, /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("span", {
+    className: "label"
+  }, "POA&M"), " ", sys.poam.high, "/", sys.poam.med, "/", sys.poam.low), /*#__PURE__*/React.createElement("span", null, "\xB7"), /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("span", {
+    className: "label"
+  }, "SCAN"), " ", sys.scanDays, "d"), /*#__PURE__*/React.createElement("span", null, "\xB7"), /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("span", {
+    className: "label"
+  }, "CAT"), " ", sys.cat)));
+}
+Object.assign(window, {
+  SystemCard
+});
+
+// ===== Dashboard.jsx =====
+/* Dashboard — portfolio overview */
+
+function KpiCard({
+  label,
+  value,
+  sub,
+  sub2,
+  valueColor
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "kpi"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "label"
+  }, label), /*#__PURE__*/React.createElement("div", {
+    className: "value",
+    style: valueColor ? {
+      color: valueColor
+    } : null
+  }, value), /*#__PURE__*/React.createElement("div", {
+    className: "sub"
+  }, sub, sub2 ? /*#__PURE__*/React.createElement("span", null, " \xB7 ", sub2) : null));
+}
+function AlertsFeed({
+  alerts,
+  max
+}) {
+  const shown = typeof max === 'number' ? alerts.slice(0, max) : alerts;
+  const iconFor = {
+    ok: 'check-circle-2',
+    warn: 'triangle-alert',
+    crit: 'octagon-alert',
+    ai: 'bot'
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "alerts"
+  }, shown.map(a => /*#__PURE__*/React.createElement("div", {
+    key: a.id,
+    className: `alert-row ${a.tone}`
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ico"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: iconFor[a.tone],
+    size: 16
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "body"
+  }, /*#__PURE__*/React.createElement("b", null, a.title), /*#__PURE__*/React.createElement("span", null, a.meta)), /*#__PURE__*/React.createElement("span", {
+    className: "time"
+  }, a.time))));
+}
+function Dashboard({
+  onOpenSystem,
+  onOpenAssistant
+}) {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "Portfolio overview"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Air Force Services Center \xB7 VTOS \xB7 26 systems \xB7 1M+ end users")), /*#__PURE__*/React.createElement("div", {
+    className: "actions-row"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "download",
+    size: 14
+  }), " Export posture"), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: onOpenAssistant
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14
+  }), " Generate AO briefing"))), /*#__PURE__*/React.createElement("div", {
+    className: "nlq",
+    style: {
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ico"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "search",
+    size: 18
+  })), /*#__PURE__*/React.createElement("input", {
+    placeholder: "Try: \"which systems expire in the next 60 days and have open HIGH POA&Ms?\""
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "hint"
+  }, "\u23CE to ask \xB7 answers cite source")), /*#__PURE__*/React.createElement("div", {
+    className: "kpi-strip"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    label: "Systems",
+    value: "26",
+    sub: "22 valid",
+    sub2: "4 in window"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    label: "ATO \u2264 30 days",
+    value: "1",
+    valueColor: "var(--status-crit)",
+    sub: "AFSVC-MWR-INTRANET-02"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    label: "Open POA&Ms",
+    value: "47",
+    sub: "4 HIGH \xB7 17 MED \xB7 26 LOW"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    label: "Avg. scan freshness",
+    value: "5.3d",
+    sub: "Target \u2264 7d \xB7 1 host stale"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "section-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "01"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Systems by posture"), /*#__PURE__*/React.createElement("span", {
+    className: "meta"
+  }, "Sorted by days-to-ATO ascending \xB7 6 of 26 shown")), /*#__PURE__*/React.createElement("div", {
+    className: "grid-3",
+    style: {
+      marginBottom: 24
+    }
+  }, MOCK_SYSTEMS.map(sys => /*#__PURE__*/React.createElement(SystemCard, {
+    key: sys.id,
+    sys: sys,
+    onClick: () => onOpenSystem(sys)
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "section-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "02"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Smart alerts"), /*#__PURE__*/React.createElement("span", {
+    className: "meta"
+  }, "90/60/30-day \xB7 POA&M slips \xB7 AI draft ready")), /*#__PURE__*/React.createElement(AlertsFeed, {
+    alerts: MOCK_ALERTS
+  }));
+}
+Object.assign(window, {
+  Dashboard,
+  AlertsFeed
+});
+
+// ===== SystemDetail.jsx =====
+/* SystemDetail — single system page with POA&Ms + controls */
+function SystemDetail({
+  sys,
+  onBack
+}) {
+  const [tab, setTab] = useState('overview');
+  const sev = severityForDays(sys.daysToATO);
+  const sevColor = {
+    ok: 'var(--status-ok)',
+    warn: 'var(--status-warn)',
+    crit: 'var(--status-crit)'
+  }[sev];
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginBottom: 14
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-ghost",
+    onClick: onBack,
+    style: {
+      padding: '4px 8px',
+      fontSize: 12
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron-left",
+    size: 14
+  }), " Back to portfolio")), /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 12,
+      color: 'var(--slate-500)'
+    }
+  }, sys.id), /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, sys.title), /*#__PURE__*/React.createElement("div", {
+    className: "row",
+    style: {
+      marginTop: 8
+    }
+  }, /*#__PURE__*/React.createElement(Pill, {
+    tone: sev,
+    dot: true
+  }, labelForDays(sys.daysToATO)), /*#__PURE__*/React.createElement(Pill, {
+    tone: "neu",
+    square: true
+  }, sys.cat), /*#__PURE__*/React.createElement(Pill, {
+    tone: "info",
+    square: true
+  }, "IL4"), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 12,
+      color: 'var(--slate-500)'
+    }
+  }, "ConMon active \xB7 last assessment 11 May 2026"))), /*#__PURE__*/React.createElement("div", {
+    className: "actions-row"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "external-link",
+    size: 14
+  }), " Open in eMASS"), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14
+  }), " Draft renewal language (AI-assisted)"))), /*#__PURE__*/React.createElement("div", {
+    className: "kpi-strip"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    label: "ATO countdown",
+    value: pad3(sys.daysToATO),
+    valueColor: sevColor,
+    sub: "Days remaining"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    label: "HIGH POA&Ms",
+    value: String(sys.poam.high),
+    valueColor: sys.poam.high > 0 ? 'var(--status-crit)' : 'var(--status-ok)',
+    sub: "Open and tracked"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    label: "Control posture",
+    value: "71%",
+    sub: "29 of 41 fully compliant"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    label: "Scan freshness",
+    value: sys.scanDays + 'd',
+    sub: sys.scanDays <= 7 ? 'Within target' : 'Past 7-day target',
+    valueColor: sys.scanDays > 7 ? 'var(--status-warn)' : null
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "tabs"
+  }, ['overview', 'poams', 'controls', 'scan', 'history'].map(t => /*#__PURE__*/React.createElement("div", {
+    key: t,
+    className: 'tab' + (tab === t ? ' active' : ''),
+    onClick: () => setTab(t)
+  }, t === 'poams' ? "POA&Ms" : t.charAt(0).toUpperCase() + t.slice(1)))), tab === 'overview' && /*#__PURE__*/React.createElement("div", {
+    className: "grid-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 18
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "System summary")), /*#__PURE__*/React.createElement("table", {
+    className: "table",
+    style: {
+      fontSize: 12
+    }
+  }, /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)',
+      width: '40%'
+    }
+  }, "System owner"), /*#__PURE__*/React.createElement("td", null, "AFSVC / VTOS")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, "ISSM"), /*#__PURE__*/React.createElement("td", null, "Leo Christie \xB7 NH-III")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, "Authorizing Official"), /*#__PURE__*/React.createElement("td", null, "Francisco Salguero \xB7 SES \xB7 HAF AF/A1X")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, "Categorization (CNSSI 1253)"), /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, sys.cat)), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, "Boundary"), /*#__PURE__*/React.createElement("td", null, "Azure Gov IL4 \xB7 NIPRNET")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, "Original ATO"), /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, "12 May 2023")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, "Current ATO expires"), /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, `${pad3(sys.daysToATO)} days`))))), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 18
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Recent activity")), /*#__PURE__*/React.createElement(AlertsFeed, {
+    alerts: MOCK_ALERTS.slice(0, 4)
+  }))), tab === 'poams' && /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 130
+    }
+  }, "POA&M ID"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 80
+    }
+  }, "Sev"), /*#__PURE__*/React.createElement("th", null, "Title"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 130
+    }
+  }, "Owner"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 130
+    }
+  }, "Milestone"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 100
+    }
+  }, "Status"))), /*#__PURE__*/React.createElement("tbody", null, MOCK_POAMS.map(p => /*#__PURE__*/React.createElement("tr", {
+    key: p.id
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "mono",
+    style: {
+      color: 'var(--mission-navy-900)',
+      fontWeight: 500
+    }
+  }, p.id), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement(Pill, {
+    square: true,
+    tone: p.sev === 'HIGH' ? 'crit' : p.sev === 'MED' ? 'warn' : 'info'
+  }, p.sev)), /*#__PURE__*/React.createElement("td", null, p.title), /*#__PURE__*/React.createElement("td", null, p.owner), /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, p.milestone), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement(Pill, {
+    square: true,
+    tone: "neu"
+  }, p.status))))))), tab === 'controls' && /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 90
+    }
+  }, "Control"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 200
+    }
+  }, "Family"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Evidence"))), /*#__PURE__*/React.createElement("tbody", null, MOCK_CONTROLS.map(c => {
+    const t = {
+      compliant: 'ok',
+      partial: 'warn',
+      noncompliant: 'crit'
+    }[c.status];
+    return /*#__PURE__*/React.createElement("tr", {
+      key: c.id
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "mono",
+      style: {
+        color: 'var(--mission-navy-900)',
+        fontWeight: 500
+      }
+    }, c.id), /*#__PURE__*/React.createElement("td", null, c.family), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement(Pill, {
+      tone: t,
+      dot: true
+    }, c.status.toUpperCase())), /*#__PURE__*/React.createElement("td", {
+      style: {
+        color: 'var(--slate-500)'
+      }
+    }, c.evidence));
+  })))), tab === 'scan' && /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 18
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "ACAS Tenable scan history"), /*#__PURE__*/React.createElement("span", {
+    className: "meta"
+  }, "last 8 scans \xB7 mock dataset")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      gap: 6,
+      height: 120
+    }
+  }, [42, 38, 35, 31, 33, 29, 24, 21].map((v, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 4,
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      width: '100%',
+      height: v * 2.5,
+      background: 'var(--cyber-blue-200)',
+      borderTop: '2px solid var(--cyber-blue-500)'
+    },
+    title: `${v} findings`
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 10,
+      color: 'var(--slate-500)'
+    }
+  }, "W", i + 1)))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      fontSize: 12,
+      color: 'var(--slate-500)'
+    }
+  }, "Trend: open findings \u2193 from 42 to 21 over 8 weeks.")), tab === 'history' && /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 18
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 140
+    }
+  }, "Date"), /*#__PURE__*/React.createElement("th", null, "Event"), /*#__PURE__*/React.createElement("th", {
+    style: {
+      width: 160
+    }
+  }, "Actor"))), /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, "18 May 2026"), /*#__PURE__*/React.createElement("td", null, "POA&M-2024-029 milestone slipped 4 days"), /*#__PURE__*/React.createElement("td", null, "R. Mendez \xB7 ISSO")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, "14 May 2026"), /*#__PURE__*/React.createElement("td", null, "SI-4 control statement approved (AI-assisted)"), /*#__PURE__*/React.createElement("td", null, "L. Christie \xB7 ISSM")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, "11 May 2026"), /*#__PURE__*/React.createElement("td", null, "SCA assessment closed \xB7 SAR uploaded"), /*#__PURE__*/React.createElement("td", null, "K. Patel \xB7 SCA")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, "02 May 2026"), /*#__PURE__*/React.createElement("td", null, "Continuous monitoring strategy reviewed"), /*#__PURE__*/React.createElement("td", null, "L. Christie \xB7 ISSM")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    className: "mono"
+  }, "28 Apr 2026"), /*#__PURE__*/React.createElement("td", null, "System registered in RMF Commander pilot tenant"), /*#__PURE__*/React.createElement("td", null, "System"))))));
+}
+Object.assign(window, {
+  SystemDetail
+});
+
+// ===== AIAssistant.jsx =====
+/* AIAssistant — AI Documentation Assistant with human-approval gate */
+
+const SAMPLE_DRAFTS = [{
+  id: 'd1',
+  target: 'AC-12 control statement',
+  system: 'AFSVC-LODGING-API-04',
+  grounding: 'NIST SP 800-53 r5 · AC-12 · CNSSI 1253',
+  body: 'The system terminates user sessions after 15 minutes of inactivity. Re-authentication via CAC/PIV-derived credential is required to resume the session. Background-state sessions are wiped after 5 minutes per the platform mobile baseline.'
+}, {
+  id: 'd2',
+  target: 'POA&M-2024-029 mitigation language',
+  system: 'AFSVC-LODGING-API-04',
+  grounding: 'NIST SP 800-53 r5 · IA-5 · Open POA&M-2024-029',
+  body: 'Mitigation: implement automated service-account password rotation via HashiCorp Vault dynamic secrets for the four affected accounts (svc-api, svc-batch, svc-replication, svc-monitor). Target: 01 Jul 2026. Interim compensating control: manual rotation every 30 days with documented attestation by ISSO.'
+}, {
+  id: 'd3',
+  target: 'AO touchpoint summary — May 2026',
+  system: 'Portfolio',
+  grounding: 'Authorized eMASS dataset · 22 May 2026 snapshot',
+  body: 'Portfolio posture this period: 22 of 26 systems within ATO window of greater than 90 days. One system (AFSVC-MWR-INTRANET-02) at 23 days; renewal package in draft. Four open HIGH POA&Ms across three systems; mitigation plans on schedule. Zero security boundary violations recorded against the RMF Commander pilot.'
+}];
+function AIAssistant({
+  onBack
+}) {
+  const [drafts, setDrafts] = useState(SAMPLE_DRAFTS.map(d => ({
+    ...d,
+    state: 'draft'
+  })));
+  const [prompt, setPrompt] = useState('');
+  function actOn(id, newState) {
+    setDrafts(prev => prev.map(d => d.id === id ? {
+      ...d,
+      state: newState
+    } : d));
+  }
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "AI Documentation Assistant"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Drafts are grounded in authorized references. No artifact is submitted without explicit human approval.")), /*#__PURE__*/React.createElement("div", {
+    className: "actions-row"
+  }, /*#__PURE__*/React.createElement(Pill, {
+    tone: "ai",
+    dot: true
+  }, "RAG \xB7 NIST 800-53 r5 + CNSSI 1253"), /*#__PURE__*/React.createElement(Pill, {
+    tone: "info",
+    square: true
+  }, "SANDBOX"))), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 16,
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 10
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "01"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Draft a control statement, POA&M language, or summary")), /*#__PURE__*/React.createElement("div", {
+    className: "row",
+    style: {
+      gap: 8,
+      alignItems: 'stretch'
+    }
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "btn btn-secondary",
+    style: {
+      padding: '0 10px',
+      minWidth: 220
+    }
+  }, /*#__PURE__*/React.createElement("option", null, "Target: AC-12 \u2014 AFSVC-LODGING-API-04"), /*#__PURE__*/React.createElement("option", null, "Target: IA-5 \u2014 AFSVC-MWR-INTRANET-02"), /*#__PURE__*/React.createElement("option", null, "Target: AO touchpoint summary")), /*#__PURE__*/React.createElement("input", {
+    value: prompt,
+    onChange: e => setPrompt(e.target.value),
+    placeholder: "Draft a control statement aligned with our 15-minute session policy.",
+    style: {
+      flex: 1,
+      padding: '0 12px',
+      fontSize: 14,
+      border: '1px solid var(--slate-300)',
+      borderRadius: 4,
+      fontFamily: 'var(--font-sans)'
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14
+  }), " Generate draft")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      fontSize: 11,
+      color: 'var(--slate-500)'
+    }
+  }, "Drafts are bounded to authorized references. They cannot read or write production eMASS data. AI processing stays within the DoW cloud boundary \u2014 no IL4 data leaves the authorization perimeter. Reviewed drafts must be manually copied and submitted into eMASS by an authorized user.")), /*#__PURE__*/React.createElement("div", {
+    className: "section-head"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "02"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Drafts awaiting review"), /*#__PURE__*/React.createElement("span", {
+    className: "meta"
+  }, drafts.filter(d => d.state === 'draft').length, " pending \xB7 ", drafts.filter(d => d.state === 'approved').length, " approved \xB7 ", drafts.filter(d => d.state === 'discarded').length, " discarded")), /*#__PURE__*/React.createElement("div", {
+    className: "stack"
+  }, drafts.map(d => {
+    if (d.state === 'approved') {
+      return /*#__PURE__*/React.createElement("div", {
+        key: d.id,
+        className: "card",
+        style: {
+          padding: 16,
+          borderLeft: '3px solid var(--status-ok)'
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "row",
+        style: {
+          gap: 8
+        }
+      }, /*#__PURE__*/React.createElement(Icon, {
+        name: "check-circle-2",
+        size: 16,
+        color: "var(--status-ok)"
+      }), /*#__PURE__*/React.createElement("b", {
+        style: {
+          color: 'var(--slate-900)',
+          fontSize: 14
+        }
+      }, d.target), /*#__PURE__*/React.createElement(Pill, {
+        tone: "ok",
+        dot: true
+      }, "REVIEWED \xB7 READY FOR MANUAL SUBMISSION"), /*#__PURE__*/React.createElement("span", {
+        className: "spacer"
+      }), /*#__PURE__*/React.createElement("span", {
+        style: {
+          fontFamily: 'var(--font-mono)',
+          fontSize: 11,
+          color: 'var(--slate-500)'
+        }
+      }, d.system)), /*#__PURE__*/React.createElement("div", {
+        style: {
+          fontSize: 12,
+          color: 'var(--slate-500)',
+          marginTop: 6
+        }
+      }, "Reviewed by L. Christie \xB7 22 May 2026 09:14 CT \xB7 copy draft text and submit manually into eMASS \xB7 audit log entry written"));
+    }
+    if (d.state === 'discarded') {
+      return /*#__PURE__*/React.createElement("div", {
+        key: d.id,
+        className: "card",
+        style: {
+          padding: 16,
+          opacity: 0.6
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "row",
+        style: {
+          gap: 8
+        }
+      }, /*#__PURE__*/React.createElement(Icon, {
+        name: "x",
+        size: 16,
+        color: "var(--slate-500)"
+      }), /*#__PURE__*/React.createElement("b", {
+        style: {
+          color: 'var(--slate-700)',
+          fontSize: 14
+        }
+      }, d.target), /*#__PURE__*/React.createElement(Pill, {
+        tone: "neu"
+      }, "DISCARDED")));
+    }
+    return /*#__PURE__*/React.createElement("div", {
+      key: d.id,
+      className: "ai-block"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "header"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "label"
+    }, "AI-DRAFTED"), /*#__PURE__*/React.createElement("span", {
+      className: "gate"
+    }, "REQUIRES HUMAN APPROVAL"), /*#__PURE__*/React.createElement("span", {
+      className: "source"
+    }, "grounded \xB7 ", d.grounding)), /*#__PURE__*/React.createElement("div", {
+      style: {
+        fontSize: 11,
+        fontFamily: 'var(--font-mono)',
+        color: '#5B21B6',
+        marginBottom: 8
+      }
+    }, "Target: ", d.target, " \xA0\xB7\xA0 System: ", d.system), /*#__PURE__*/React.createElement("div", {
+      className: "draft-text"
+    }, d.body), /*#__PURE__*/React.createElement("div", {
+      className: "actions"
+    }, /*#__PURE__*/React.createElement("button", {
+      className: "btn btn-primary",
+      onClick: () => actOn(d.id, 'approved')
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "check",
+      size: 14
+    }), " Mark as reviewed"), /*#__PURE__*/React.createElement("button", {
+      className: "btn btn-secondary"
+    }, /*#__PURE__*/React.createElement(Icon, {
+      name: "pencil",
+      size: 14
+    }), " Edit draft"), /*#__PURE__*/React.createElement("button", {
+      className: "btn btn-ghost",
+      onClick: () => actOn(d.id, 'discarded')
+    }, "Discard"), /*#__PURE__*/React.createElement("span", {
+      className: "spacer"
+    }), /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: 11,
+        fontFamily: 'var(--font-mono)',
+        color: '#6D28D9'
+      }
+    }, "All actions logged \xB7 1-year retention")));
+  })));
+}
+Object.assign(window, {
+  AIAssistant
+});
+
+// ===== AlertsScreen.jsx =====
+function AlertsScreen() {
+  const iconFor = tone => {
+    if (tone === 'crit') return 'alert-triangle';
+    if (tone === 'warn') return 'alert-triangle';
+    if (tone === 'ai') return 'sparkles';
+    return 'check-circle-2';
+  };
+  const colorFor = tone => {
+    if (tone === 'crit') return 'var(--status-crit)';
+    if (tone === 'warn') return 'var(--status-warn)';
+    if (tone === 'ai') return 'var(--ai-draft)';
+    return 'var(--status-ok)';
+  };
+  const bgFor = tone => {
+    if (tone === 'crit') return 'var(--status-crit-bg)';
+    if (tone === 'warn') return 'var(--status-warn-bg)';
+    if (tone === 'ai') return 'var(--ai-draft-bg)';
+    return 'var(--status-ok-bg)';
+  };
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "Smart Alert Engine"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Role-scoped notifications \u2014 90/60/30-day ATO windows, POA&M slips, scan freshness")), /*#__PURE__*/React.createElement("div", {
+    className: "actions-row"
+  }, /*#__PURE__*/React.createElement(Pill, {
+    tone: "info",
+    square: true
+  }, "LIVE FEED"))), /*#__PURE__*/React.createElement("div", {
+    className: "alerts"
+  }, MOCK_ALERTS.map(a => /*#__PURE__*/React.createElement("div", {
+    key: a.id,
+    className: "alert-row " + a.tone,
+    style: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: 12,
+      padding: '12px 16px',
+      borderBottom: '1px solid var(--slate-200)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ico",
+    style: {
+      background: bgFor(a.tone),
+      color: colorFor(a.tone),
+      width: 28,
+      height: 28,
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+      marginTop: 2
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: iconFor(a.tone),
+    size: 14
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "body",
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("b", {
+    style: {
+      fontSize: 13
+    }
+  }, a.title), /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'block',
+      marginTop: 2
+    }
+  }, a.meta)), /*#__PURE__*/React.createElement("span", {
+    className: "time",
+    style: {
+      whiteSpace: 'nowrap',
+      paddingTop: 2
+    }
+  }, a.time)))));
+}
+Object.assign(window, {
+  AlertsScreen
+});
+
+// ===== PoamsScreen.jsx =====
+function PoamsScreen() {
+  const sevColor = s => s === 'HIGH' ? 'var(--status-crit)' : s === 'MED' ? 'var(--status-warn)' : 'var(--slate-500)';
+  const sevBg = s => s === 'HIGH' ? 'var(--status-crit-bg)' : s === 'MED' ? 'var(--status-warn-bg)' : 'var(--slate-100)';
+  const stBg = s => s === 'OPEN' ? 'var(--status-crit-bg)' : s === 'IN-WORK' ? 'var(--status-warn-bg)' : 'var(--status-ok-bg)';
+  const stColor = s => s === 'OPEN' ? 'var(--status-crit)' : s === 'IN-WORK' ? 'var(--status-warn)' : 'var(--status-ok)';
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "POA&M Tracker"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Portfolio-wide \u2014 ", MOCK_POAMS.filter(p => p.sev === 'HIGH').length, " HIGH \xB7 ", MOCK_POAMS.filter(p => p.sev === 'MED').length, " MED \xB7 ", MOCK_POAMS.filter(p => p.sev === 'LOW').length, " LOW")), /*#__PURE__*/React.createElement(Pill, {
+    tone: "info",
+    square: true
+  }, MOCK_POAMS.length, " ITEMS")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: '#fff',
+      border: '1px solid var(--slate-200)',
+      borderRadius: 8,
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '130px 1fr 110px 110px 80px',
+      gap: 0,
+      background: 'var(--mission-navy-900)',
+      padding: '8px 14px',
+      fontSize: 11,
+      fontWeight: 700,
+      color: '#fff',
+      letterSpacing: '0.06em'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "POAM ID"), /*#__PURE__*/React.createElement("span", null, "Finding"), /*#__PURE__*/React.createElement("span", null, "Owner"), /*#__PURE__*/React.createElement("span", null, "Milestone"), /*#__PURE__*/React.createElement("span", null, "Status")), MOCK_POAMS.map((p, i) => /*#__PURE__*/React.createElement("div", {
+    key: p.id,
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '130px 1fr 110px 110px 80px',
+      gap: 0,
+      padding: '10px 14px',
+      fontSize: 12,
+      borderBottom: '1px solid var(--slate-100)',
+      background: i % 2 === 0 ? '#fff' : 'var(--slate-50)',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      fontWeight: 600,
+      color: 'var(--mission-navy-900)'
+    }
+  }, p.id), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontWeight: 500,
+      color: 'var(--slate-900)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: sevBg(p.sev),
+      color: sevColor(p.sev),
+      fontSize: 10,
+      padding: '1px 6px',
+      borderRadius: 10,
+      fontWeight: 700
+    }
+  }, p.sev), p.title)), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-600)',
+      fontSize: 11
+    }
+  }, p.owner), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 11,
+      color: 'var(--slate-600)'
+    }
+  }, p.milestone), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: stBg(p.status),
+      color: stColor(p.status),
+      fontSize: 10,
+      padding: '2px 7px',
+      borderRadius: 10,
+      fontWeight: 700,
+      whiteSpace: 'nowrap'
+    }
+  }, p.status)))));
+}
+Object.assign(window, {
+  PoamsScreen
+});
+
+// ===== QueryScreen.jsx =====
+function QueryScreen() {
+  const [q, setQ] = useState('');
+  const [answer, setAnswer] = useState(null);
+  const SAMPLE = [{
+    q: 'Which systems expire within 90 days?',
+    a: '3 systems: AFSVC-MWR-INTRANET-02 (23 days), AFSVC-FOODSVC-POS-07 (67 days), AFSVC-LODGING-API-04 (52 days). Source: eMASS ATO records — sandbox snapshot 05 Jun 2026.'
+  }, {
+    q: 'How many HIGH POA&Ms are open?',
+    a: '2 HIGH POA&Ms open across the portfolio: POAM-2024-031 (AC-2, due 15 Jun) and POAM-2024-029 (IA-5, due 01 Jul). Both assigned to L. Christie. Source: eMASS POA&M dataset — sandbox snapshot.'
+  }, {
+    q: 'What is the scan freshness for AFSVC-MWR-INTRANET-02?',
+    a: 'Last ACAS Tenable scan: 11 days ago. Recommended cadence: ≤14 days. Status: advisory threshold not yet breached, but approaching. Source: eMASS test results — sandbox snapshot.'
+  }];
+  function ask() {
+    if (!q.trim()) return;
+    const match = SAMPLE.find(s => s.q.toLowerCase().includes(q.toLowerCase().split(' ')[0]));
+    setAnswer(match ? match.a : 'No matching data found in the sandbox dataset for that query. Try: "which systems expire within 90 days?" Source: eMASS sandbox dataset — authorized references only.');
+  }
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "Natural Language Query"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Ask questions about your portfolio in plain English. Every answer includes a source citation.")), /*#__PURE__*/React.createElement(Pill, {
+    tone: "ai",
+    dot: true
+  }, "RAG \xB7 NIST 800-53 r5 + eMASS dataset")), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 16,
+      marginBottom: 24
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "row",
+    style: {
+      gap: 8,
+      alignItems: 'stretch'
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    value: q,
+    onChange: e => setQ(e.target.value),
+    onKeyDown: e => e.key === 'Enter' && ask(),
+    placeholder: "Which systems expire within 90 days?",
+    style: {
+      flex: 1,
+      padding: '0 12px',
+      fontSize: 14,
+      border: '1px solid var(--slate-300)',
+      borderRadius: 4,
+      fontFamily: 'var(--font-sans)',
+      height: 36
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: ask
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "search",
+    size: 14
+  }), " Ask")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: 10,
+      fontSize: 11,
+      color: 'var(--slate-500)'
+    }
+  }, "Queries are answered using authorized references only. No query text or response is stored on your device. Source citations are included in every answer.")), answer && /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 16,
+      borderLeft: '3px solid var(--ai-draft)'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      gap: 8,
+      alignItems: 'center',
+      marginBottom: 8
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14,
+    color: "var(--ai-draft)"
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      fontWeight: 700,
+      color: 'var(--ai-draft)',
+      letterSpacing: '0.06em'
+    }
+  }, "AI RESPONSE \u2014 SANDBOX DATA ONLY")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 14,
+      color: 'var(--slate-800)',
+      lineHeight: 1.6
+    }
+  }, answer)), !answer && /*#__PURE__*/React.createElement("div", {
+    className: "stack"
+  }, SAMPLE.map((s, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "card",
+    style: {
+      padding: '10px 14px',
+      cursor: 'pointer'
+    },
+    onClick: () => {
+      setQ(s.q);
+      setAnswer(s.a);
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      color: 'var(--mission-navy-900)'
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "search",
+    size: 13
+  }), " ", s.q)))));
+}
+Object.assign(window, {
+  QueryScreen
+});
+
+// ===== BriefingsScreen.jsx =====
+function BriefingsScreen() {
+  const [generated, setGenerated] = useState(false);
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "Executive Briefing Generator"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Generate AO, PM, and leadership posture summaries. AI-drafted \u2014 human review required before distribution.")), /*#__PURE__*/React.createElement(Pill, {
+    tone: "ai",
+    dot: true
+  }, "AI-ASSISTED")), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 16,
+      marginBottom: 20
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "01"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Configure briefing")), /*#__PURE__*/React.createElement("div", {
+    className: "row",
+    style: {
+      gap: 12,
+      marginBottom: 12,
+      flexWrap: 'wrap'
+    }
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "btn btn-secondary",
+    style: {
+      padding: '0 10px',
+      minWidth: 200
+    }
+  }, /*#__PURE__*/React.createElement("option", null, "Audience: Authorizing Official (AO)"), /*#__PURE__*/React.createElement("option", null, "Audience: Program Manager (PM)"), /*#__PURE__*/React.createElement("option", null, "Audience: ISSM / ISSO")), /*#__PURE__*/React.createElement("select", {
+    className: "btn btn-secondary",
+    style: {
+      padding: '0 10px',
+      minWidth: 160
+    }
+  }, /*#__PURE__*/React.createElement("option", null, "Period: May 2026"), /*#__PURE__*/React.createElement("option", null, "Period: Jun 2026")), /*#__PURE__*/React.createElement("select", {
+    className: "btn btn-secondary",
+    style: {
+      padding: '0 10px',
+      minWidth: 180
+    }
+  }, /*#__PURE__*/React.createElement("option", null, "Format: Mobile card summary"), /*#__PURE__*/React.createElement("option", null, "Format: PDF-ready")), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary",
+    onClick: () => setGenerated(true)
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkles",
+    size: 14
+  }), " Generate briefing")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      color: 'var(--slate-500)'
+    }
+  }, "Briefings are grounded in the authorized eMASS dataset. They are AI-drafted and require human review before distribution. No content is auto-submitted or sent on your behalf.")), generated && /*#__PURE__*/React.createElement("div", {
+    className: "ai-block"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "header"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "label"
+  }, "AI-DRAFTED"), /*#__PURE__*/React.createElement("span", {
+    className: "gate"
+  }, "REQUIRES HUMAN APPROVAL BEFORE DISTRIBUTION"), /*#__PURE__*/React.createElement("span", {
+    className: "source"
+  }, "grounded \xB7 authorized eMASS dataset \xB7 05 Jun 2026 snapshot")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      padding: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 11,
+      fontFamily: 'var(--font-mono)',
+      color: '#5B21B6',
+      marginBottom: 12
+    }
+  }, "AO Touchpoint Briefing \u2014 May 2026 \xB7 AFSVC-VTOS Portfolio"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontSize: 13,
+      color: 'var(--slate-800)',
+      lineHeight: 1.7,
+      marginBottom: 12
+    }
+  }, "Portfolio posture this period: 22 of 26 systems within ATO window of greater than 90 days. One system (AFSVC-MWR-INTRANET-02) at 23 days; renewal package in draft. Two open HIGH POA&Ms across two systems; mitigation plans on schedule. Zero security boundary violations recorded against the RMF Commander pilot."), /*#__PURE__*/React.createElement("div", {
+    className: "actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-primary"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "check",
+    size: 14
+  }), " Mark as reviewed"), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-secondary"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "pencil",
+    size: 14
+  }), " Edit"), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-ghost"
+  }, "Discard"), /*#__PURE__*/React.createElement("span", {
+    className: "spacer"
+  }), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 11,
+      fontFamily: 'var(--font-mono)',
+      color: '#6D28D9'
+    }
+  }, "All actions logged \xB7 1-year retention")))));
+}
+Object.assign(window, {
+  BriefingsScreen
+});
+
+// ===== AuditScreen.jsx =====
+function AuditScreen() {
+  const entries = [{
+    ts: '05 Jun 2026 12:18 CT',
+    user: 'L. Christie (ISSM)',
+    action: 'AI draft reviewed — AC-12 control statement',
+    system: 'AFSVC-LODGING-API-04',
+    result: 'APPROVED'
+  }, {
+    ts: '05 Jun 2026 12:10 CT',
+    user: 'L. Christie (ISSM)',
+    action: 'NL Query — "which systems expire within 90 days?"',
+    system: 'Portfolio',
+    result: 'RESPONDED'
+  }, {
+    ts: '05 Jun 2026 11:54 CT',
+    user: 'L. Christie (ISSM)',
+    action: 'Dashboard viewed — portfolio posture',
+    system: 'Portfolio',
+    result: 'READ'
+  }, {
+    ts: '05 Jun 2026 11:32 CT',
+    user: 'R. Mendez (ISSO)',
+    action: 'POA&M detail viewed — POAM-2024-027',
+    system: 'AFSVC-LODGING-API-04',
+    result: 'READ'
+  }, {
+    ts: '04 Jun 2026 16:44 CT',
+    user: 'L. Christie (ISSM)',
+    action: 'AI draft discarded — IA-5 mitigation language v2',
+    system: 'AFSVC-MWR-INTRANET-02',
+    result: 'DISCARDED'
+  }, {
+    ts: '04 Jun 2026 09:01 CT',
+    user: 'L. Christie (ISSM)',
+    action: 'System detail viewed — AFSVC-FOODSVC-POS-07',
+    system: 'AFSVC-FOODSVC-POS-07',
+    result: 'READ'
+  }, {
+    ts: '22 May 2026 09:14 CT',
+    user: 'L. Christie (ISSM)',
+    action: 'AI draft reviewed — AO touchpoint summary May 2026',
+    system: 'Portfolio',
+    result: 'APPROVED'
+  }];
+  const rColor = r => r === 'APPROVED' ? 'var(--status-ok)' : r === 'DISCARDED' ? 'var(--status-warn)' : r === 'RESPONDED' ? 'var(--ai-draft)' : 'var(--slate-400)';
+  const rBg = r => r === 'APPROVED' ? 'var(--status-ok-bg)' : r === 'DISCARDED' ? 'var(--status-warn-bg)' : r === 'RESPONDED' ? 'var(--ai-draft-bg)' : 'var(--slate-100)';
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "Audit Log"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "All API calls, AI prompts, outputs, and approvals \u2014 1-year minimum retention")), /*#__PURE__*/React.createElement(Pill, {
+    tone: "info",
+    square: true
+  }, "IMMUTABLE")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      background: '#fff',
+      border: '1px solid var(--slate-200)',
+      borderRadius: 8,
+      overflow: 'hidden'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '160px 150px 1fr 200px 90px',
+      gap: 0,
+      background: 'var(--mission-navy-900)',
+      padding: '8px 14px',
+      fontSize: 11,
+      fontWeight: 700,
+      color: '#fff',
+      letterSpacing: '0.06em'
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "TIMESTAMP"), /*#__PURE__*/React.createElement("span", null, "USER"), /*#__PURE__*/React.createElement("span", null, "ACTION"), /*#__PURE__*/React.createElement("span", null, "SYSTEM"), /*#__PURE__*/React.createElement("span", null, "RESULT")), entries.map((e, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      display: 'grid',
+      gridTemplateColumns: '160px 150px 1fr 200px 90px',
+      gap: 0,
+      padding: '9px 14px',
+      fontSize: 11,
+      borderBottom: '1px solid var(--slate-100)',
+      background: i % 2 === 0 ? '#fff' : 'var(--slate-50)',
+      alignItems: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 10,
+      color: 'var(--slate-500)'
+    }
+  }, e.ts), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-700)'
+    }
+  }, e.user), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-800)'
+    }
+  }, e.action), /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontFamily: 'var(--font-mono)',
+      fontSize: 10,
+      color: 'var(--slate-500)'
+    }
+  }, e.system), /*#__PURE__*/React.createElement("span", {
+    style: {
+      background: rBg(e.result),
+      color: rColor(e.result),
+      fontSize: 10,
+      padding: '2px 6px',
+      borderRadius: 10,
+      fontWeight: 700
+    }
+  }, e.result)))));
+}
+Object.assign(window, {
+  AuditScreen
+});
+
+// ===== SettingsScreen.jsx =====
+function SettingsScreen() {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "page-header"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "page"
+  }, "Settings"), /*#__PURE__*/React.createElement("div", {
+    className: "page-subtitle"
+  }, "Session, role, and access configuration")), /*#__PURE__*/React.createElement(Pill, {
+    tone: "info",
+    square: true
+  }, "SANDBOX")), /*#__PURE__*/React.createElement("div", {
+    className: "stack"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "SESSION"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "Active session")), [['User', 'L. Christie, NH-III (ISSM)'], ['Role', 'ISSM — portfolio scope'], ['Auth method', 'CAC/PIV-derived credential via Purebred'], ['Session timeout', '15 min inactivity · 5 min background'], ['Data at rest', 'None — session memory only'], ['Environment', 'SANDBOX — mock data, no production eMASS access']].map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+    key: k,
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: '7px 0',
+      borderBottom: '1px solid var(--slate-100)',
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, k), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-900)',
+      fontWeight: 500
+    }
+  }, v)))), /*#__PURE__*/React.createElement("div", {
+    className: "card",
+    style: {
+      padding: 16
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "section-head",
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "eyebrow"
+  }, "AI LAYER"), /*#__PURE__*/React.createElement("span", {
+    className: "title"
+  }, "AI configuration")), [['AI model', 'RAG pipeline — NIST SP 800-53 r5 + CNSSI 1253'], ['Data boundary', 'No IL4 data leaves the DoW cloud boundary'], ['Human approval', 'Required for all AI-generated artifacts'], ['Auto-submit to eMASS', 'Disabled — manual submission only'], ['Audit logging', 'Enabled — 1-year retention']].map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+    key: k,
+    style: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: '7px 0',
+      borderBottom: '1px solid var(--slate-100)',
+      fontSize: 13
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-500)'
+    }
+  }, k), /*#__PURE__*/React.createElement("span", {
+    style: {
+      color: 'var(--slate-900)',
+      fontWeight: 500
+    }
+  }, v))))));
+}
+Object.assign(window, {
+  SettingsScreen
+});
+
+// ===== App.jsx =====
+/* App — top-level router/state */
+
+function App() {
+  const [screen, setScreen] = useState('dashboard');
+  const [selectedSystem, setSelectedSystem] = useState(null);
+  const [sessionSeconds, setSessionSeconds] = useState(15 * 60);
+  useEffect(() => {
+    const id = setInterval(() => setSessionSeconds(s => s > 0 ? s - 1 : 0), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const sessionMinutes = Math.ceil(sessionSeconds / 60);
+  const openSystem = sys => {
+    setSelectedSystem(sys);
+    setScreen('system');
+  };
+  const back = () => setScreen('dashboard');
+  const crumbMap = {
+    dashboard: ['RMF Commander', 'Portfolio'],
+    system: ['RMF Commander', 'Systems', selectedSystem?.id || ''],
+    alerts: ['RMF Commander', 'Alerts'],
+    poams: ['RMF Commander', 'POA&Ms'],
+    assistant: ['RMF Commander', 'AI Assistant'],
+    query: ['RMF Commander', 'NL Query'],
+    briefings: ['RMF Commander', 'Briefings'],
+    audit: ['RMF Commander', 'Audit Log'],
+    settings: ['RMF Commander', 'Settings']
+  };
+  const crumbs = crumbMap[screen] || ['RMF Commander'];
+  const navMap = {
+    dashboard: 'dashboard',
+    system: 'systems',
+    alerts: 'alerts',
+    poams: 'poams',
+    assistant: 'assistant',
+    query: 'query',
+    briefings: 'briefings',
+    audit: 'audit',
+    settings: 'settings'
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "app"
+  }, /*#__PURE__*/React.createElement(ClassBanner, null), /*#__PURE__*/React.createElement("div", {
+    className: "shell"
+  }, /*#__PURE__*/React.createElement(Sidebar, {
+    current: navMap[screen],
+    onNav: id => {
+      if (id === 'systems') setScreen('dashboard');else setScreen(id);
+    },
+    alertCount: MOCK_ALERTS.filter(a => a.tone === 'crit' || a.tone === 'warn').length
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateRows: '56px 1fr',
+      minHeight: 0
+    }
+  }, /*#__PURE__*/React.createElement(TopBar, {
+    breadcrumb: crumbs,
+    alertCount: MOCK_ALERTS.filter(a => a.tone === 'crit' || a.tone === 'warn').length,
+    sessionMinutes: sessionMinutes
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "main"
+  }, screen === 'dashboard' && /*#__PURE__*/React.createElement(Dashboard, {
+    onOpenSystem: openSystem,
+    onOpenAssistant: () => setScreen('assistant')
+  }), screen === 'system' && selectedSystem && /*#__PURE__*/React.createElement(SystemDetail, {
+    sys: selectedSystem,
+    onBack: back
+  }), screen === 'alerts' && /*#__PURE__*/React.createElement(AlertsScreen, null), screen === 'poams' && /*#__PURE__*/React.createElement(PoamsScreen, null), screen === 'assistant' && /*#__PURE__*/React.createElement(AIAssistant, {
+    onBack: back
+  }), screen === 'query' && /*#__PURE__*/React.createElement(QueryScreen, null), screen === 'briefings' && /*#__PURE__*/React.createElement(BriefingsScreen, null), screen === 'audit' && /*#__PURE__*/React.createElement(AuditScreen, null), screen === 'settings' && /*#__PURE__*/React.createElement(SettingsScreen, null)))), /*#__PURE__*/React.createElement(ClassBanner, null));
+}
+ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+
+</script>
+</body>
+</html>

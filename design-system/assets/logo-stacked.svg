@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <g transform="translate(70,10)">
+    <path d="M30 4 L54 17 L54 43 L30 56 L6 43 L6 17 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"></path>
+    <path d="M30 12 L47 21 L47 40 L30 49 L13 40 L13 21 Z" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.35" stroke-linejoin="round"></path>
+    <text x="30" y="39" font-family="&#39;JetBrains Mono&#39;, ui-monospace, Menlo, monospace" font-size="22" font-weight="700" text-anchor="middle" fill="currentColor" letter-spacing="-1">R</text>
+  </g>
+  <text x="100" y="120" font-family="&#39;Inter&#39;, system-ui, sans-serif" font-size="34" font-weight="700" text-anchor="middle" fill="currentColor" letter-spacing="-0.8">RMF</text>
+  <text x="100" y="152" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="14" font-weight="500" text-anchor="middle" fill="currentColor" opacity="0.7" letter-spacing="4">COMMANDER</text>
+  <line x1="60" y1="170" x2="140" y2="170" stroke="currentColor" stroke-width="1" opacity="0.25"></line>
+  <text x="100" y="186" font-family="&#39;JetBrains Mono&#39;, ui-monospace, monospace" font-size="9" font-weight="500" text-anchor="middle" fill="currentColor" opacity="0.55" letter-spacing="2">// UNCLASSIFIED · FOUO</text>
+</svg>

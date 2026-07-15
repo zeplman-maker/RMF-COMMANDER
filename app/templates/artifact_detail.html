@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ t.name }} &middot; Artifact library{% endblock %}
+{% block ai_context %}Artifact template - {{ t.name }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-5.2 - {{ t.category_name }}</div>
+    <h1>{{ t.name }} <span class="format-chip format-{{ t.format }}">{{ t.format }}</span></h1>
+    <p class="subtitle">{{ t.purpose }}</p>
+  </div>
+  <a href="{{ url_for('artifacts') }}" class="btn btn-ghost">&larr; Library</a>
+</div>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Purpose</h2></div>
+    <p class="control-statement">{{ t.purpose }}</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Owner</h2></div>
+    <p>{{ t.owner }}</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Required inputs</h2></div>
+    <ul class="bullet-list">
+      {% for i in t.inputs %}<li>{{ i }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Approval path</h2></div>
+    <p>{{ t.approval_path }}</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Control mappings</h2></div>
+    <div class="chip-row">
+      {% for cm in t.control_mappings %}
+        <a class="ctrl-chip ctrl-chip-link" href="{{ url_for('control_detail', nist_id=cm) }}">{{ cm }}</a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Evidence expectations</h2></div>
+    <ul class="bullet-list">
+      {% for e in t.evidence_expectations %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Completion criteria</h2></div>
+    <p>{{ t.completion_criteria }}</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>eMASS upload location</h2></div>
+    <div class="emass-loc">{{ t.emass_location or 'Not specified' }}</div>
+    <p class="muted-small">eMASS is the system of record. Validate field-level requirements before submission (FR-3.5).</p>
+  </section>
+
+  {% if t.generator %}
+  <section class="card grid2-span">
+    <div class="card-head"><h2>Live data generator</h2><span class="gen-chip">FR-5.3</span></div>
+    <p>This template has a generator wired in. From any system's artifact register, choose this template
+       and click <strong>Generate</strong> to produce a populated <strong>.{{ t.format }}</strong> file with the system's live data.
+       Generator: <code>{{ t.generator }}</code>.</p>
+  </section>
+  {% endif %}
+
+</div>
+
+{% endblock %}

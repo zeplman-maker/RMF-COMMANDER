@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}eMASS readiness &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; eMASS readiness{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-3.2 / FR-3.3 / FR-3.4</div>
+    <h1>eMASS readiness <span class="acronym">{{ system.name }}</span></h1>
+    <p class="subtitle">Validator output, readiness score, and bulk CSV exports tailored to this system.</p>
+  </div>
+  <div class="head-actions">
+    <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+  </div>
+</div>
+
+<div class="emass-disclaimer">{{ disclaimer }}</div>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Readiness score</h2></div>
+    <div class="readiness-score score-{% if score >= 90 %}ok{% elif score >= 70 %}warn{% else %}crit{% endif %}">
+      <div class="emass-score-num">{{ score }}<span>/100</span></div>
+      <div class="emass-score-lbl">computed from validator findings</div>
+    </div>
+    <div class="status-row" style="margin-top: 8px;">
+      <span class="finding-pill finding-error">errors <strong>{{ summary.error }}</strong></span>
+      <span class="finding-pill finding-warn">warns <strong>{{ summary.warn }}</strong></span>
+      <span class="finding-pill finding-info">info <strong>{{ summary.info }}</strong></span>
+      <span class="finding-pill finding-total">total <strong>{{ summary.total }}</strong></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Bulk exports (FR-3.4)</h2></div>
+    <p class="muted-small">All exports include the eMASS disclaimer banner.</p>
+    <ul class="bullet-list">
+      <li><a href="{{ url_for('system_emass_controls_csv', system_id=system.system_id) }}">Controls CSV</a></li>
+      <li><a href="{{ url_for('system_emass_artifacts_csv', system_id=system.system_id) }}">Artifacts CSV</a></li>
+      <li><a href="{{ url_for('poams_export_csv', system_id=system.system_id) }}">POA&amp;M Register CSV</a></li>
+    </ul>
+  </section>
+</div>
+
+{% if findings %}
+{% for area, items in findings_by_area.items() %}
+<section class="card">
+  <div class="card-head"><h2>{{ area|capitalize }} findings ({{ items|length }})</h2></div>
+  <ul class="finding-list">
+    {% for f in items %}
+    <li class="finding finding-row-{{ f.severity }}">
+      <span class="finding-pill finding-{{ f.severity }}">{{ f.severity }}</span>
+      <div class="finding-body">
+        <div class="finding-title">{{ f.title }}</div>
+        <div class="finding-detail">{{ f.detail }}{% if f.ref %} <span class="muted-small">(see common mistake #{{ f.ref }})</span>{% endif %}</div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+{% else %}
+<section class="card">
+  <p class="gate-clear">No findings. Validator says the system data is eMASS-ready. (FR-3.5: eMASS itself is the system of record. Validate every field there before submission.)</p>
+</section>
+{% endif %}
+
+{% endblock %}

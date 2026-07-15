@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Inventory &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; {{ item_type|capitalize }} inventory{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-1.2.{{ {'hardware':1,'software':2,'firmware':3,'sbom':4}[item_type] }}</div>
+    <h1>{{ item_type|capitalize }} inventory <span class="acronym">{{ system.acronym or system.name }}</span></h1>
+    <p class="subtitle">Required for CM-8 (component inventory), CM-2 (baseline), SA-4 (acquisition),
+       SR-3 / SR-4 (supply chain), and RA-5 (vulnerability monitoring).</p>
+  </div>
+  <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+</div>
+
+<div class="tabs">
+  {% for t in inventory_types %}
+    <a class="tab {% if t == item_type %}active{% endif %}"
+       href="{{ url_for('inventory', system_id=system.system_id, type=t) }}">
+      {{ t|capitalize }} <span class="tab-count">{{ counts[t] }}</span>
+    </a>
+  {% endfor %}
+</div>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Add {{ item_type }} item</h2>
+    <span class="muted-small">All fields except name are optional.</span>
+  </div>
+  <form method="post" class="form form-compact">
+    <div class="row3">
+      <label>Name <span class="req">*</span><input name="name" required></label>
+      <label>Vendor<input name="vendor"></label>
+      <label>Version<input name="version"></label>
+    </div>
+    {% if item_type == 'hardware' %}
+      <div class="row3">
+        <label>IP address<input name="ip_address"></label>
+        <label>MAC address<input name="mac_address"></label>
+        <label>OS<input name="os" placeholder="RHEL / Win Server"></label>
+      </div>
+      <div class="row3">
+        <label>OS version<input name="os_version"></label>
+        <label>Patch level<input name="patch_level"></label>
+        <label>EOS date<input type="date" name="eos_date"></label>
+      </div>
+      <div class="row2">
+        <label>Owner<input name="owner"></label>
+        <label>Location<input name="location"></label>
+      </div>
+    {% elif item_type == 'software' %}
+      <div class="row3">
+        <label>OS / platform<input name="os"></label>
+        <label>License<input name="license"></label>
+        <label>Origin
+          <select name="component_origin">
+            <option value="">--</option>
+            <option>commercial</option><option>oss</option><option>govt</option>
+          </select>
+        </label>
+      </div>
+      <div class="row2">
+        <label>EOS date<input type="date" name="eos_date"></label>
+        <label>Owner<input name="owner"></label>
+      </div>
+    {% elif item_type == 'firmware' %}
+      <div class="row2">
+        <label>Patch level<input name="patch_level"></label>
+        <label>EOS date<input type="date" name="eos_date"></label>
+      </div>
+    {% else %}
+      <div class="row3">
+        <label>License<input name="license"></label>
+        <label>Origin
+          <select name="component_origin">
+            <option value="">--</option>
+            <option>commercial</option><option>oss</option><option>govt</option>
+          </select>
+        </label>
+        <label>EOS date<input type="date" name="eos_date"></label>
+      </div>
+    {% endif %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">+ Add item</button>
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Bulk CSV import (FR-1.2.5)</h2>
+    <span class="muted-small">Header row required. Recognized columns: name, vendor, version, ip_address, mac_address, os, os_version, patch_level, license, component_origin, eos_date, owner, location.</span>
+  </div>
+  <form method="post" action="{{ url_for('inventory_import', system_id=system.system_id) }}"
+        enctype="multipart/form-data" class="form form-compact">
+    <input type="hidden" name="type" value="{{ item_type }}">
+    <div class="row2">
+      <label>CSV file<input type="file" name="csv_file" accept=".csv" required></label>
+      <div class="form-actions form-actions-inline">
+        <button type="submit" class="btn btn-primary">Import</button>
+      </div>
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>{{ item_type|capitalize }} items ({{ items|length }})</h2></div>
+  {% if items %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th><th>Vendor</th><th>Version</th>
+        {% if item_type == 'hardware' %}<th>IP</th><th>OS</th><th>Owner</th>{% endif %}
+        {% if item_type in ['software','sbom'] %}<th>License</th><th>Origin</th>{% endif %}
+        <th>EOS</th><th>Flags</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it, flags in items %}
+      <tr>
+        <td><strong>{{ it.name }}</strong></td>
+        <td>{{ it.vendor or '-' }}</td>
+        <td>{{ it.version or '-' }}</td>
+        {% if item_type == 'hardware' %}
+          <td>{{ it.ip_address or '-' }}</td>
+          <td>{{ it.os }} {{ it.os_version }}</td>
+          <td>{{ it.owner or '-' }}</td>
+        {% endif %}
+        {% if item_type in ['software','sbom'] %}
+          <td>{{ it.license or '-' }}</td>
+          <td>{{ it.component_origin or '-' }}</td>
+        {% endif %}
+        <td>{{ it.eos_date.strftime('%Y-%m-%d') if it.eos_date else '-' }}</td>
+        <td>
+          {% for f in flags %}<span class="flag flag-warn">{{ f }}</span>{% endfor %}
+          {% if not flags %}<span class="muted-small">ok</span>{% endif %}
+        </td>
+        <td>
+          <form method="post" action="{{ url_for('inventory_delete', system_id=system.system_id, item_id=it.item_id) }}"
+                onsubmit="return confirm('Remove this item?');">
+            <button type="submit" class="btn-link">remove</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty">No {{ item_type }} items yet. Add one above or import a CSV.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

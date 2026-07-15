@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RMF Commander · 05 Risk Register</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="slide.css">
+<style>
+  /* Standalone slide host — no deck-stage scaling; native 1920x1080. */
+  html, body { margin: 0; padding: 0; background: var(--navy-900); }
+  .slide-host {
+    width: 1920px; height: 1080px;
+    background: var(--navy-900);
+    color: var(--fg-1);
+    display: grid;
+    grid-template-rows: var(--band-h) 1fr var(--band-h);
+    overflow: hidden;
+    position: relative;
+  }
+</style>
+</head>
+<body>
+<div class="slide-host" data-screen-label="05 Risk Register">
+
+    <div class="band">UNCLASSIFIED // FOR OFFICIAL USE ONLY</div>
+    <div class="stage">
+      <div class="eyebrow"><span class="num">06 · RISK &amp; CONTROLS</span>RISK REGISTER AND MITIGATIONS</div>
+      <h2 class="slide-h2">Every identified risk has<br/>a structural mitigation.</h2>
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th style="width: 32%;">Risk</th>
+            <th style="width: 12%;">Impact</th>
+            <th>Mitigation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI output treated as official approval</strong></td>
+            <td><span class="impact high">High</span></td>
+            <td>Visible AI-DRAFTED label, human approval gate, no auto-submission, mandatory user training.</td>
+          </tr>
+          <tr>
+            <td><strong>Unauthorized access to eMASS data</strong></td>
+            <td><span class="impact high">High</span></td>
+            <td>Role-scoped access, BFF architecture, derived credentials, full audit logs with 1-year retention.</td>
+          </tr>
+          <tr>
+            <td><strong>Sensitive data exposed via notifications</strong></td>
+            <td><span class="impact med">Med</span></td>
+            <td>Payload limited to system name and alert type. Full detail requires authenticated session.</td>
+          </tr>
+          <tr>
+            <td><strong>Production integration approved too early</strong></td>
+            <td><span class="impact high">High</span></td>
+            <td>Pilot limited to mock/test/sandbox. Production requires separate AO approval — explicit gate.</td>
+          </tr>
+          <tr>
+            <td><strong>Model hallucination</strong></td>
+            <td><span class="impact med">Med</span></td>
+            <td>RAG grounding, source citations on every claim, uncertainty flags, mandatory human review.</td>
+          </tr>
+        </tbody>
+      </table>
+      <span class="deck-mark">05 / 06</span>
+      <span class="pagenum">05</span>
+    </div>
+    <div class="band">UNCLASSIFIED // FOR OFFICIAL USE ONLY</div>
+  
+</div>
+</body>
+</html>

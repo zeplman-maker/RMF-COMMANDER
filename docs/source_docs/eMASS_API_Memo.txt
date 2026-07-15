@@ -1,0 +1,62 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER eMASS API Access Justification Memorandum
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER eMASS API Access Justification Memorandum
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Request
+Request test and sandbox eMASS REST API access to support the RMF COMMANDER controlled prototype and 90-day pilot. The request is limited to non-production data and does not authorize production data access, write-back, artifact submission, or operational use.
+2. Justification
+RMF COMMANDER requires API-style data access during the pilot to validate the feasibility of a secure portfolio dashboard, ATO expiration alerting, mock POA&amp;M posture reporting, source-cited natural language query, and future eMASS-integrated workflows. Test/sandbox access allows the team to validate architecture and controls before any production integration decision.
+3. Requested Access Scope
+Access Area
+Requested Scope
+Boundary
+System posture
+Read-only test/sandbox system records.
+No production records.
+Authorization status
+Read-only ATO/IATT/expired/denied sample values.
+No operational decisions.
+POA&amp;M data
+Read-only test/sandbox POA&amp;M entries.
+No write-back.
+Control posture
+Read-only control status and sample implementation data.
+No artifact submission.
+Audit validation
+API call logging and role-scope validation.
+Logs retained per DoW policy.
+4. Security Controls
+Client application never communicates directly with eMASS.
+DoD-authorized cloud backend mediates all service calls.
+API credentials remain in Azure Key Vault or AWS Secrets Manager.
+Backend-to-eMASS communication uses mutual TLS.
+User sessions use derived PIV credentials on MDM-enrolled devices.
+No eMASS package content persists on the client device.
+All API calls are logged and available for review.
+5. Approval Limitation
+This request is limited to test/sandbox provisioning. Production eMASS integration is a separate future decision that requires additional AO approval and completion of the RMF COMMANDER authorization pathway.
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}My systems &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}My systems{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">/me/systems</div>
+    <h1>My systems</h1>
+    <p class="subtitle">Every system you are assigned to and the role(s) you hold on each.
+       {% if is_admin %}Admin view: showing all systems.{% endif %}</p>
+  </div>
+  <a href="{{ url_for('me_queue') }}" class="btn btn-primary">Open my queue</a>
+</div>
+
+{% if total == 0 %}
+<section class="card">
+  <div class="card-head"><h2>No assignments</h2></div>
+  <p class="empty">You are not assigned as the ISSO, ISSM, SCA, or AO on any registered system.</p>
+  <p class="muted-small">If this is unexpected, ask the system owner to add you in the role.</p>
+</section>
+{% else %}
+<section class="card">
+  <div class="card-head"><h2>Assignments ({{ total }})</h2></div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>System</th><th>Acronym</th><th>Step</th><th>ATO type</th>
+        <th>Impact</th><th>Your roles</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr onclick="location.href='{{ url_for('system_detail', system_id=r.system.system_id) }}'">
+        <td><strong>{{ r.system.name }}</strong></td>
+        <td>{{ r.system.acronym or '-' }}</td>
+        <td><span class="step-pill">Step {{ r.system.current_step }}</span></td>
+        <td>{{ r.system.ato_type or '-' }}</td>
+        <td><span class="impact impact-{{ (r.system.impact_level or 'none')|lower }}">{{ r.system.impact_level or '-' }}</span></td>
+        <td>
+          {% for role in r.roles %}
+            <span class="user-role role-{{ role|lower }}">{{ role }}</span>
+          {% endfor %}
+          {% if not r.roles %}<span class="muted-small">none</span>{% endif %}
+        </td>
+        <td><a href="{{ url_for('system_detail', system_id=r.system.system_id) }}">open</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endif %}
+
+{% endblock %}

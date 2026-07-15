@@ -1,0 +1,56 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  body { background: var(--surface-0); }
+  .frame { padding: 0; }
+  .banner {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #fff;
+    background: #006400;
+    text-align: center;
+    padding: 6px 16px;
+    line-height: 1.4;
+  }
+  .stage { padding: 24px; display:flex; flex-direction:column; gap:18px; }
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .tokens { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .tok { display:flex; flex-direction:column; gap:8px; }
+  .tok .lbl { font-family: var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+  .tok .bn { font-family: var(--font-mono); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.16em; color:#fff; padding:6px 12px; text-align:center; border-radius:2px; }
+  .bn-unclass { background:#006400; }
+  .bn-cui { background:#502B85; }
+</style></head>
+<body>
+<div class="frame">
+  <div class="banner">UNCLASSIFIED // FOR OFFICIAL USE ONLY</div>
+  <div class="stage">
+    <div class="head"><div class="h">Classification Banners</div><div class="sub">FIXED · NON-DISMISSIBLE · TOP &amp; BOTTOM OF EVERY SCREEN</div></div>
+
+    <div class="tokens">
+      <div class="tok">
+        <div class="lbl">UNCLASSIFIED // FOUO · #006400</div>
+        <div class="bn bn-unclass">UNCLASSIFIED // FOR OFFICIAL USE ONLY</div>
+      </div>
+      <div class="tok">
+        <div class="lbl">CUI (RESERVED · FUTURE) · #502B85</div>
+        <div class="bn bn-cui">CUI // CONTROLLED UNCLASSIFIED INFORMATION</div>
+      </div>
+    </div>
+
+    <div style="font-family:var(--font-sans); font-size:12.5px; line-height:1.55; color:var(--fg-2);">
+      Banner is rendered top <em>and</em> bottom on every screen — mobile and web. It is <strong>never</strong>
+      dismissible, never animated, and never decorative. Color follows the system marking rule
+      published by the active accrediting authority. The 90-day pilot operates exclusively at
+      <span style="font-family:var(--font-mono); color:var(--fg-1)">UNCLASSIFIED // FOUO</span>.
+    </div>
+  </div>
+  <div class="banner">UNCLASSIFIED // FOR OFFICIAL USE ONLY</div>
+</div>
+</body></html>

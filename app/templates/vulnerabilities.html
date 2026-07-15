@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Vulnerabilities &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; Vulnerability dashboard{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-8.1 / 8.2 / 8.3 / 8.4 / 8.5 / 8.6 / 8.7</div>
+    <h1>Vulnerabilities <span class="acronym">{{ system.name }}</span></h1>
+    <p class="subtitle">ACAS .nessus and STIG .ckl import, severity rollup, asset mapping (FR-8.3),
+       auto POA&amp;M generation for Critical and High (FR-8.4), 6-scan trend (FR-8.5),
+       and remediation status tracking (FR-8.7).</p>
+  </div>
+  <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Open finding rollup (FR-8.6)</h2></div>
+  <div class="sev-row">
+    <a class="sev-tile sev-critical" href="{{ url_for('vulnerabilities', system_id=system.system_id, severity='critical') }}">
+      <div class="sev-num">{{ sev_counts.critical }}</div><div class="sev-lbl">Critical</div></a>
+    <a class="sev-tile sev-high" href="{{ url_for('vulnerabilities', system_id=system.system_id, severity='high') }}">
+      <div class="sev-num">{{ sev_counts.high }}</div><div class="sev-lbl">High</div></a>
+    <a class="sev-tile sev-medium" href="{{ url_for('vulnerabilities', system_id=system.system_id, severity='medium') }}">
+      <div class="sev-num">{{ sev_counts.medium }}</div><div class="sev-lbl">Medium</div></a>
+    <a class="sev-tile sev-low" href="{{ url_for('vulnerabilities', system_id=system.system_id, severity='low') }}">
+      <div class="sev-num">{{ sev_counts.low }}</div><div class="sev-lbl">Low</div></a>
+    <a class="sev-tile sev-info" href="{{ url_for('vulnerabilities', system_id=system.system_id, severity='info') }}">
+      <div class="sev-num">{{ sev_counts.info }}</div><div class="sev-lbl">Info</div></a>
+  </div>
+  <div class="status-row">
+    {% for st, ct in status_counts.items() %}
+    <a class="status-pill status-{{ st }}"
+       href="{{ url_for('vulnerabilities', system_id=system.system_id, status=st) }}">
+      {{ st.replace('_', ' ') }} <strong>{{ ct }}</strong>
+    </a>
+    {% endfor %}
+    <a class="status-pill status-clear" href="{{ url_for('vulnerabilities', system_id=system.system_id) }}">clear filters</a>
+  </div>
+</section>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Import scan (FR-8.1 / 8.2)</h2></div>
+    <p class="muted-small">Accepts ACAS Nessus .nessus or STIG Viewer .ckl files. Critical and High findings auto-create POA&amp;M drafts.</p>
+    <form method="post" enctype="multipart/form-data"
+          action="{{ url_for('vulnerabilities_import', system_id=system.system_id) }}"
+          class="form form-compact">
+      <label>Scan file
+        <input type="file" name="scan_file" accept=".nessus,.ckl,.xml" required>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Import</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>STIG compliance</h2>
+      {% if stig_compliance is not none %}
+        <span class="gate-count {% if stig_compliance >= 90 %}gate-met{% else %}gate-open{% endif %}">{{ stig_compliance }}%</span>
+      {% endif %}
+    </div>
+    {% if last_stig %}
+      <p class="muted-small">From {{ last_stig.filename or 'last STIG scan' }} on {{ last_stig.scan_date.strftime('%Y-%m-%d') }}.</p>
+      <div class="bar bar-wide"><div class="bar-fill" style="width: {{ stig_compliance }}%"></div></div>
+      <p class="muted-small">Compliance = (Not a Finding + Not Applicable) / total reviewed.</p>
+    {% else %}
+      <p class="empty">No STIG scan imported yet.</p>
+    {% endif %}
+  </section>
+
+  <section class="card grid2-span">
+    <div class="card-head"><h2>Scan trend (FR-8.5)</h2><span class="muted-small">Last {{ scans|length }} import(s), oldest to newest</span></div>
+    {% if scans %}
+    <div class="trend">
+      {% for sc in scans %}
+        <div class="trend-bar">
+          <div class="trend-stack">
+            {% set h = ((sc.high * 80) // scan_max) %}
+            {% set m = ((sc.medium * 80) // scan_max) %}
+            {% set l = ((sc.low * 80) // scan_max) %}
+            {% set c = ((sc.critical * 80) // scan_max) %}
+            {% if c %}<div class="trend-seg trend-critical" style="height: {{ c }}px" title="Critical {{ sc.critical }}"></div>{% endif %}
+            {% if h %}<div class="trend-seg trend-high" style="height: {{ h }}px" title="High {{ sc.high }}"></div>{% endif %}
+            {% if m %}<div class="trend-seg trend-medium" style="height: {{ m }}px" title="Medium {{ sc.medium }}"></div>{% endif %}
+            {% if l %}<div class="trend-seg trend-low" style="height: {{ l }}px" title="Low {{ sc.low }}"></div>{% endif %}
+          </div>
+          <div class="trend-lbl">
+            <span class="trend-src">{{ sc.source }}</span><br>
+            {{ sc.scan_date.strftime('%m-%d') }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="trend-legend">
+      <span><span class="dot dot-critical"></span> Critical</span>
+      <span><span class="dot dot-high"></span> High</span>
+      <span><span class="dot dot-medium"></span> Medium</span>
+      <span><span class="dot dot-low"></span> Low</span>
+    </div>
+    {% else %}
+      <p class="empty">No scans yet. Import a .nessus or .ckl file above to populate the trend.</p>
+    {% endif %}
+  </section>
+
+</div>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Findings ({{ vulns|length }}{% if active_severity or active_status or active_source %} filtered{% endif %})</h2>
+    <span class="muted-small">FR-8.3 host links to inventory; FR-8.4 POA&amp;M auto-drafted for Critical/High.</span>
+  </div>
+  {% if vulns %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Severity</th><th>Source</th><th>Host</th><th>Title</th>
+        <th>CVE / Rule</th><th>Status</th><th>Last seen</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in vulns %}
+      <tr>
+        <td><span class="sev-chip sev-chip-{{ v.severity }}">{{ v.severity }}{% if v.cat %} ({{ v.cat }}){% endif %}</span></td>
+        <td><span class="src-chip src-{{ v.source }}">{{ v.source }}</span></td>
+        <td>
+          {{ v.host or '-' }}{% if v.port %}:{{ v.port }}{% endif %}
+          {% if v.asset_id %}<span class="muted-small">linked</span>{% endif %}
+        </td>
+        <td>{{ v.title or '-' }}</td>
+        <td>{{ v.cve or v.rule_id or v.plugin_id or '-' }}</td>
+        <td><span class="status-pill status-{{ v.status }}">{{ v.status.replace('_',' ') }}</span></td>
+        <td>{{ v.last_seen.strftime('%Y-%m-%d') if v.last_seen else '-' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('vulnerability_status', system_id=system.system_id, vuln_id=v.vuln_id) }}" class="status-form">
+            <select name="status" onchange="this.form.submit()">
+              {% for st in status_options %}
+                <option value="{{ st }}" {% if st == v.status %}selected{% endif %}>{{ st.replace('_',' ') }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty">No findings match the current filters.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

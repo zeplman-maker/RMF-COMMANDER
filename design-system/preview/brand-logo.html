@@ -1,0 +1,63 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .row { display:grid; grid-template-columns: 1.05fr 1.4fr; gap:14px; }
+  .tile {
+    background: var(--surface-1); border:1.5px solid var(--stroke-2); border-radius:10px;
+    padding: 22px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; min-height: 200px;
+  }
+  .tile.light { background: var(--neutral-50); border-color: rgba(15,31,54,0.14); color: var(--navy-900); }
+  .tile .lbl { font-family: var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; align-self:center; }
+  .tile.light .lbl { color: var(--neutral-500); }
+  .lockup { display:flex; align-items:center; gap:12px; }
+  .lockup .word { display:flex; flex-direction:column; gap:2px; line-height:1; }
+  .lockup .word .top { font-family: var(--font-sans); font-weight:700; font-size:24px; letter-spacing:-0.3px; }
+  .lockup .word .bot { font-family: var(--font-mono); font-size:10.5px; font-weight:500; letter-spacing:2.5px; opacity:.75; }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">Logo &amp; Wordmark</div><div class="sub">MONO "R" IN HEX · REPLACES IF OFFICIAL MARK PROVIDED</div></div>
+
+  <div class="row">
+    <div class="tile">
+      <div class="lockup" style="color: var(--cyan-400)">
+        <img src="../assets/monogram.svg" width="48" height="48" alt="monogram" style="filter:none">
+      </div>
+      <div class="lbl">MONOGRAM · ON DARK · ACCENT FILL</div>
+    </div>
+    <div class="tile">
+      <div class="lockup" style="color: var(--fg-1)">
+        <img src="../assets/monogram.svg" width="44" height="44" alt="monogram">
+        <div class="word"><div class="top">RMF</div><div class="bot">COMMANDER</div></div>
+      </div>
+      <div class="lbl">PRIMARY LOCKUP · ON DARK</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="tile light">
+      <div class="lockup" style="color: var(--navy-900)">
+        <img src="../assets/monogram.svg" width="48" height="48" alt="monogram">
+      </div>
+      <div class="lbl">MONOGRAM · ON LIGHT</div>
+    </div>
+    <div class="tile light">
+      <div class="lockup" style="color: var(--navy-900)">
+        <img src="../assets/monogram.svg" width="44" height="44" alt="monogram">
+        <div class="word"><div class="top">RMF</div><div class="bot">COMMANDER</div></div>
+      </div>
+      <div class="lbl">PRIMARY LOCKUP · ON LIGHT</div>
+    </div>
+  </div>
+
+  <div style="font-family:var(--font-sans); font-size:11.5px; line-height:1.5; color:var(--fg-3); padding-top:4px;">
+    Hexagonal outer rule echoes NIST / cyber lineage. Inner hex at 35% opacity hints at a layered defense.
+    Mono "R" ties to the platform's audit-log aesthetic and the JetBrains Mono token system.
+    <strong style="color:var(--warning-400)">Flagged:</strong> generated mark — replace if an official RMF Commander logo exists.
+  </div>
+</div>
+</body></html>

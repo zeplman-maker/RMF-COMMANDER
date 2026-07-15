@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}AI audit log &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}AI audit log{% endblock %}
+{% block content %}
+
+<div class="page-head no-print">
+  <div>
+    <div class="doc-label">FR-4.4 / NFR-2.8 - AI interaction audit log</div>
+    <h1>AI audit log</h1>
+    <p class="subtitle">
+      Every AI interaction is logged with prompt, response, sources, and confidence.
+      {% if full_view %}You are viewing the org-wide log.{% else %}You are viewing only your own interactions.{% endif %}
+      Retention target: 3 years (NFR-2.8).
+    </p>
+  </div>
+  <button onclick="window.print()" class="btn">Print / Save as PDF</button>
+</div>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-num">{{ summary.total }}</div><div class="metric-lbl">Total interactions</div></div>
+  <div class="metric"><div class="metric-num">{{ summary.unreviewed }}</div><div class="metric-lbl">Unreviewed</div></div>
+  <div class="metric"><div class="metric-num">{{ summary.reviewed }}</div><div class="metric-lbl">Reviewed</div></div>
+  <div class="metric"><div class="metric-num">{{ summary.rejected }}</div><div class="metric-lbl">Rejected</div></div>
+</div>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Filters</h2>
+    <a href="{{ url_for('audit_ai_list') }}" class="muted-small">clear all</a>
+  </div>
+  <form method="get" class="filter-bar audit-filter-bar">
+    <input name="q" value="{{ filters.q }}" placeholder="Search prompt or response">
+    {% if full_view %}
+    <select name="user">
+      <option value="">All users</option>
+      {% for u in all_users %}
+        <option value="{{ u.user_id }}" {% if filters.user == u.user_id %}selected{% endif %}>{{ u.name }} ({{ u.role_name }})</option>
+      {% endfor %}
+    </select>
+    {% endif %}
+    <select name="system">
+      <option value="">All systems</option>
+      {% for s in all_systems %}
+        <option value="{{ s.system_id }}" {% if filters.system == s.system_id %}selected{% endif %}>{{ s.name }}{% if s.acronym %} ({{ s.acronym }}){% endif %}</option>
+      {% endfor %}
+    </select>
+    <select name="mode">
+      <option value="">All modes</option>
+      {% for m in all_modes %}
+        <option value="{{ m }}" {% if filters.mode == m %}selected{% endif %}>{{ ai_modes_labels[m] }}</option>
+      {% endfor %}
+    </select>
+    <select name="status">
+      <option value="">All statuses</option>
+      {% for st in review_statuses %}
+        <option value="{{ st }}" {% if filters.status == st %}selected{% endif %}>{{ review_labels[st] }}</option>
+      {% endfor %}
+    </select>
+    <input type="date" name="date_from" value="{{ filters.date_from }}" placeholder="From">
+    <input type="date" name="date_to" value="{{ filters.date_to }}" placeholder="To">
+    <button type="submit" class="btn btn-primary">Apply</button>
+  </form>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Interactions ({{ rows|length }})</h2>
+    <span class="muted-small">{% if rows|length == 500 %}showing first 500; refine filters to narrow{% endif %}</span>
+  </div>
+  {% if rows %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Timestamp</th><th>User</th><th>System</th><th>Mode</th>
+        <th>Prompt (excerpt)</th><th>Confidence</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr onclick="location.href='{{ url_for('audit_ai_detail', interaction_id=r.interaction_id) }}'">
+        <td><span class="ts">{{ r.timestamp.strftime('%Y-%m-%d %H:%M') if r.timestamp else '-' }}</span></td>
+        <td>
+          {% set u = users_by_id.get(r.user_id) %}
+          {% if u %}<strong>{{ u.name }}</strong> <span class="muted-small">{{ u.role_name }}</span>{% else %}<span class="muted-small">unknown</span>{% endif %}
+        </td>
+        <td>
+          {% set s = systems_by_id.get(r.system_id) %}
+          {% if s %}{{ s.acronym or s.name }}{% else %}<span class="muted-small">-</span>{% endif %}
+        </td>
+        <td><span class="ai-mode-chip">{{ ai_modes_labels.get(r.assistant_mode, r.assistant_mode) }}</span></td>
+        <td class="prompt-cell">{{ (r.prompt_text or '(no prompt)')[:120] }}{% if r.prompt_text and r.prompt_text|length > 120 %}...{% endif %}</td>
+        <td>{% if r.confidence_score is not none %}{{ '%.0f'|format(r.confidence_score * 100) }}%{% else %}-{% endif %}</td>
+        <td><span class="status-pill review-{{ r.review_status }}">{{ review_labels.get(r.review_status, r.review_status) }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty">No interactions match the current filters.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

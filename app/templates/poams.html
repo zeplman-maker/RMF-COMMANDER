@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}POA&Ms &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; POA&M register{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-7.1 / 7.2 / 7.3 / 7.4 / 7.5 / 7.6</div>
+    <h1>POA&amp;M register <span class="acronym">{{ system.name }}</span></h1>
+    <p class="subtitle">Plan of Action and Milestones tracking. ISSO submits closures, ISSM approves.
+       eMASS-aligned CSV export available at any time.</p>
+  </div>
+  <div class="head-actions">
+    <a href="{{ url_for('poam_new', system_id=system.system_id) }}" class="btn btn-primary">+ New POA&amp;M</a>
+    <a href="{{ url_for('poams_export_csv', system_id=system.system_id) }}" class="btn">Export CSV (eMASS)</a>
+    <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+  </div>
+</div>
+
+<div class="emass-disclaimer">
+  eMASS is the system of record. This export prepares POA&amp;M data for manual entry or bulk
+  upload. Validate every field in eMASS before submission. (FR-3.5)
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Aging summary (active POA&amp;Ms)</h2><span class="muted-small">Closed and Risk Accepted excluded.</span></div>
+  <div class="aging-row">
+    <div class="aging-tile aging-overdue"><div class="aging-num">{{ aging.overdue }}</div><div class="aging-lbl">Overdue</div></div>
+    <div class="aging-tile aging-7"><div class="aging-num">{{ aging.due_7 }}</div><div class="aging-lbl">Due in 7d</div></div>
+    <div class="aging-tile aging-14"><div class="aging-num">{{ aging.due_14 }}</div><div class="aging-lbl">Due in 14d</div></div>
+    <div class="aging-tile aging-30"><div class="aging-num">{{ aging.due_30 }}</div><div class="aging-lbl">Due in 30d</div></div>
+    <div class="aging-tile aging-ok"><div class="aging-num">{{ aging.ok }}</div><div class="aging-lbl">On track</div></div>
+  </div>
+  <div class="status-row">
+    {% for st in statuses %}
+      <span class="poam-status-pill poam-{{ st }}">{{ labels[st] }} <strong>{{ columns[st]|length }}</strong></span>
+    {% endfor %}
+    <span class="poam-status-pill poam-total">Total <strong>{{ total }}</strong></span>
+    <span class="poam-status-pill poam-cati">CAT I <strong>{{ severity['CAT I'] }}</strong></span>
+    <span class="poam-status-pill poam-catii">CAT II <strong>{{ severity['CAT II'] }}</strong></span>
+    <span class="poam-status-pill poam-catiii">CAT III <strong>{{ severity['CAT III'] }}</strong></span>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Kanban</h2></div>
+  <div class="kanban">
+    {% for st in statuses %}
+    <div class="kanban-col kanban-col-{{ st }}">
+      <div class="kanban-col-head">
+        <span class="kanban-col-title">{{ labels[st] }}</span>
+        <span class="kanban-col-count">{{ columns[st]|length }}</span>
+      </div>
+      <div class="kanban-col-body">
+        {% for p, aging, milestones in columns[st] %}
+        <a class="poam-card aging-{{ aging.badge }}"
+           href="{{ url_for('poam_detail', system_id=system.system_id, poam_id=p.poam_id) }}">
+          <div class="poam-card-head">
+            <span class="poam-sev poam-sev-{{ p.severity|replace(' ','')|lower }}">{{ p.severity or '-' }}</span>
+            <span class="poam-control">{{ p.control_nist_id or '-' }}</span>
+          </div>
+          <div class="poam-card-title">{{ p.weakness or '(no description)' }}</div>
+          <div class="poam-card-meta">
+            <span class="muted-small">{{ p.source or 'source unknown' }}</span>
+            {% if aging.days_until_due is not none %}
+              {% if aging.badge == 'overdue' %}
+                <span class="poam-due-tag poam-overdue">{{ -aging.days_until_due }}d overdue</span>
+              {% elif aging.badge in ('due_7','due_14','due_30') %}
+                <span class="poam-due-tag poam-{{ aging.badge }}">due {{ aging.days_until_due }}d</span>
+              {% else %}
+                <span class="poam-due-tag poam-due-ok">due {{ aging.days_until_due }}d</span>
+              {% endif %}
+            {% else %}
+              <span class="poam-due-tag poam-due-none">no due date</span>
+            {% endif %}
+          </div>
+          {% if milestones %}
+            {% set done = milestones|selectattr('completed_at')|list|length %}
+            <div class="poam-card-progress">
+              <div class="bar"><div class="bar-fill" style="width: {{ (done * 100 // milestones|length) if milestones else 0 }}%"></div></div>
+              <span class="muted-small">{{ done }}/{{ milestones|length }} milestones</span>
+            </div>
+          {% endif %}
+        </a>
+        {% endfor %}
+        {% if not columns[st] %}
+          <div class="kanban-empty">no items</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}POA&M {{ p.poam_id[:8] }} &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; POA&M {{ p.poam_id[:8] }}{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">POA&amp;M {{ p.poam_id[:8] }}</div>
+    <h1>{{ p.weakness[:80] }}{% if p.weakness|length > 80 %}...{% endif %}</h1>
+    <p class="subtitle">
+      {{ p.control_nist_id or 'No control linked' }} &middot;
+      Severity {{ p.severity or '?' }} &middot;
+      Risk {{ p.risk_level or '?' }} &middot;
+      Source {{ p.source or '?' }}
+    </p>
+  </div>
+  <div class="head-actions">
+    <span class="poam-status-pill poam-{{ p.status }}">{{ labels[p.status] }}</span>
+    <a href="{{ url_for('poams', system_id=system.system_id) }}" class="btn btn-ghost">&larr; Register</a>
+  </div>
+</div>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Status &amp; aging (FR-7.2)</h2></div>
+    <div class="aging-detail">
+      <div>
+        <div class="muted-small">Days open</div>
+        <div class="aging-detail-num">{{ aging.days_open }}</div>
+      </div>
+      <div>
+        <div class="muted-small">Days to due</div>
+        {% if aging.days_until_due is none %}
+          <div class="aging-detail-num">-</div>
+        {% else %}
+          <div class="aging-detail-num aging-num-{{ aging.badge }}">{{ aging.days_until_due }}</div>
+        {% endif %}
+      </div>
+      <div>
+        <div class="muted-small">Scheduled</div>
+        <div class="aging-detail-date">{{ p.scheduled_completion.strftime('%Y-%m-%d') if p.scheduled_completion else '-' }}</div>
+      </div>
+    </div>
+
+    <form method="post" action="{{ url_for('poam_status', system_id=system.system_id, poam_id=p.poam_id) }}" class="status-form-block">
+      <input type="hidden" name="next" value="{{ url_for('poam_detail', system_id=system.system_id, poam_id=p.poam_id) }}">
+      <label>Move to status
+        <select name="status">
+          {% for st in statuses %}
+            <option value="{{ st }}" {% if st == p.status %}selected{% endif %}>{{ labels[st] }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="btn btn-primary">Update status</button>
+    </form>
+
+    {% if p.status == 'completed' %}
+    <div class="closure-banner">
+      Submitted for closure by {{ p.closure_submitted_by or '?' }}{% if p.closure_submitted_at %} on {{ p.closure_submitted_at.strftime('%Y-%m-%d') }}{% endif %}.
+      Awaiting ISSM approval to close (FR-7.5).
+      <form method="post" action="{{ url_for('poam_approve_closure', system_id=system.system_id, poam_id=p.poam_id) }}">
+        <button type="submit" class="btn btn-primary">Approve closure (ISSM)</button>
+      </form>
+    </div>
+    {% elif p.status == 'closed' %}
+    <div class="closure-closed">
+      Closed by {{ p.closure_approver or '?' }}{% if p.closure_approved_at %} on {{ p.closure_approved_at.strftime('%Y-%m-%d') }}{% endif %}.
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Milestones (FR-7.3)</h2>
+      <span class="muted-small">{% set done = milestones|selectattr('completed_at')|list|length %}{{ done }} / {{ milestones|length }} done</span>
+    </div>
+    <ul class="milestone-list">
+      {% for m in milestones %}
+      <li class="milestone-item {% if m.completed_at %}milestone-done{% endif %}">
+        <form method="post" action="{{ url_for('poam_milestone_toggle', system_id=system.system_id, poam_id=p.poam_id, m_id=m.id) }}">
+          <button type="submit" class="task-check {% if m.completed_at %}checked{% endif %}">{% if m.completed_at %}&#10003;{% else %}&nbsp;{% endif %}</button>
+        </form>
+        <div class="milestone-body">
+          <div class="milestone-title">{{ m.title }}</div>
+          <div class="milestone-meta">
+            {% if m.due %}due {{ m.due }}{% endif %}
+            {% if m.completed_at %}<span class="muted-small">&middot; completed {{ m.completed_at[:10] }}</span>{% endif %}
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+      {% if not milestones %}
+        <li class="empty">No milestones yet. Add at least one for any POA&amp;M expected to take longer than 30 days.</li>
+      {% endif %}
+    </ul>
+    <form method="post" action="{{ url_for('poam_milestone_add', system_id=system.system_id, poam_id=p.poam_id) }}" class="milestone-add">
+      <input name="title" placeholder="Milestone title" required>
+      <input type="date" name="due">
+      <button type="submit" class="btn btn-primary">+ Add</button>
+    </form>
+  </section>
+
+  <section class="card grid2-span">
+    <div class="card-head"><h2>Edit POA&amp;M (FR-7.1)</h2></div>
+    <form method="post" class="form">
+      <fieldset>
+        <legend>Weakness</legend>
+        <label>Weakness description
+          <textarea name="weakness" rows="3" maxlength="400">{{ p.weakness or '' }}</textarea>
+        </label>
+        <div class="row3">
+          <label>Source
+            <select name="source">
+              <option value="">-- select --</option>
+              {% for s in sources %}<option {% if s == p.source %}selected{% endif %}>{{ s }}</option>{% endfor %}
+            </select>
+          </label>
+          <label>Severity
+            <select name="severity">
+              <option value="">-- select --</option>
+              {% for s in severities %}<option {% if s == p.severity %}selected{% endif %}>{{ s }}</option>{% endfor %}
+            </select>
+          </label>
+          <label>Risk level
+            <select name="risk_level">
+              <option value="">-- select --</option>
+              {% for r in ["High","Moderate","Low"] %}<option {% if r == p.risk_level %}selected{% endif %}>{{ r }}</option>{% endfor %}
+            </select>
+          </label>
+        </div>
+        <label>Control (NIST 800-53)
+          <input name="control_nist_id" value="{{ p.control_nist_id or '' }}">
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Analysis</legend>
+        <label>Root cause
+          <textarea name="root_cause" rows="3">{{ p.root_cause or '' }}</textarea>
+        </label>
+        <label>Resources required
+          <textarea name="resources_required" rows="2">{{ p.resources_required or '' }}</textarea>
+        </label>
+        <label>Validation method
+          <input name="validation_method" value="{{ p.validation_method or '' }}">
+        </label>
+        <label>Residual risk statement
+          <textarea name="residual_risk" rows="2">{{ p.residual_risk or '' }}</textarea>
+        </label>
+        <label>Comments
+          <textarea name="comments" rows="2">{{ p.comments or '' }}</textarea>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Schedule</legend>
+        <label>Scheduled completion
+          <input type="date" name="scheduled_completion" value="{{ p.scheduled_completion.isoformat() if p.scheduled_completion else '' }}">
+        </label>
+      </fieldset>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+{% endblock %}

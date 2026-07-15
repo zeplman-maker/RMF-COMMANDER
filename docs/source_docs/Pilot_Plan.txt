@@ -1,0 +1,91 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER 90-Day Pilot Plan
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER 90-Day Pilot Plan
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Pilot Objective
+Validate whether RMF COMMANDER improves RMF portfolio awareness, reduces routine documentation burden, improves ATO expiration tracking, and supports faster leadership response without creating unacceptable security, policy, or authorization risk.
+2. Pilot Scope
+Included in Pilot
+Excluded from Pilot
+Read-only dashboard using mock, sandbox, or test data.
+Production eMASS data.
+ATO expiration countdowns and threshold alerts.
+eMASS write-back or artifact submission.
+Mock POA&amp;M status and control posture visibility.
+Classified data or operational decisions.
+AI-assisted draft language using approved references and mock data.
+Public-facing access or non-MDM-enrolled devices.
+Role-based test accounts for ISSMs, ISSOs, AO support, and compliance leadership.
+Any action requiring production authorization package content.
+3. Pilot Timeline
+Week
+Activity
+Output
+1-2
+Stakeholder validation and pilot kickoff.
+Approved pilot scope, user list, and success metrics.
+3-4
+Prototype dashboard and mock dataset setup.
+Working dashboard with system posture cards.
+5-6
+Alert engine testing.
+ATO and POA&amp;M alert test results.
+7-8
+AI drafting and natural-language query testing.
+Draft quality review and source-citation results.
+9-10
+User evaluation.
+Survey results, timing measurements, and defect log.
+11-12
+Pilot closeout and go/no-go recommendation.
+Final report, updated risk posture, and AO briefing.
+4. Pilot Success Metrics
+Metric
+Target
+Measurement
+Time to full portfolio status check
+Under 5 minutes
+Timed observation.
+ATO alert accuracy
+100% of triggers fire
+Alert log review.
+AI draft acceptance rate
+70% accepted with minor or no revision
+Acceptance tracking.
+User confidence in visibility
+80% report improvement
+End-of-pilot survey.
+Security boundary adherence
+Zero violations
+Log and scope audit.
+5. Governance During Pilot
+Pilot lead manages scope, data, users, and weekly status reporting.
+FRANCISCO SALGUERO, SES or designee receives a 30-day status touchpoint briefing.
+ISSM reviews all AI-generated examples before any use in reporting or documentation.
+Security reviewer validates authentication, logging, and data-handling assumptions at kickoff and midpoint.
+AO may pause or terminate the pilot at any time. All test data and access are revoked within 24 hours of termination.
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

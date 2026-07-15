@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in &middot; RMF ATO Navigator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="banner banner-unclass">UNCLASSIFIED // FOR DEMONSTRATION ONLY // LOCAL VALIDATION REQUIRED</div>
+
+<div class="login-shell">
+  <div class="login-card">
+    <div class="brand">
+      <div class="brand-mark">RMF</div>
+      <div>
+        <div class="brand-title">ATO Navigator</div>
+        <div class="brand-sub">DoD / DAF RMF lifecycle workbench</div>
+      </div>
+    </div>
+
+    <h1 class="login-title">Sign in</h1>
+    <p class="login-sub">This prototype simulates role-based login. Pick a seeded account.
+       Real CAC/PIV and MFA per DoDI 8520.02 are deferred (NFR-2.1).</p>
+
+    {% with msgs = get_flashed_messages(with_categories=true) %}
+      {% if msgs %}
+        {% for cat, msg in msgs %}
+          <div class="flash flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="post" class="login-form">
+      <label>Account
+        <select name="user_id" required>
+          {% for u in users %}
+            <option value="{{ u.user_id }}">{{ u.name }} - {{ u.role_name }} ({{ u.email }})</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button type="submit" class="btn btn-primary">Sign in</button>
+    </form>
+
+    <p class="login-foot">
+      Roles affect what you can do. ISSM-only actions like POA&amp;M closure approval are gated
+      with @role_required and the SRS RBAC matrix (Section 8).
+    </p>
+  </div>
+</div>
+</body>
+</html>

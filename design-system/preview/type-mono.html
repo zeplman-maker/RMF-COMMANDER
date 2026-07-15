@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .row { display:flex; align-items:baseline; gap:18px; padding:8px 0; border-bottom:1px solid var(--stroke-1); }
+  .row:last-child { border-bottom:0; }
+  .row .spec { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.05em; text-transform:uppercase; min-width:140px; flex-shrink:0; }
+  .row .sample { color:var(--fg-1); }
+  .mono { font-family:'JetBrains Mono', monospace; }
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+  .allcaps { text-transform:uppercase; letter-spacing:.08em; }
+  .pair { display:flex; flex-direction:column; gap:4px; }
+  .pair .num { font:600 36px/1 Inter; letter-spacing:-0.011em; color:var(--fg-1); font-variant-numeric:tabular-nums;}
+  .pair .lab { font:500 11px/1.2 'JetBrains Mono'; letter-spacing:.1em; text-transform:uppercase; color:var(--fg-3); }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">Mono · Labels · Stat Pairs</div><div class="sub">JETBRAINS MONO · ALL-CAPS TOKENS</div></div>
+  <div class="row"><div class="spec">MONO 14 · CONTROLS</div><div class="sample mono" style="font-size:14px">AC-2(3) · CM-6 · SI-4(4)</div></div>
+  <div class="row"><div class="spec">MONO 13 · TIMESTAMP</div><div class="sample mono" style="font-size:13px; color:var(--fg-2)">2026-05-22T14:07:42Z · session 02:34</div></div>
+  <div class="row"><div class="spec">MONO 11 · LABEL</div><div class="sample mono allcaps" style="font-size:11px; color:var(--fg-3); font-weight:500">SYSTEMS MANAGED · POA&amp;M COUNT · SCAN FRESHNESS</div></div>
+  <div class="row" style="gap:32px">
+    <div class="spec">STAT PAIR</div>
+    <div class="pair"><div class="num">26</div><div class="lab">Systems</div></div>
+    <div class="pair"><div class="num">1M+</div><div class="lab">End users</div></div>
+    <div class="pair"><div class="num">47</div><div class="lab">Days to ATO</div></div>
+  </div>
+</div>
+</body></html>

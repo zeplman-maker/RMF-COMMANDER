@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}eMASS field guides{% endblock %}
+{% block ai_context %}eMASS field guides{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-3.1</div>
+    <h1>eMASS field guides</h1>
+    <p class="subtitle">Per-field guidance for every record type the application produces. Use this when filling
+       eMASS by hand or refining the data here before bulk upload.</p>
+  </div>
+  <a href="{{ url_for('emass_hub') }}" class="btn btn-ghost">&larr; eMASS hub</a>
+</div>
+
+<div class="emass-disclaimer">{{ disclaimer }}</div>
+
+{% for key, group in guides.items() %}
+<section class="card">
+  <div class="card-head"><h2>{{ group.label }}</h2><span class="muted-small">{{ group.fields|length }} fields</span></div>
+  <table class="data-table">
+    <thead>
+      <tr><th>Field</th><th>Required</th><th>Format</th><th>Guidance</th></tr>
+    </thead>
+    <tbody>
+      {% for f in group.fields %}
+      <tr>
+        <td><strong>{{ f.name }}</strong></td>
+        <td>{% if f.required %}<span class="finding-pill finding-error">required</span>{% else %}<span class="muted-small">optional</span>{% endif %}</td>
+        <td><code>{{ f.format }}</code></td>
+        <td>{{ f.guidance }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endfor %}
+
+{% endblock %}

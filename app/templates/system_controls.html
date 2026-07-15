@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Controls &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; Control workspace{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-2.3.1 control workspace</div>
+    <h1>Controls <span class="acronym">{{ system.name }}</span></h1>
+    <p class="subtitle">Catalog filtered to the {{ system.impact_level or 'unspecified' }} baseline.
+       Apply each control to the system, then mark its implementation status as work progresses.</p>
+  </div>
+  <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Implementation status</h2><span class="muted-small">{{ total_in_baseline }} controls in baseline</span></div>
+  <div class="status-row">
+    {% for st in status_options %}
+      <a class="status-pill status-{{ st }}"
+         href="{{ url_for('system_controls', system_id=system.system_id, status=st, family=active_family or '') }}">
+        {{ status_labels[st] }} <strong>{{ summary[st] }}</strong>
+      </a>
+    {% endfor %}
+    <a class="status-pill status-not_applied"
+       href="{{ url_for('system_controls', system_id=system.system_id, status='not_applied', family=active_family or '') }}">
+       Not applied <strong>{{ summary.not_applied }}</strong>
+    </a>
+    <a class="status-pill status-clear" href="{{ url_for('system_controls', system_id=system.system_id) }}">clear filters</a>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Family filter</h2></div>
+  <div class="chip-row">
+    <a class="family-chip-link {% if not active_family %}active{% endif %}"
+       href="{{ url_for('system_controls', system_id=system.system_id, status=active_status or '') }}">All</a>
+    {% for f in families %}
+      <a class="family-chip-link {% if active_family == f %}active{% endif %}"
+         href="{{ url_for('system_controls', system_id=system.system_id, family=f, status=active_status or '') }}">{{ f }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Baseline controls ({{ rows|length }})</h2></div>
+  {% if rows %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th><th>Title</th><th>Family</th><th>Status</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cat, impl in rows %}
+      <tr>
+        <td><a href="{{ url_for('control_detail', nist_id=cat.nist_id) }}"><strong>{{ cat.nist_id }}</strong></a></td>
+        <td>{{ cat.title }}</td>
+        <td><span class="family-chip">{{ cat.family }}</span></td>
+        <td>
+          {% if impl %}
+            <form method="post" action="{{ url_for('system_control_status', system_id=system.system_id, nist_id=cat.nist_id) }}" class="status-form">
+              <select name="status" onchange="this.form.submit()">
+                {% for s in status_options %}
+                  <option value="{{ s }}" {% if impl.implementation_status == s %}selected{% endif %}>{{ status_labels[s] }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          {% else %}
+            <span class="status-pill status-not_applied">Not applied</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if impl %}
+            <a href="{{ url_for('control_detail', nist_id=cat.nist_id) }}" class="btn-link">view detail</a>
+          {% else %}
+            <form method="post" action="{{ url_for('system_control_apply', system_id=system.system_id, nist_id=cat.nist_id) }}">
+              <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty">No controls match the current filters.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>RMF Commander · UI Kit</title>
+  <meta name="viewport" content="width=1440" />
+  <link rel="stylesheet" href="kit.css" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="shared.jsx"></script>
+  <script type="text/babel" src="layout.jsx"></script>
+  <script type="text/babel" src="dashboard.jsx"></script>
+  <script type="text/babel" src="system_detail.jsx"></script>
+  <script type="text/babel" src="ai_assistant.jsx"></script>
+  <script type="text/babel" src="briefing.jsx"></script>
+  <script type="text/babel" src="login.jsx"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [authed, setAuthed] = useState(true);     // start signed-in for demo
+      const [screen, setScreen] = useState("dashboard");
+      const [paletteOpen, setPaletteOpen] = useState(false);
+      const [toast, setToast] = useState(null);
+      const [activeSystem, setActiveSystem] = useState(null);
+
+      const user = { name: "Maj. L. Christie", role: "ISSM · NH-III", initials: "LC" };
+
+      // ⌘K opens palette
+      useEffect(() => {
+        const onKey = (e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+            e.preventDefault();
+            setPaletteOpen(true);
+          } else if (e.key === "Escape") {
+            setPaletteOpen(false);
+          }
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+      }, []);
+
+      const fireToast = (msg) => {
+        setToast(msg);
+        setTimeout(() => setToast(null), 2400);
+      };
+
+      if (!authed) {
+        return <LoginScreen onSignIn={() => setAuthed(true)} />;
+      }
+
+      const openSystem = (name) => { setActiveSystem({ ...mockSystem, name }); setScreen("system_detail"); };
+
+      return (
+        <div className="rmf-app" data-screen-label={"00 " + screen}>
+          <ClassBanner />
+          <TopBar
+            user={user}
+            sessionMin="14"
+            onOpenPalette={() => setPaletteOpen(true)}
+            onLogout={() => setAuthed(false)}
+          />
+          <div className="rmf-main">
+            <Sidebar
+              current={screen === "system_detail" || screen === "ai" ? "dashboard" : screen}
+              onNav={(id) => {
+                if (id === "ai") setScreen("ai");
+                else if (id === "briefing") setScreen("briefing");
+                else setScreen(id === "dashboard" ? "dashboard" : id);
+              }}
+            />
+            {screen === "dashboard"     && <DashboardScreen onOpenSystem={openSystem} onOpenAi={() => setScreen("ai")} />}
+            {screen === "system_detail" && <SystemDetailScreen system={activeSystem} onBack={() => setScreen("dashboard")} onDraft={() => setScreen("ai")} />}
+            {screen === "ai"            && <AiAssistantScreen onBack={() => setScreen("system_detail")} onApproved={() => fireToast("Draft approved — locked into audit log #88421-AC2-3")} />}
+            {screen === "briefing"      && <BriefingScreen onBack={() => setScreen("dashboard")} />}
+            {screen === "alerts"        && <AlertsScreen onBack={() => setScreen("dashboard")} />}
+            {(screen === "poams" || screen === "controls" || screen === "audit" || screen === "roles") &&
+              <PlaceholderScreen title={screen} />}
+          </div>
+          <ClassBanner />
+
+          <CommandPalette
+            open={paletteOpen}
+            onClose={() => setPaletteOpen(false)}
+            onNav={(to) => { if (to === "system_detail") openSystem("AFSVC-NAFI-014"); else setScreen(to); }}
+            onAsk={(q) => fireToast("Query routed: " + q)}
+          />
+
+          {toast && (
+            <div className="rmf-toast" role="status">
+              <span className="ic"><Icon name="check" size={16} /></span>
+              <span className="msg">{toast}</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function PlaceholderScreen({ title }) {
+      return (
+        <div className="rmf-work">
+          <div className="rmf-eyebrow">{title.toUpperCase()}</div>
+          <h1 style={{ marginTop: 6, fontSize: 28, fontWeight: 700, letterSpacing: "-0.011em" }}>
+            {title.charAt(0).toUpperCase() + title.slice(1)} view
+          </h1>
+          <p style={{ marginTop: 14, color: "var(--fg-3)", fontSize: 13.5, maxWidth: 540 }}>
+            This view is wired into the navigation but the demo focuses on Portfolio → System Detail → AI Assistant → Briefing flows.
+            Click the search bar (⌘K) to jump to a system, or use Smart Alerts for an end-to-end click-through.
+          </p>
+        </div>
+      );
+    }
+
+    function AlertsScreen() {
+      const rows = [
+        { tone: "crit", icon: "shield-alert", title: "ATO expires in 12 days — AFSVC-MWR-007", desc: "System enters the 30-day window. Renewal package draft recommended now.", meta: ["CRITICAL", "ISSM ACTION", "14:02 Z"] },
+        { tone: "warn", icon: "alert-triangle", title: "POA&M slip — AFSVC-NAFI-014 / V-217884", desc: "CAT II finding missed scheduled completion. New estimated date proposed.", meta: ["WARNING", "POA&M", "CM-6"] },
+        { tone: "info", icon: "bell", title: "eMASS workflow state changed — AFSVC-VTOS-001", desc: "SCA returned the SAR with two items for ISSM response.", meta: ["INFO", "WORKFLOW", "02:47 AGO"] },
+        { tone: "ai",   icon: "sparkles", title: "Draft ready — Control statement for AC-2(3)", desc: "Grounded in NIST SP 800-53 Rev. 5 and three prior system precedents.", meta: [<AiLabel key="ai" />, "REQUIRES ISSM APPROVAL"] },
+        { tone: "warn", icon: "alert-triangle", title: "Scan stale — AFSVC-CLUBS-005", desc: "Last ACAS pull > 6h ago. ConMon SLA breach in 1h 12m.", meta: ["WARNING", "CONMON", "SI-4"] },
+        { tone: "crit", icon: "alert-circle", title: "POA&M overdue — AFSVC-FSS-021 / V-220110", desc: "OpenSSL CVE not closed before scheduled completion date.", meta: ["CRITICAL", "POA&M", "OVERDUE"] },
+      ];
+      return (
+        <div className="rmf-work">
+          <header className="rmf-work-head">
+            <div>
+              <div className="rmf-eyebrow">SMART ALERTS · 7 OPEN · 2 CRITICAL</div>
+              <h1>Alerts</h1>
+            </div>
+            <div className="actions">
+              <Button variant="secondary" icon="filter" size="md">Severity</Button>
+              <Button variant="secondary" icon="filter" size="md">Owner</Button>
+            </div>
+          </header>
+          <div className="rmf-stack" style={{ gap: 10 }}>
+            {rows.map((r, i) => <Alert key={i} {...r} />)}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

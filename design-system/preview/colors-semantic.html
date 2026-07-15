@@ -1,0 +1,60 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .grp { display:flex; flex-direction:column; gap:6px; }
+  .grp-title { font-family: var(--font-mono); font-size:10.5px; color:var(--fg-3); text-transform:uppercase; letter-spacing:.08em; }
+  .ramp { display:grid; grid-template-columns: repeat(5, 1fr); gap:0; border-radius:8px; overflow:hidden; border:1px solid var(--stroke-2); }
+  .ramp .swatch { border:0; border-radius:0; min-height:62px; padding:8px 10px; }
+  .head { display:flex; align-items:baseline; gap:10px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family: var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">Semantic Alert Ramp</div><div class="sub">CRITICAL · WARNING · SUCCESS · INFO</div></div>
+
+  <div class="grp">
+    <div class="grp-title">Critical · ATO expired, critical CVE</div>
+    <div class="ramp">
+      <div class="swatch" style="background:#FCA5A5;color:#0A1628"><div class="name">300</div><div class="hex">FCA5A5</div></div>
+      <div class="swatch" style="background:#F87171;color:#0A1628"><div class="name">400</div><div class="hex">F87171</div></div>
+      <div class="swatch" style="background:#EF4444;color:#fff"><div class="name">500</div><div class="hex">EF4444</div></div>
+      <div class="swatch" style="background:#DC2626;color:#fff"><div class="name">600</div><div class="hex">DC2626</div></div>
+      <div class="swatch" style="background:#B91C1C;color:#fff"><div class="name">700</div><div class="hex">B91C1C</div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="grp-title">Warning · 90/60/30-day windows</div>
+    <div class="ramp">
+      <div class="swatch" style="background:#FCD34D;color:#0A1628"><div class="name">300</div><div class="hex">FCD34D</div></div>
+      <div class="swatch" style="background:#FBBF24;color:#0A1628"><div class="name">400</div><div class="hex">FBBF24</div></div>
+      <div class="swatch" style="background:#F59E0B;color:#0A1628"><div class="name">500</div><div class="hex">F59E0B</div></div>
+      <div class="swatch" style="background:#D97706;color:#fff"><div class="name">600</div><div class="hex">D97706</div></div>
+      <div class="swatch" style="background:#B45309;color:#fff"><div class="name">700</div><div class="hex">B45309</div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="grp-title">Success · control posture passing</div>
+    <div class="ramp">
+      <div class="swatch" style="background:#86EFAC;color:#0A1628"><div class="name">300</div><div class="hex">86EFAC</div></div>
+      <div class="swatch" style="background:#4ADE80;color:#0A1628"><div class="name">400</div><div class="hex">4ADE80</div></div>
+      <div class="swatch" style="background:#22C55E;color:#0A1628"><div class="name">500</div><div class="hex">22C55E</div></div>
+      <div class="swatch" style="background:#16A34A;color:#fff"><div class="name">600</div><div class="hex">16A34A</div></div>
+      <div class="swatch" style="background:#15803D;color:#fff"><div class="name">700</div><div class="hex">15803D</div></div>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="grp-title">Info · AI-drafted, informational</div>
+    <div class="ramp">
+      <div class="swatch" style="background:#93C5FD;color:#0A1628"><div class="name">300</div><div class="hex">93C5FD</div></div>
+      <div class="swatch" style="background:#60A5FA;color:#0A1628"><div class="name">400</div><div class="hex">60A5FA</div></div>
+      <div class="swatch" style="background:#3B82F6;color:#fff"><div class="name">500</div><div class="hex">3B82F6</div></div>
+      <div class="swatch" style="background:#2563EB;color:#fff"><div class="name">600</div><div class="hex">2563EB</div></div>
+      <div class="swatch" style="background:#1D4ED8;color:#fff"><div class="name">700</div><div class="hex">1D4ED8</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

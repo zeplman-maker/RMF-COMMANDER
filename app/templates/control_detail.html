@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ c.nist_id }} {{ c.title }} &middot; Catalog{% endblock %}
+{% block ai_context %}{{ c.nist_id }} - {{ c.title }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-6.2 control deep-dive</div>
+    <h1>{{ c.nist_id }} <span class="acronym">{{ c.title }}</span></h1>
+    <p class="subtitle">{{ c.family_name }} ({{ c.family }}) family.
+      Default control type: <strong>{{ c.control_type_default or '-' }}</strong>.
+      Lands in RMF Step <strong>{{ c.rmf_step }}</strong>.</p>
+  </div>
+  <div class="head-actions">
+    {% if c.baseline_low %}<span class="baseline-chip baseline-low">Low</span>{% endif %}
+    {% if c.baseline_mod %}<span class="baseline-chip baseline-mod">Mod</span>{% endif %}
+    {% if c.baseline_high %}<span class="baseline-chip baseline-high">High</span>{% endif %}
+    <a href="{{ url_for('controls', family=c.family) }}" class="btn btn-ghost">&larr; {{ c.family }}</a>
+  </div>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Statement</h2></div>
+  <p class="control-statement">{{ c.statement }}</p>
+  <p class="muted-small">Paraphrased summary. Authoritative text in NIST SP 800-53 Rev. 5.</p>
+</section>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Expected artifacts</h2></div>
+    <ul class="bullet-list">
+      {% for a in artifacts %}<li>{{ a }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Evidence examples</h2></div>
+    <ul class="bullet-list">
+      {% for e in evidence %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Assessment methods (NIST SP 800-53A)</h2></div>
+    <div class="chip-row">
+      {% for m in methods %}<span class="method-chip method-{{ m|lower }}">{{ m }}</span>{% endfor %}
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Responsible roles</h2></div>
+    <div class="chip-row">
+      {% for r in roles %}<span class="role-chip">{{ r }}</span>{% endfor %}
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>eMASS upload location</h2></div>
+    <div class="emass-loc">{{ c.emass_location or 'Not specified' }}</div>
+    <p class="muted-small">eMASS is the system of record. Validate field-level requirements before submission (FR-3.5).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Continuous monitoring metric</h2></div>
+    <p>{{ c.conmon_metric or 'Not specified' }}</p>
+  </section>
+
+  <section class="card grid2-span">
+    <div class="card-head"><h2>Common mistakes</h2></div>
+    <ul class="bullet-list bullet-warn">
+      {% for m in mistakes %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+  </section>
+
+  <section class="card grid2-span">
+    <div class="card-head"><h2>POA&amp;M trigger conditions</h2></div>
+    <ul class="bullet-list bullet-coral">
+      {% for t in triggers %}<li>{{ t }}</li>{% endfor %}
+    </ul>
+    <p class="muted-small">When any trigger fires for this control, open or update a POA&amp;M (FR-7.1).</p>
+  </section>
+</div>
+
+{% endblock %}

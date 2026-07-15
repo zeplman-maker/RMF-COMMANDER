@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>RMF Commander · Mobile UI Flow</title>
+  <link rel="stylesheet" href="mobile.css" />
+  <style>
+    body { background: #0a0e16; }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="android-frame.jsx"></script>
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="mobile-components.jsx"></script>
+  <script type="text/babel" src="prototype-home.jsx"></script>
+  <script type="text/babel" src="prototype-ai.jsx"></script>
+  <script type="text/babel" src="prototype-settings.jsx"></script>
+  <script type="text/babel" src="screens-onboard.jsx"></script>
+  <script type="text/babel" src="screens-dashboard.jsx"></script>
+  <script type="text/babel" src="screens-ai.jsx"></script>
+  <script type="text/babel" src="screens-settings.jsx"></script>
+
+  <script type="text/babel">
+    /* Wrap an app screen in the iPhone bezel.
+       IOSDevice provides status bar + home indicator chrome; we hand it the 390x844 app surface. */
+    function Phone({ children }) {
+      return (
+        <IOSDevice dark={true} width={390} height={844}>
+          {children}
+        </IOSDevice>
+      );
+    }
+
+    /* Android variant — same app surface, Material chrome (40px status bar, 24px gesture nav).
+       Wrapping with .m-platform-android flips safe-area vars in mobile.css. */
+    function PhoneAndroid({ children }) {
+      return (
+        <AndroidDevice dark={true} width={412} height={892}>
+          <div className="m-platform-android" style={{ height: "100%" }}>
+            {children}
+          </div>
+        </AndroidDevice>
+      );
+    }
+
+    const PHONE_W = 430;
+    const PHONE_H = 920;
+    const PHONE_A_W = 452;
+    const PHONE_A_H = 968;
+
+    function App() {
+      return (
+        <DesignCanvas
+          title="RMF Commander · Mobile UI Flow"
+          subtitle="iOS / Android. Built on the RMF Commander design system. Hold ⌘ to multi-select; double-click an artboard to focus."
+        >
+          <DCSection id="onboarding" title="1 · Onboarding"
+                     subtitle="Three-step welcome carousel. Sets mission, AI gate, and security model before sign-in.">
+            <DCArtboard id="onb-1" label="Welcome" width={PHONE_W} height={PHONE_H}>
+              <Phone><OnboardWelcome/></Phone>
+            </DCArtboard>
+            <DCArtboard id="onb-2" label="AI gate" width={PHONE_W} height={PHONE_H}>
+              <Phone><OnboardAi/></Phone>
+            </DCArtboard>
+            <DCArtboard id="onb-3" label="Security model" width={PHONE_W} height={PHONE_H}>
+              <Phone><OnboardSecurity/></Phone>
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection id="signin" title="2 · Sign in"
+                     subtitle="CAC/PIV-derived credential via Purebred. States from waiting → detected → authenticating → signed-in, plus the device-not-enrolled error.">
+            <DCArtboard id="signin-idle" label="Idle · waiting for CAC" width={PHONE_W} height={PHONE_H}>
+              <Phone><SignInScreen state="idle"/></Phone>
+            </DCArtboard>
+            <DCArtboard id="signin-detected" label="Detected · authenticating" width={PHONE_W} height={PHONE_H}>
+              <Phone><SignInScreen state="detected"/></Phone>
+            </DCArtboard>
+            <DCArtboard id="signin-signed" label="Signed in" width={PHONE_W} height={PHONE_H}>
+              <Phone><SignInScreen state="signed-in"/></Phone>
+            </DCArtboard>
+            <DCArtboard id="signin-error" label="Device not enrolled" width={PHONE_W} height={PHONE_H}>
+              <Phone><SignInScreen state="error"/></Phone>
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection id="dashboard" title="3 · Portfolio dashboard"
+                     subtitle="Home screen for ISSMs: KPIs · critical alerts · system list. Shown with default content, loading skeleton, and the filtered-empty state.">
+            <DCArtboard id="dash-default" label="Default" width={PHONE_W} height={PHONE_H}>
+              <Phone><DashboardScreen variant="default"/></Phone>
+            </DCArtboard>
+            <DCArtboard id="dash-loading" label="Loading skeleton" width={PHONE_W} height={PHONE_H}>
+              <Phone><DashboardScreen variant="loading"/></Phone>
+            </DCArtboard>
+            <DCArtboard id="dash-empty" label="Filtered · CAT I empty" width={PHONE_W} height={PHONE_H}>
+              <Phone><DashboardScreen variant="filtered-empty"/></Phone>
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection id="ai" title="4 · AI Documentation Assistant — key feature"
+                     subtitle="The thing that makes RMF Commander defensible to the AO: AI drafts with hard human-approval gate, every claim cited, all flow logged.">
+            <DCArtboard id="ai-list" label="Drafts list" width={PHONE_W} height={PHONE_H}>
+              <Phone><AiListScreen/></Phone>
+            </DCArtboard>
+            <DCArtboard id="ai-draft" label="Review draft · gate locked" width={PHONE_W} height={PHONE_H}>
+              <Phone><AiDraftScreen variant="draft"/></Phone>
+            </DCArtboard>
+            <DCArtboard id="ai-approved" label="Approved · ready to export" width={PHONE_W} height={PHONE_H}>
+              <Phone><AiDraftScreen variant="approved"/></Phone>
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection id="settings" title="5 · Profile &amp; settings — 2-screen flow"
+                     subtitle="Overview surface stays calm: profile, session pill, four category cards. Drill into any category for the dense form. Session-wipe overlay layers on top.">
+            <DCArtboard id="set-overview" label="Settings · overview" width={PHONE_W} height={PHONE_H}>
+              <Phone><SettingsOverviewHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="set-account" label="Drill · Account" width={PHONE_W} height={PHONE_H}>
+              <Phone><SettingsAccountHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="set-security" label="Drill · Security &amp; session" width={PHONE_W} height={PHONE_H}>
+              <Phone><SettingsSecurityHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="set-notif" label="Drill · Notifications" width={PHONE_W} height={PHONE_H}>
+              <Phone><SettingsNotifHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="set-privacy" label="Drill · Data &amp; privacy" width={PHONE_W} height={PHONE_H}>
+              <Phone><SettingsPrivacyHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="set-wipe" label="Session-wipe overlay" width={PHONE_W} height={PHONE_H}>
+              <Phone><SettingsWipeHost/></Phone>
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection id="android" title="6 · Android parity"
+                     subtitle="Same product, Material chrome. Dashboard, AI drafts list, and AI approval shown on a Pixel-class frame (412x892) with the gesture nav bar; safe-area tokens auto-swap to 40 / 24.">
+            <DCArtboard id="a-dash" label="Portfolio · Android" width={PHONE_A_W} height={PHONE_A_H}>
+              <PhoneAndroid><DashboardScreen variant="default"/></PhoneAndroid>
+            </DCArtboard>
+            <DCArtboard id="a-ai-list" label="AI drafts · Android" width={PHONE_A_W} height={PHONE_A_H}>
+              <PhoneAndroid><AiListScreen/></PhoneAndroid>
+            </DCArtboard>
+            <DCArtboard id="a-ai-draft" label="Review draft · Android" width={PHONE_A_W} height={PHONE_A_H}>
+              <PhoneAndroid><AiDraftScreen variant="draft"/></PhoneAndroid>
+            </DCArtboard>
+            <DCArtboard id="a-ai-approved" label="Approved · Android" width={PHONE_A_W} height={PHONE_A_H}>
+              <PhoneAndroid><AiDraftScreen variant="approved"/></PhoneAndroid>
+            </DCArtboard>
+          </DCSection>
+
+          <DCSection id="briefing" title="7 · Briefing generator + PDF preview"
+                     subtitle="Generate AO / PM / Leadership briefings end-to-end on mobile. Index → builder → generating → PDF preview → share. All narrative AI-DRAFTED until ISSM approval.">
+            <DCArtboard id="brf-index" label="Briefings index" width={PHONE_W} height={PHONE_H}>
+              <Phone><BriefingIndexHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="brf-builder" label="Builder · configure" width={PHONE_W} height={PHONE_H}>
+              <Phone><BriefingBuilderHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="brf-generating" label="Generating · loading" width={PHONE_W} height={PHONE_H}>
+              <Phone><BriefingGeneratingHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="brf-preview" label="PDF preview · gate locked" width={PHONE_W} height={PHONE_H}>
+              <Phone><BriefingPreviewHost/></Phone>
+            </DCArtboard>
+            <DCArtboard id="brf-share" label="Approved · share" width={PHONE_W} height={PHONE_H}>
+              <Phone><BriefingShareHost/></Phone>
+            </DCArtboard>
+          </DCSection>
+        </DesignCanvas>
+      );
+    }
+
+    /* ---- Briefing host wrappers — give each sub-screen the full m-screen chrome ----
+       The briefing components live inside the prototype's ProtoBriefing router,
+       so to render a single sub-state standalone we wrap it in the same
+       MBannerTop / MBannerBottom shell used by ProtoApp. */
+    function BriefingHost({ children }) {
+      return (
+        <div className="m-screen">
+          <MBannerTop />
+          {children}
+          <MBannerBottom />
+        </div>
+      );
+    }
+    function BriefingIndexHost() {
+      return <BriefingHost><BriefingIndex onTab={() => {}} onNew={() => {}} onOpenLast={() => {}}/></BriefingHost>;
+    }
+    function BriefingBuilderHost() {
+      const [cfg, setCfg] = React.useState({
+        audience: "AO", range: "30d",
+        sections: { posture: true, ato: true, ai: true, decisions: true, risk: false },
+      });
+      return <BriefingHost><BriefingBuilder cfg={cfg} setCfg={setCfg} onBack={() => {}} onGenerate={() => {}}/></BriefingHost>;
+    }
+    function BriefingGeneratingHost() {
+      const cfg = { audience: "AO", range: "30d", sections: { posture: true, ato: true, ai: true, decisions: true, risk: false } };
+      return <BriefingHost><BriefingGenerating cfg={cfg}/></BriefingHost>;
+    }
+    function BriefingPreviewHost() {
+      const [page, setPage] = React.useState(0);
+      return <BriefingHost><BriefingPreview page={page} setPage={setPage} onBack={() => {}} onShare={() => {}}/></BriefingHost>;
+    }
+    function BriefingShareHost() {
+      return <BriefingHost><BriefingShare onBack={() => {}} onDone={() => {}}/></BriefingHost>;
+    }
+
+    /* ---- Settings host wrappers (use the same m-screen shell) ---- */
+    function SettingsOverviewHost() {
+      return <BriefingHost><SettingsOverview onTab={() => {}} onSection={() => {}} onShowWipe={() => {}} onSignOut={() => {}} notifOn={3}/></BriefingHost>;
+    }
+    function SettingsAccountHost() {
+      return <BriefingHost><SettingsDrill title="Account" eyebrow="ROLES · ORG · AUTH PACKAGE" onBack={() => {}}><AccountPanel/></SettingsDrill></BriefingHost>;
+    }
+    function SettingsSecurityHost() {
+      const [reauth, setReauth] = React.useState(true);
+      return <BriefingHost><SettingsDrill title="Security &amp; session" eyebrow="CREDENTIALS · LOCK · WIPE" onBack={() => {}}><SecurityPanel reauthAi={reauth} setReauthAi={setReauth} onShowWipe={() => {}}/></SettingsDrill></BriefingHost>;
+    }
+    function SettingsNotifHost() {
+      const [notif, setNotif] = React.useState({ ato: true, poam: true, ai: true, workflow: false });
+      return <BriefingHost><SettingsDrill title="Notifications" eyebrow="WHEN WE PING YOU" onBack={() => {}}><NotifPanel notif={notif} setNotif={setNotif}/></SettingsDrill></BriefingHost>;
+    }
+    function SettingsPrivacyHost() {
+      return <BriefingHost><SettingsDrill title="Data &amp; privacy" eyebrow="AUDIT · SCOPE · ABOUT" onBack={() => {}}><PrivacyPanel/></SettingsDrill></BriefingHost>;
+    }
+    function SettingsWipeHost() {
+      return <BriefingHost>
+        <SettingsOverview onTab={() => {}} onSection={() => {}} onShowWipe={() => {}} onSignOut={() => {}} notifOn={3}/>
+        <ProtoWipeOverlay onCancel={() => {}} onSignOut={() => {}}/>
+      </BriefingHost>;
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ art.name }} v{{ art.version }} &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; {{ art.name }}{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">{{ tpl.category_name if tpl else 'Standalone artifact' }}</div>
+    <h1>{{ art.name }} <span class="acronym">v{{ art.version }}</span></h1>
+    <p class="subtitle">
+      <span class="format-chip format-{{ art.type }}">{{ art.type }}</span>
+      {% if art.generated_from_template %}<span class="gen-chip">generated from live data</span>{% else %}<span class="muted-small">manually uploaded</span>{% endif %}
+      &middot; uploaded {{ art.upload_date.strftime('%Y-%m-%d') if art.upload_date else '-' }} by {{ art.uploaded_by or '?' }}
+    </p>
+  </div>
+  <div class="head-actions">
+    <a href="{{ url_for('system_artifact_download', system_id=system.system_id, artifact_id=art.artifact_id) }}" class="btn btn-primary">Download</a>
+    <a href="{{ url_for('system_artifacts', system_id=system.system_id) }}" class="btn btn-ghost">&larr; Register</a>
+  </div>
+</div>
+
+{% if flags %}
+<div class="flag-banner flag-banner-warn">
+  <strong>Flags:</strong>
+  {% for f in flags %}<span class="flag flag-{{ f }}">{{ f.replace('_',' ') }}</span>{% endfor %}
+</div>
+{% endif %}
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Approval (FR-5.4)</h2></div>
+    <dl class="kv">
+      <dt>Status</dt><dd><span class="status-pill status-{{ art.approval_status }}">{{ status_labels[art.approval_status] }}</span></dd>
+      <dt>Approver</dt><dd>{{ art.approver or '-' }}</dd>
+      <dt>Approved date</dt><dd>{{ art.approved_date.strftime('%Y-%m-%d') if art.approved_date else '-' }}</dd>
+      <dt>Expiration</dt><dd>{{ art.expiration_date.strftime('%Y-%m-%d') if art.expiration_date else '-' }}</dd>
+    </dl>
+    <form method="post" action="{{ url_for('system_artifact_approve', system_id=system.system_id, artifact_id=art.artifact_id) }}" class="form form-compact">
+      <div class="row2">
+        <label>Set status
+          <select name="status">
+            {% for s in statuses %}
+              <option value="{{ s }}" {% if s == art.approval_status %}selected{% endif %}>{{ status_labels[s] }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Expiration date
+          <input type="date" name="expiration_date" value="{{ art.expiration_date.isoformat() if art.expiration_date else '' }}">
+        </label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Version history</h2></div>
+    <ul class="bullet-list">
+      {% for v in versions %}
+      <li>
+        v{{ v.version }} - <span class="status-pill status-{{ v.approval_status }}">{{ status_labels[v.approval_status] }}</span>
+        - {{ v.upload_date.strftime('%Y-%m-%d') if v.upload_date else '-' }}
+        {% if v.artifact_id == art.artifact_id %}<strong>(this version)</strong>{% else %}
+          <a href="{{ url_for('system_artifact_detail', system_id=system.system_id, artifact_id=v.artifact_id) }}">view</a>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% if art.supersedes_id %}
+      <p class="muted-small">This version supersedes an earlier version of the artifact.</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Control mappings (FR-5.5)</h2></div>
+    <div class="chip-row">
+      {% for cm in mappings %}
+        <a class="ctrl-chip ctrl-chip-link" href="{{ url_for('control_detail', nist_id=cm) }}">{{ cm }}</a>
+      {% endfor %}
+      {% if not mappings %}<span class="muted-small">no mappings</span>{% endif %}
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>eMASS location</h2></div>
+    <div class="emass-loc">{{ art.emass_location or '-' }}</div>
+  </section>
+
+  {% if tpl %}
+  <section class="card grid2-span">
+    <div class="card-head"><h2>Template reference (FR-5.2)</h2></div>
+    <p><strong>Purpose:</strong> {{ tpl.purpose }}</p>
+    <p><strong>Owner:</strong> {{ tpl.owner }}</p>
+    <p><strong>Approval path:</strong> {{ tpl.approval_path }}</p>
+    <p><strong>Completion criteria:</strong> {{ tpl.completion_criteria }}</p>
+    <p><a href="{{ url_for('artifact_template_detail', key=tpl.key) }}">Open template reference</a></p>
+  </section>
+  {% endif %}
+
+</div>
+
+{% endblock %}

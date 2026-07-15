@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <title>RMF Commander · Mobile Prototype (click-through)</title>
+  <link rel="stylesheet" href="mobile.css" />
+  <style>
+    /* Center the phone on a dark stage with a subtle hint about routing. */
+    html, body { background: #06090f; }
+    body { margin: 0; padding: 0; height: 100vh; display: flex; align-items: center; justify-content: center; gap: 48px; }
+    .proto-hint {
+      max-width: 320px;
+      color: rgba(255,255,255,0.6);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .proto-hint .h {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(34,211,238,0.9); margin-bottom: 10px;
+    }
+    .proto-hint h1 {
+      font-size: 28px; font-weight: 700; letter-spacing: -0.014em; line-height: 1.1;
+      color: #f2f5fa; margin: 0 0 16px;
+    }
+    .proto-hint ol { margin: 16px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; }
+    .proto-hint ol li::marker { color: rgba(34,211,238,0.6); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+    .proto-hint code { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: rgba(34,211,238,0.9); background: rgba(34,211,238,0.08); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(34,211,238,0.2); }
+    .proto-foot { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 22px; line-height: 1.6; }
+
+    @media (max-width: 800px) {
+      body { flex-direction: column; padding: 24px; }
+      .proto-hint { order: 2; max-width: 100%; }
+    }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <aside class="proto-hint">
+    <div class="h">CLICK-THROUGH PROTOTYPE</div>
+    <h1>RMF Commander on a single phone.</h1>
+    <p>Tap your way through the same product the canvas presents as static states — onboarding, sign-in, dashboard, AI assistant, settings.</p>
+    <ol>
+      <li>Tap <code>Next</code> through the three onboarding steps.</li>
+      <li>Use the <code>Sign in with CAC/PIV</code> button — derived credential is mocked.</li>
+      <li>From the dashboard, tap the AI-drafted alert <em>or</em> the AI tab to reach the drafts list.</li>
+      <li>Open the AC-2(3) draft, then approve as ISSM to flip the gate.</li>
+      <li>Use the <code>More</code> tab to reach Settings — preview the session-wipe overlay or sign out.</li>
+    </ol>
+    <div class="proto-foot">
+      iPhone 14 frame · 390×844 · dark · UNCLASSIFIED // FOUO
+    </div>
+  </aside>
+
+  <div id="root"></div>
+
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="mobile-components.jsx"></script>
+  <script type="text/babel" src="prototype.jsx"></script>
+  <script type="text/babel" src="prototype-home.jsx"></script>
+  <script type="text/babel" src="prototype-ai.jsx"></script>
+  <script type="text/babel" src="prototype-settings.jsx"></script>
+
+  <script type="text/babel">
+    ReactDOM.createRoot(document.getElementById("root")).render(
+      <IOSDevice dark={true} width={390} height={844}>
+        <ProtoApp />
+      </IOSDevice>
+    );
+  </script>
+</body>
+</html>

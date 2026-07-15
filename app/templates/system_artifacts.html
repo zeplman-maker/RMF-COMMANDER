@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Artifacts &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; Artifact register{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-5.4 / FR-5.6</div>
+    <h1>Artifacts <span class="acronym">{{ system.name }}</span></h1>
+    <p class="subtitle">Generate from any of the 42 templates against live system data, upload manual artifacts,
+       and run them through the approval workflow. Aging and signature flags surface here.</p>
+  </div>
+  <a href="{{ url_for('system_detail', system_id=system.system_id) }}" class="btn btn-ghost">&larr; System</a>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Register summary</h2></div>
+  <div class="status-row">
+    <span class="status-pill status-approved">Approved <strong>{{ summary.approved }}</strong></span>
+    <span class="status-pill status-draft">Draft <strong>{{ summary.draft }}</strong></span>
+    <span class="status-pill status-expiring">Expiring &le; 30d <strong>{{ summary.expiring }}</strong></span>
+    <span class="status-pill status-expired">Expired <strong>{{ summary.expired }}</strong></span>
+    <span class="status-pill status-overdue">Review overdue <strong>{{ summary.review_overdue }}</strong></span>
+    <span class="status-pill status-total">Total <strong>{{ summary.total }}</strong></span>
+  </div>
+</section>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Generate from template (FR-5.3)</h2></div>
+    <p class="muted-small">Pulls live data from System, Control, POAM, Inventory, and Scan tables. Templates without a wired generator are marked <em>manual</em>.</p>
+    <form method="post" action="{{ url_for('system_artifact_generate', system_id=system.system_id) }}" class="form form-compact">
+      <label>Template
+        <select name="template_key" required>
+          <option value="">-- choose --</option>
+          {% for t in templates %}
+            {% if t.generator %}
+              <option value="{{ t.key }}">{{ t.name }} ({{ t.format }}) &middot; {{ t.category_name }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Generate</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Upload artifact (FR-5.4)</h2></div>
+    <p class="muted-small">Use this for any of the 42 templates without a wired generator, or to add a manually-prepared file. Optionally tie the upload to a template key for version tracking.</p>
+    <form method="post" action="{{ url_for('system_artifact_upload', system_id=system.system_id) }}" enctype="multipart/form-data" class="form form-compact">
+      <label>Tie to template (optional)
+        <select name="template_key">
+          <option value="">-- standalone --</option>
+          {% for t in templates %}
+            <option value="{{ t.key }}">{{ t.name }} ({{ t.format }}) &middot; {{ t.category_name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>File
+        <input type="file" name="artifact_file" required>
+      </label>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </div>
+    </form>
+  </section>
+
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Register ({{ items|length }})</h2></div>
+  {% if items %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Name</th><th>Format</th><th>Version</th><th>Status</th><th>Approver</th>
+        <th>Expiration</th><th>Flags</th><th>Origin</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for art, flags in items %}
+      <tr onclick="location.href='{{ url_for('system_artifact_detail', system_id=system.system_id, artifact_id=art.artifact_id) }}'">
+        <td><strong>{{ art.name }}</strong></td>
+        <td><span class="format-chip format-{{ art.type }}">{{ art.type }}</span></td>
+        <td>v{{ art.version }}</td>
+        <td><span class="status-pill status-{{ art.approval_status }}">{{ status_labels[art.approval_status] }}</span></td>
+        <td>{{ art.approver or '-' }}</td>
+        <td>{{ art.expiration_date.strftime('%Y-%m-%d') if art.expiration_date else '-' }}</td>
+        <td>
+          {% for f in flags %}<span class="flag flag-{{ f }}">{{ f.replace('_',' ') }}</span>{% endfor %}
+          {% if not flags %}<span class="muted-small">ok</span>{% endif %}
+        </td>
+        <td>{% if art.generated_from_template %}<span class="gen-chip">generated</span>{% else %}<span class="muted-small">uploaded</span>{% endif %}</td>
+        <td><a href="{{ url_for('system_artifact_detail', system_id=system.system_id, artifact_id=art.artifact_id) }}">open</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty">No artifacts yet. Generate one above or upload a file.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

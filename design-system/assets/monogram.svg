@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  
+  <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"></path>
+  
+  <path d="M32 12 L49 22 L49 42 L32 52 L15 42 L15 22 Z" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.35" stroke-linejoin="round"></path>
+  
+  <text x="32" y="42" font-family="&#39;JetBrains Mono&#39;, ui-monospace, Menlo, monospace" font-size="24" font-weight="700" text-anchor="middle" fill="currentColor" letter-spacing="-1">R</text>
+</svg>

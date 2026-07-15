@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}My queue &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}My queue - aggregated to-do{% endblock %}
+{% block content %}
+
+<div class="page-head no-print">
+  <div>
+    <div class="doc-label">/me/queue</div>
+    <h1>My queue</h1>
+    <p class="subtitle">Aggregated to-do across every system and role you hold.
+       Click any item to jump to the right page.</p>
+  </div>
+  <a href="{{ url_for('me_systems') }}" class="btn btn-ghost">My systems &rarr;</a>
+</div>
+
+<div class="metrics">
+  <div class="metric"><div class="metric-num">{{ grand_total }}</div><div class="metric-lbl">Open items</div></div>
+  <div class="metric"><div class="metric-num">{{ totals.isso }}</div><div class="metric-lbl">ISSO actions</div></div>
+  <div class="metric"><div class="metric-num">{{ totals.issm }}</div><div class="metric-lbl">ISSM actions</div></div>
+  <div class="metric"><div class="metric-num">{{ totals.sca + totals.ao }}</div><div class="metric-lbl">SCA + AO actions</div></div>
+</div>
+
+{% if not cards %}
+<section class="card">
+  <div class="card-head"><h2>Inbox zero</h2></div>
+  {% if assigned_count == 0 %}
+    <p class="empty">You are not assigned to any system yet. Once assigned, your queue will populate from the systems where you are the ISSO, ISSM, SCA, or AO.</p>
+  {% else %}
+    <p class="empty">Nothing waiting on you across {{ assigned_count }} assigned system(s).</p>
+  {% endif %}
+</section>
+{% endif %}
+
+{% for card in cards %}
+<section class="card queue-card">
+  <div class="card-head">
+    <h2>
+      <a href="{{ url_for('system_detail', system_id=card.system.system_id) }}">{{ card.system.name }}</a>
+      <span class="acronym">{{ card.system.acronym or '' }}</span>
+    </h2>
+    <div>
+      {% for role in card.roles %}
+        <span class="user-role role-{{ role|lower }}">{{ role }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if card.isso_items %}
+  <div class="queue-section">
+    <div class="queue-section-title queue-isso">As ISSO ({{ card.isso_items|length }})</div>
+    <ul class="queue-list">
+      {% for it in card.isso_items %}
+      <li class="queue-item queue-{{ it.kind }}">
+        <a href="{{ it.url }}">
+          <div class="queue-item-title">{{ it.title }}</div>
+          <div class="queue-item-detail">{{ it.detail }}</div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if card.issm_items %}
+  <div class="queue-section">
+    <div class="queue-section-title queue-issm">As ISSM ({{ card.issm_items|length }})</div>
+    <ul class="queue-list">
+      {% for it in card.issm_items %}
+      <li class="queue-item queue-{{ it.kind }}">
+        <a href="{{ it.url }}">
+          <div class="queue-item-title">{{ it.title }}</div>
+          <div class="queue-item-detail">{{ it.detail }}</div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if card.sca_items %}
+  <div class="queue-section">
+    <div class="queue-section-title queue-sca">As SCA ({{ card.sca_items|length }})</div>
+    <ul class="queue-list">
+      {% for it in card.sca_items %}
+      <li class="queue-item queue-{{ it.kind }}">
+        <a href="{{ it.url }}">
+          <div class="queue-item-title">{{ it.title }}</div>
+          <div class="queue-item-detail">{{ it.detail }}</div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if card.ao_items %}
+  <div class="queue-section">
+    <div class="queue-section-title queue-ao">As AO ({{ card.ao_items|length }})</div>
+    <ul class="queue-list">
+      {% for it in card.ao_items %}
+      <li class="queue-item queue-{{ it.kind }}">
+        <a href="{{ it.url }}">
+          <div class="queue-item-title">{{ it.title }}</div>
+          <div class="queue-item-detail">{{ it.detail }}</div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</section>
+{% endfor %}
+
+{% endblock %}

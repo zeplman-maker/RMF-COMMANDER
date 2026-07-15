@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}{{ system.name }} &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}{{ system.name }} ({{ system.acronym or '-' }}) &middot; Step {{ system.current_step }}{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">System Workspace</div>
+    <h1>{{ system.name }} {% if system.acronym %}<span class="acronym">{{ system.acronym }}</span>{% endif %}</h1>
+    <p class="subtitle">
+      {{ system.system_type or 'Unspecified type' }} &middot;
+      Impact <strong>{{ system.impact_level or '?' }}</strong> &middot;
+      ATO type <strong>{{ system.ato_type or '?' }}</strong>
+      {% if system.is_nss %}&middot; <span class="pill pill-coral">NSS (CNSSI 1253)</span>{% endif %}
+    </p>
+  </div>
+  <div class="score-block">
+    <div class="score-num">{{ system.completeness_score }}<span>/100</span></div>
+    <div class="score-lbl">ATO package completeness</div>
+  </div>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>RMF lifecycle</h2></div>
+  <div class="step-rail">
+    {% for n, label in rmf_steps %}
+      <a class="step-node {% if n == system.current_step %}active{% elif n < system.current_step %}done{% endif %}"
+         href="{{ url_for('rmf_step', system_id=system.system_id, step=n) }}">
+        <div class="step-num">{{ n }}</div>
+        <div class="step-lbl">{{ label }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="grid2">
+  <section class="card">
+    <div class="card-head"><h2>System metadata</h2></div>
+    <dl class="kv">
+      <dt>Mission</dt><dd>{{ system.mission_desc or 'Not yet documented.' }}</dd>
+      <dt>Boundary</dt><dd>{{ system.boundary_statement or 'Not yet documented.' }}</dd>
+      <dt>FIPS 199 (C/I/A)</dt>
+      <dd>{{ system.cia_confidentiality or '?' }} / {{ system.cia_integrity or '?' }} / {{ system.cia_availability or '?' }}</dd>
+      <dt>Data types</dt><dd>{{ system.data_types or 'None recorded.' }}</dd>
+      <dt>Created</dt><dd>{{ system.created_date.strftime('%Y-%m-%d') if system.created_date else '-' }}</dd>
+    </dl>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Inventory snapshot</h2></div>
+    <div class="inv-mini">
+      <a class="inv-mini-tile" href="{{ url_for('inventory', system_id=system.system_id, type='hardware') }}">
+        <div class="inv-mini-num">{{ inv_counts.hardware }}</div><div class="inv-mini-lbl">Hardware</div></a>
+      <a class="inv-mini-tile" href="{{ url_for('inventory', system_id=system.system_id, type='software') }}">
+        <div class="inv-mini-num">{{ inv_counts.software }}</div><div class="inv-mini-lbl">Software</div></a>
+      <a class="inv-mini-tile" href="{{ url_for('inventory', system_id=system.system_id, type='firmware') }}">
+        <div class="inv-mini-num">{{ inv_counts.firmware }}</div><div class="inv-mini-lbl">Firmware</div></a>
+      <a class="inv-mini-tile" href="{{ url_for('inventory', system_id=system.system_id, type='sbom') }}">
+        <div class="inv-mini-num">{{ inv_counts.sbom }}</div><div class="inv-mini-lbl">SBOM</div></a>
+    </div>
+    <p class="muted-small">Inventory drives CM-8, CM-2, SA-4, SR-3, RA-5 evidence (FR-1.2.6).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>eMASS readiness</h2></div>
+    <p><a href="{{ url_for('system_emass', system_id=system.system_id) }}" class="btn btn-primary">Open eMASS readiness</a></p>
+    <p class="muted-small">Validator findings, common-mistake checks, and bulk CSVs for controls, artifacts, and POA&amp;Ms (FR-3.x).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Controls</h2></div>
+    <p><a href="{{ url_for('system_controls', system_id=system.system_id) }}" class="btn btn-primary">Open control workspace</a></p>
+    <p class="muted-small">Apply NIST SP 800-53 Rev. 5 baseline controls and track implementation (FR-2.3.x, FR-6.x).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Vulnerabilities</h2></div>
+    <p><a href="{{ url_for('vulnerabilities', system_id=system.system_id) }}" class="btn btn-primary">Open vulnerability dashboard</a></p>
+    <p class="muted-small">Import ACAS .nessus and STIG .ckl, auto-draft POA&amp;Ms (FR-8.x).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>POA&amp;Ms</h2></div>
+    <p>{{ poam_count }} entries on register.</p>
+    <p><a href="{{ url_for('poams', system_id=system.system_id) }}" class="btn btn-primary">Open POA&amp;M kanban</a></p>
+    <p class="muted-small">Kanban board, milestones, eMASS-aligned CSV export (FR-7.x).</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Artifacts</h2></div>
+    <p>{{ artifact_count }} artifacts on file.</p>
+    <p><a href="{{ url_for('system_artifacts', system_id=system.system_id) }}" class="btn btn-primary">Open artifact register</a></p>
+    <p class="muted-small">Generate .docx and .xlsx from any of the 42 templates against live system data (FR-5.x).</p>
+  </section>
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}eMASS prep &middot; RMF ATO Navigator{% endblock %}
+{% block ai_context %}eMASS prep hub{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-3.x &middot; pre-eMASS workbench</div>
+    <h1>eMASS prep</h1>
+    <p class="subtitle">Hub for getting your authorization data eMASS-ready: field guides, the 28 most common
+       data-entry mistakes, validator-driven readiness scores, and CSV exports for controls, artifacts, and POA&amp;Ms.</p>
+  </div>
+</div>
+
+<div class="emass-disclaimer">{{ disclaimer }}</div>
+
+<div class="grid2">
+
+  <section class="card">
+    <div class="card-head"><h2>Field guides (FR-3.1)</h2></div>
+    <p>Per-field guidance for every system, control, POA&amp;M, and artifact field that maps into eMASS.</p>
+    <p><a href="{{ url_for('emass_field_guides') }}" class="btn btn-primary">Open field guides</a></p>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Common mistakes (FR-3.3)</h2></div>
+    <p>The 28 most common eMASS data-entry mistakes, grouped by area.</p>
+    <p><a href="{{ url_for('emass_mistakes') }}" class="btn btn-primary">Open mistake reference</a></p>
+  </section>
+
+  <section class="card grid2-span">
+    <div class="card-head"><h2>System readiness</h2><span class="muted-small">FR-3.2 validator output per system</span></div>
+    {% if cards %}
+    <div class="emass-cards">
+      {% for c in cards %}
+      <a class="emass-card" href="{{ url_for('system_emass', system_id=c.system.system_id) }}">
+        <div class="emass-card-head">
+          <div class="emass-card-name">{{ c.system.name }}</div>
+          <div class="emass-card-acronym">{{ c.system.acronym or '-' }}</div>
+        </div>
+        <div class="emass-card-score score-{% if c.score >= 90 %}ok{% elif c.score >= 70 %}warn{% else %}crit{% endif %}">
+          <div class="emass-score-num">{{ c.score }}</div>
+          <div class="emass-score-lbl">readiness</div>
+        </div>
+        <div class="emass-card-counts">
+          <span class="finding-pill finding-error">errors {{ c.summary.error }}</span>
+          <span class="finding-pill finding-warn">warns {{ c.summary.warn }}</span>
+          <span class="finding-pill finding-info">info {{ c.summary.info }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+      <p class="empty">No systems registered yet.</p>
+    {% endif %}
+  </section>
+
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>Bulk exports (FR-3.4)</h2></div>
+  <p class="muted-small">Per-system exports live on each readiness page. The POA&amp;M export sits in the POA&amp;M kanban (Module 7); controls and artifacts CSVs are produced from the readiness page.</p>
+  <ul class="bullet-list">
+    <li>POA&amp;M Register CSV - on the POA&amp;M kanban for each system</li>
+    <li>Controls CSV - on the eMASS readiness page for each system</li>
+    <li>Artifacts CSV - on the eMASS readiness page for each system</li>
+  </ul>
+</section>
+
+{% endblock %}

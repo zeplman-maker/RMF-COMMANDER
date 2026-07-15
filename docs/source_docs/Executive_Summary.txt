@@ -1,0 +1,62 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER Executive Summary
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER Executive Summary
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Executive Summary
+An ISSM managing 26 systems and supporting more than one million end users has no mobile-accessible tool to answer a real-time AO question without returning to a workstation.
+RMF COMMANDER reduces that burden. It gives authorized RMF personnel secure portfolio visibility and AI-assisted drafting support within strict human-review boundaries on managed, enrolled devices. The AI layer assists. It does not decide.
+This proposal requests approval to proceed in two stages. First, a low-risk 90-day read-only pilot using sandbox, test, or mock data. Second, full operational capability only after the prototype demonstrates measurable value, security controls are validated, and the system completes its own RMF authorization path.
+Metric
+Value
+Systems managed by proposing ISSM
+26
+End users supported by AFSVC systems
+1M+
+Comparable tools in the DoW market
+0 identified in proposal
+2. Initial Scope vs. Deferred Scope
+Area
+Initial Scope
+Deferred Scope
+Dashboard
+Read-only ATO status, POA&amp;M counts, control posture, and scan freshness.
+Production eMASS write-back.
+Alerts
+90/60/30-day ATO alerts, POA&amp;M milestone alerts, workflow state awareness.
+Live CVE feed and STIG delta integration.
+AI Drafting
+Draft control statements, POA&amp;M language, and briefings with human approval.
+Automated eMASS artifact submission.
+Security
+Managed devices, derived credentials, no client-side eMASS data persistence.
+Production system data or classified processing.
+Governance
+Monthly AO touchpoints, logs, review gates, and pilot exit criteria.
+Operational authorization decisions.
+3. Decision Requested
+The requested decision is limited and controlled: approve a prototype and 90-day pilot using mock, sandbox, or test data. Production data integration, eMASS write-back, and live operational deployment remain separate future decisions requiring additional AO approval.
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

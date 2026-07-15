@@ -1,0 +1,94 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_card.css">
+<style>
+  .head { display:flex; align-items:baseline; gap:10px; margin-bottom:6px; }
+  .head .h { font-weight:700; font-size:14px; color:var(--fg-1); }
+  .head .sub { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .grp { display:flex; flex-direction:column; gap:8px; }
+  .grp .label { font-family:var(--font-mono); font-size:10px; color:var(--fg-3); letter-spacing:.06em; text-transform:uppercase; }
+
+  .field { display:flex; flex-direction:column; gap:6px; }
+  .field-label { font-family:var(--font-sans); font-size:12.5px; font-weight:500; color:var(--fg-2); letter-spacing:-0.005em; }
+  .field-hint { font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); letter-spacing:.04em; text-transform:uppercase; }
+
+  .input {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--fg-1);
+    background: var(--surface-1);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 120ms;
+  }
+  .input::placeholder { color: var(--fg-4); }
+  .input.hover { border-color: rgba(255,255,255,0.22); }
+  .input.focus { border-color: var(--cyan-400); outline: 2px solid var(--cyan-400); outline-offset:1px; }
+  .input.error { border-color: var(--critical-400); }
+  .input.disabled { opacity:.4; cursor:not-allowed; }
+
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+
+  /* search */
+  .search { position:relative; }
+  .search .ico { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--fg-3); }
+  .search .input { padding-left:36px; }
+  .search .kbd { position:absolute; right:10px; top:50%; transform:translateY(-50%); font-family:var(--font-mono); font-size:10.5px; color:var(--fg-3); border:1px solid var(--stroke-2); border-radius:4px; padding:2px 6px; background:var(--surface-2); }
+
+  /* select */
+  .select { position:relative; }
+  .select::after { content:''; position:absolute; right:14px; top:50%; width:8px; height:8px; border-right:1.5px solid var(--fg-3); border-bottom:1.5px solid var(--fg-3); transform:translateY(-70%) rotate(45deg); pointer-events:none; }
+  .select .input { padding-right:36px; appearance:none; }
+</style></head>
+<body>
+<div class="card">
+  <div class="head"><div class="h">Form Inputs</div><div class="sub">TEXT · SEARCH · SELECT · STATES</div></div>
+
+  <div class="row">
+    <div class="field">
+      <label class="field-label">System name</label>
+      <input class="input" placeholder="AFSVC-VTOS-001" />
+      <span class="field-hint">REQUIRED · MOCK DATA ONLY</span>
+    </div>
+    <div class="field">
+      <label class="field-label">Hovered</label>
+      <input class="input hover" value="AFSVC-VTOS-001" />
+      <span class="field-hint">DEFAULT → HOVER</span>
+    </div>
+    <div class="field">
+      <label class="field-label">Focused</label>
+      <input class="input focus" value="AFSVC-VTOS-001" />
+      <span class="field-hint">2 PX CYAN RING</span>
+    </div>
+    <div class="field">
+      <label class="field-label">Error</label>
+      <input class="input error" value="afsvc-bad-id" />
+      <span class="field-hint" style="color:var(--critical-400)">SYSTEM ID NOT RECOGNIZED</span>
+    </div>
+  </div>
+
+  <div class="grp">
+    <div class="label">Command-K query (NL query palette)</div>
+    <div class="search">
+      <svg class="ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input class="input" placeholder='How many systems have CAT I findings older than 30 days?' />
+      <div class="kbd">⌘K</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label class="field-label">Severity filter</label>
+      <div class="select"><select class="input"><option>All severities</option><option>CAT I</option><option>CAT II</option><option>CAT III</option></select></div>
+    </div>
+    <div class="field">
+      <label class="field-label">Disabled</label>
+      <input class="input disabled" value="Production eMASS (locked)" disabled />
+      <span class="field-hint">REQUIRES AO APPROVAL</span>
+    </div>
+  </div>
+</div>
+</body></html>

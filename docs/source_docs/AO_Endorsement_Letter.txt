@@ -1,0 +1,58 @@
+PROPOSAL TO THE AUTHORIZING OFFICIAL
+RMF COMMANDER AO Endorsement Letter
+AI-Assisted RMF Portfolio Visibility and Compliance Support Platform
+<w:tblPr><w:tblStyle w:val="TableGrid"/><w:tblW w:type="auto" w:w="0"/><w:jc w:val="center"/><w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/></w:tblPr><w:tblGrid><w:gridCol w:w="5184"/><w:gridCol w:w="5184"/></w:tblGrid><w:tr><w:trPr><w:tblHeader w:val="true"/></w:trPr><w:tc><w:tcPr><w:tcW w:type="dxa" w:w="2376"/><w:shd w:fill="1F4E79"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:r/><w:r><w:rPr><w:b/><w:color w:val="FFFFFF"/><w:sz w:val="18"/></w:rPr><w:t>Field
+Value
+Document Type
+RMF COMMANDER AO Endorsement Letter
+Version
+1.0 - Updated Standalone Document
+Date
+22 May 2026
+Prepared By
+LEO CHRISTIE, NH-III, Information System Security Manager
+Organization
+Air Force Services Center, VTOS / Cybersecurity Division, JBSA-Lackland, Texas 78236
+Submitted To
+FRANCISCO SALGUERO, SES, NAFI Authorizing Official, USAF HAF AF/A1X
+Classification
+UNCLASSIFIED // FOR OFFICIAL USE ONLY
+AI RMF Alignment
+NIST AI RMF 1.0 - GOVERN, MAP, MEASURE, MANAGE functions
+1. Purpose
+This letter provides the Authorizing Official endorsement needed to begin controlled Phase 1 activities for RMF COMMANDER and to support submission of the eMASS REST API access request for test and sandbox provisioning only.
+2. Endorsement Statement
+I endorse the request to evaluate RMF COMMANDER through a controlled prototype and 90-day pilot using mock, sandbox, or test data only. This endorsement does not authorize production eMASS data access, eMASS write-back, artifact submission, operational deployment, or processing of classified information.
+The pilot is authorized to validate portfolio visibility, alerting, AI-assisted draft quality, role-scoped access controls, audit logging, and user value. All AI-generated content remains advisory and requires ISSM or ISSO review before use.
+3. Authorized Activities
+Controlled prototype development and 90-day pilot execution.
+Stakeholder validation with ISSMs, ISSOs, AO support staff, compliance leadership, and technical reviewers.
+Architecture review, test data coordination, and security boundary validation.
+eMASS REST API test/sandbox access request submission to the DISA eMASS Program Office.
+DoD cloud tenant planning, MDM development-device enrollment coordination, and eMASS registration for RMF COMMANDER itself.
+Thirty-day AO status touchpoints throughout the pilot.
+4. Restrictions
+No production eMASS data during the pilot.
+No eMASS write-back or artifact submission.
+No classified data processing.
+No public-facing access.
+No operational authorization decisions made by the application or AI layer.
+No bypass of the human approval gate for AI-generated content.
+5. Signature
+NAFI Authorizing Official
+FRANCISCO SALGUERO, SES
+USAF HAF AF/A1X
+Date: _______________
+Requesting ISSM
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center
+Date: _______________
+Point of Contact:
+LEO CHRISTIE
+NH-III, Information System Security Manager
+Air Force Services Center, VTOS
+JBSA-Lackland, Texas 78236
+Commercial: [Phone Number]
+DSN: [DSN Number]
+Email: [Email Address]

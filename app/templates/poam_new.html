@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}New POA&M &middot; {{ system.name }}{% endblock %}
+{% block ai_context %}{{ system.name }} &middot; New POA&M{% endblock %}
+{% block ai_system %}{{ system.system_id }}{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <div class="doc-label">FR-7.1</div>
+    <h1>New POA&amp;M</h1>
+    <p class="subtitle">Captures every eMASS-aligned field. Critical and High vulnerability findings
+       auto-create draft POA&amp;Ms; this form is for manual entries or refining an auto-draft.</p>
+  </div>
+  <a href="{{ url_for('poams', system_id=system.system_id) }}" class="btn btn-ghost">&larr; Register</a>
+</div>
+
+<form method="post" class="card form">
+
+  <fieldset>
+    <legend>Weakness</legend>
+    <label>Weakness description <span class="req">*</span>
+      <textarea name="weakness" rows="3" required maxlength="400"></textarea>
+    </label>
+    <div class="row3">
+      <label>Source of discovery
+        <select name="source">
+          <option value="">-- select --</option>
+          {% for s in sources %}<option>{{ s }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Severity
+        <select name="severity">
+          <option value="">-- select --</option>
+          {% for s in severities %}<option>{{ s }}</option>{% endfor %}
+        </select>
+      </label>
+      <label>Risk level
+        <select name="risk_level">
+          <option value="">-- select --</option>
+          <option>High</option><option>Moderate</option><option>Low</option>
+        </select>
+      </label>
+    </div>
+    <label>Affected control (NIST 800-53 ID)
+      <input name="control_nist_id" placeholder="e.g. AC-2 or RA-5">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Analysis</legend>
+    <label>Root cause
+      <textarea name="root_cause" rows="3"></textarea>
+    </label>
+    <label>Resources required
+      <textarea name="resources_required" rows="2" placeholder="People, time, budget."></textarea>
+    </label>
+    <label>Validation method
+      <input name="validation_method" placeholder="Re-scan, control test, evidence review.">
+    </label>
+    <label>Residual risk statement
+      <textarea name="residual_risk" rows="2"></textarea>
+    </label>
+    <label>Comments
+      <textarea name="comments" rows="2"></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Schedule</legend>
+    <div class="row2">
+      <label>Date identified
+        <input type="date" name="date_identified">
+      </label>
+      <label>Scheduled completion
+        <input type="date" name="scheduled_completion">
+      </label>
+    </div>
+    <p class="muted-small">Milestones can be added on the detail page after creation.</p>
+  </fieldset>
+
+  <div class="form-actions">
+    <a href="{{ url_for('poams', system_id=system.system_id) }}" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">Create POA&amp;M</button>
+  </div>
+</form>
+
+{% endblock %}
