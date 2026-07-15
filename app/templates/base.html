@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <title>{% block title %}RMF ATO Navigator{% endblock %}</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -160,7 +161,8 @@
     try {
       const res = await fetch('/api/ai-chat', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+                  'X-CSRFToken': (document.querySelector('meta[name="csrf-token"]') || {}).content},
         body: JSON.stringify({mode: activeMode, prompt: prompt, system_id: sysId})
       });
       const data = await res.json();
@@ -218,6 +220,22 @@
     return wrap;
   }
 })();
+</script>
+<script>
+// CSRF: stamp the token onto every same-origin POST form just before it submits,
+// so templates don't each need a hidden field. Runs in the capture phase.
+document.addEventListener('submit', function (e) {
+  var f = e.target;
+  if (f && f.method && f.method.toLowerCase() === 'post' &&
+      !f.querySelector('input[name="csrf_token"]')) {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta) {
+      var i = document.createElement('input');
+      i.type = 'hidden'; i.name = 'csrf_token'; i.value = meta.content;
+      f.appendChild(i);
+    }
+  }
+}, true);
 </script>
 </body>
 </html>

@@ -25,6 +25,8 @@ from __future__ import annotations
 import csv
 import io
 import json
+import os
+import secrets
 import uuid
 from datetime import datetime, timezone
 
@@ -32,6 +34,7 @@ from functools import wraps
 from flask import (Flask, abort, flash, g, jsonify, redirect, render_template,
                    request, session, url_for)
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from controls_catalog_data import CATALOG as CATALOG_SEED, FAMILIES as FAMILIES_MAP
@@ -43,10 +46,31 @@ import ai_provider
 # App + DB setup
 # ---------------------------------------------------------------------------
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "dev-only-not-for-production"
+
+# SECRET_KEY: read from the environment. If unset, generate a random per-process
+# key so the app still boots for local use, but sessions won't survive a restart
+# and a warning is printed. Set SECRET_KEY in the environment for any real deployment.
+_secret = os.environ.get("SECRET_KEY")
+if not _secret:
+    _secret = secrets.token_hex(32)
+    print("WARNING: SECRET_KEY not set - using a random key. "
+          "Sessions will reset on restart. Set SECRET_KEY for production.")
+app.config["SECRET_KEY"] = _secret
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["MAX_CONTENT_LENGTH"] = 500 * 1024 * 1024  # NFR file size cap
+
+# Session cookie hardening. SESSION_COOKIE_SECURE is opt-in via env so local
+# http development still works; enable it when serving over HTTPS.
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get(
+    "SESSION_COOKIE_SECURE", "").lower() in ("1", "true", "yes")
+
+# CSRF protection for all state-changing (POST/PUT/PATCH/DELETE) requests.
+# Forms include a hidden csrf_token; AJAX sends it via the X-CSRFToken header.
+csrf = CSRFProtect(app)
 
 db = SQLAlchemy(app)
 
@@ -1397,9 +1421,16 @@ def ai_status():
 # Module 5 - Artifact library + .docx / .xlsx generators (FR-5.x)
 # ---------------------------------------------------------------------------
 import os as _os
+from werkzeug.utils import secure_filename
 ARTIFACT_STORAGE_DIR = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
                                       "artifacts_storage")
 _os.makedirs(ARTIFACT_STORAGE_DIR, exist_ok=True)
+
+# Only these extensions may be uploaded as artifacts / evidence.
+ALLOWED_UPLOAD_EXTENSIONS = {
+    "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", "md",
+    "png", "jpg", "jpeg", "zip", "xml", "json", "nessus", "ckl",
+}
 
 ARTIFACT_APPROVAL_STATUSES = ["draft", "in_review", "approved",
                               "rejected", "superseded"]
@@ -1566,7 +1597,13 @@ def system_artifact_upload(system_id):
         return redirect(url_for("system_artifacts", system_id=s.system_id))
 
     art_id = uid()
-    safe_name = file.filename.replace("/", "_").replace("\\", "_")
+    # Reject anything not on the allowlist, then sanitize the name with
+    # werkzeug.secure_filename to strip path traversal and unsafe characters.
+    incoming_ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+    if incoming_ext not in ALLOWED_UPLOAD_EXTENSIONS:
+        flash(f"File type '.{incoming_ext or '?'}' is not allowed.", "err")
+        return redirect(url_for("system_artifacts", system_id=s.system_id))
+    safe_name = secure_filename(file.filename) or f"{art_id}.{incoming_ext}"
     storage_path = _os.path.join(ARTIFACT_STORAGE_DIR, f"{art_id}_{safe_name}")
     file.save(storage_path)
 
@@ -2541,4 +2578,7 @@ with app.app_context():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    # Debug is OFF by default. The Werkzeug debugger allows remote code execution,
+    # so only enable it locally by setting FLASK_DEBUG=1.
+    debug = os.environ.get("FLASK_DEBUG", "").lower() in ("1", "true", "yes")
+    app.run(debug=debug, host="127.0.0.1", port=5000)
