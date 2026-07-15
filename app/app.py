@@ -35,7 +35,7 @@ from flask import (Flask, abort, flash, g, jsonify, redirect, render_template,
                    request, session, url_for)
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
-from sqlalchemy import event
+from sqlalchemy import event, or_
 from sqlalchemy.engine import Engine
 from controls_catalog_data import CATALOG as CATALOG_SEED, FAMILIES as FAMILIES_MAP
 from artifact_templates_data import TEMPLATES as ARTIFACT_TEMPLATES, CATEGORIES as ARTIFACT_CATEGORIES, get_template as get_template_def
@@ -1469,6 +1469,60 @@ def artifacts():
     return render_template("artifacts.html", categories=ARTIFACT_CATEGORIES,
                             by_category=by_cat,
                             total=len(ARTIFACT_TEMPLATES))
+
+
+@app.route("/controls")
+@login_required
+def controls():
+    """FR-6.1 / FR-6.3 / FR-6.4 - NIST SP 800-53 Rev. 5 catalog browser."""
+    search = (request.args.get("q") or "").strip()
+    active_family = (request.args.get("family") or "").strip() or None
+    active_baseline = (request.args.get("baseline") or "").strip() or None
+    families = []
+    for code, name in FAMILIES_MAP.items():
+        fam_q = ControlCatalog.query.filter_by(family=code)
+        count = fam_q.count()
+        if not count:
+            continue
+        families.append((code, {
+            "name": name, "count": count,
+            "low": fam_q.filter_by(baseline_low=True).count(),
+            "mod": fam_q.filter_by(baseline_mod=True).count(),
+            "high": fam_q.filter_by(baseline_high=True).count(),
+        }))
+    q = ControlCatalog.query
+    if active_family:
+        q = q.filter_by(family=active_family)
+    if active_baseline == "low":
+        q = q.filter_by(baseline_low=True)
+    elif active_baseline == "moderate":
+        q = q.filter_by(baseline_mod=True)
+    elif active_baseline == "high":
+        q = q.filter_by(baseline_high=True)
+    if search:
+        like = f"%{search}%"
+        q = q.filter(or_(ControlCatalog.nist_id.ilike(like),
+                         ControlCatalog.title.ilike(like),
+                         ControlCatalog.statement.ilike(like)))
+    controls_list = q.order_by(ControlCatalog.nist_id).all()
+    return render_template("controls.html", total=ControlCatalog.query.count(),
+                           families=families, controls=controls_list,
+                           active_family=active_family,
+                           active_baseline=active_baseline, search=search)
+
+
+@app.route("/controls/<nist_id>")
+@login_required
+def control_detail(nist_id):
+    """FR-6.2 - control deep-dive."""
+    c = ControlCatalog.query.get_or_404(nist_id)
+    return render_template("control_detail.html", c=c,
+                           artifacts=json.loads(c.expected_artifacts or "[]"),
+                           evidence=json.loads(c.evidence_examples or "[]"),
+                           methods=json.loads(c.assessment_methods or "[]"),
+                           roles=json.loads(c.responsible_roles or "[]"),
+                           mistakes=json.loads(c.common_mistakes or "[]"),
+                           triggers=json.loads(c.poam_triggers or "[]"))
 
 
 @app.route("/artifacts/<key>")
