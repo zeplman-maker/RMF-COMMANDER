@@ -743,7 +743,7 @@ function pad3(n) {
 
 // Mock systems dataset — 26 systems to match the proposal scale
 const MOCK_SYSTEMS = [{
-  id: 'AFSVC-FITNESS-WEB-01',
+  id: 'MSC-FITNESS-WEB-01',
   title: 'Fitness portal',
   daysToATO: 274,
   poam: {
@@ -754,7 +754,7 @@ const MOCK_SYSTEMS = [{
   scanDays: 2,
   cat: 'MOD·LOW·LOW'
 }, {
-  id: 'AFSVC-LODGING-API-04',
+  id: 'MSC-LODGING-API-04',
   title: 'Lodging reservations API',
   daysToATO: 52,
   poam: {
@@ -765,7 +765,7 @@ const MOCK_SYSTEMS = [{
   scanDays: 6,
   cat: 'MOD·MOD·LOW'
 }, {
-  id: 'AFSVC-MWR-INTRANET-02',
+  id: 'MSC-MWR-INTRANET-02',
   title: 'MWR intranet',
   daysToATO: 23,
   poam: {
@@ -776,7 +776,7 @@ const MOCK_SYSTEMS = [{
   scanDays: 11,
   cat: 'MOD·MOD·MOD'
 }, {
-  id: 'AFSVC-CHILDCARE-WEB-09',
+  id: 'MSC-CHILDCARE-WEB-09',
   title: 'Childcare scheduling',
   daysToATO: 198,
   poam: {
@@ -787,7 +787,7 @@ const MOCK_SYSTEMS = [{
   scanDays: 4,
   cat: 'LOW·LOW·LOW'
 }, {
-  id: 'AFSVC-FOODSVC-POS-07',
+  id: 'MSC-FOODSVC-POS-07',
   title: 'Food services POS',
   daysToATO: 67,
   poam: {
@@ -798,7 +798,7 @@ const MOCK_SYSTEMS = [{
   scanDays: 8,
   cat: 'MOD·LOW·LOW'
 }, {
-  id: 'AFSVC-CEMETERY-DB-11',
+  id: 'MSC-CEMETERY-DB-11',
   title: 'Cemetery records DB',
   daysToATO: 312,
   poam: {
@@ -812,13 +812,13 @@ const MOCK_SYSTEMS = [{
 const MOCK_ALERTS = [{
   id: 1,
   tone: 'crit',
-  title: 'AFSVC-MWR-INTRANET-02 — ATO expires in 23 days',
-  meta: 'Renewal package not yet drafted. Assigned: L. Christie (ISSM).',
+  title: 'MSC-MWR-INTRANET-02 — ATO expires in 23 days',
+  meta: 'Renewal package not yet drafted. Assigned: J. Calloway (ISSM).',
   time: '08:42 CT'
 }, {
   id: 2,
   tone: 'warn',
-  title: 'AFSVC-LODGING-API-04 — 60-day ATO window opened',
+  title: 'MSC-LODGING-API-04 — 60-day ATO window opened',
   meta: 'POA&M slip: AC-2 control review overdue 4 days.',
   time: '07:15 CT'
 }, {
@@ -830,13 +830,13 @@ const MOCK_ALERTS = [{
 }, {
   id: 4,
   tone: 'warn',
-  title: 'AFSVC-FOODSVC-POS-07 — Scan freshness past 7 days',
+  title: 'MSC-FOODSVC-POS-07 — Scan freshness past 7 days',
   meta: 'ACAS Tenable scan due. Next scheduled: 24 May.',
   time: 'Yesterday'
 }, {
   id: 5,
   tone: 'ok',
-  title: 'AFSVC-CEMETERY-DB-11 — Continuous monitoring nominal',
+  title: 'MSC-CEMETERY-DB-11 — Continuous monitoring nominal',
   meta: 'No outstanding POA&Ms above LOW. Last assessment: 11 May.',
   time: '21 May'
 }];
@@ -844,14 +844,14 @@ const MOCK_POAMS = [{
   id: 'POAM-2024-031',
   sev: 'HIGH',
   title: 'AC-2 — Privileged account inventory not reviewed within 30-day cadence',
-  owner: 'L. Christie',
+  owner: 'J. Calloway',
   milestone: '15 Jun 2026',
   status: 'OPEN'
 }, {
   id: 'POAM-2024-029',
   sev: 'HIGH',
   title: 'IA-5 — Service account password rotation not automated for 4 accounts',
-  owner: 'L. Christie',
+  owner: 'J. Calloway',
   milestone: '01 Jul 2026',
   status: 'OPEN'
 }, {
@@ -1146,9 +1146,9 @@ function TopBar({
     className: "user"
   }, /*#__PURE__*/React.createElement("span", {
     className: "avatar"
-  }, "LC"), /*#__PURE__*/React.createElement("div", {
+  }, "JC"), /*#__PURE__*/React.createElement("div", {
     className: "meta"
-  }, /*#__PURE__*/React.createElement("b", null, "Leo Christie"), /*#__PURE__*/React.createElement("span", null, "ISSM \xB7 NH-III")))));
+  }, /*#__PURE__*/React.createElement("b", null, "Jordan Calloway"), /*#__PURE__*/React.createElement("span", null, "ISSM \xB7 NH-III")))));
 }
 Object.assign(window, {
   Sidebar,
@@ -1252,7 +1252,7 @@ function Dashboard({
     className: "page"
   }, "Portfolio overview"), /*#__PURE__*/React.createElement("div", {
     className: "page-subtitle"
-  }, "Air Force Services Center \xB7 VTOS \xB7 26 systems \xB7 1M+ end users")), /*#__PURE__*/React.createElement("div", {
+  }, "Mission Support Command \xB7 MSC \xB7 26 systems \xB7 1M+ end users")), /*#__PURE__*/React.createElement("div", {
     className: "actions-row"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-secondary"
@@ -1290,7 +1290,7 @@ function Dashboard({
     label: "ATO \u2264 30 days",
     value: "1",
     valueColor: "var(--status-crit)",
-    sub: "AFSVC-MWR-INTRANET-02"
+    sub: "MSC-MWR-INTRANET-02"
   }), /*#__PURE__*/React.createElement(KpiCard, {
     label: "Open POA&Ms",
     value: "47",
@@ -1454,15 +1454,15 @@ function SystemDetail({
       color: 'var(--slate-500)',
       width: '40%'
     }
-  }, "System owner"), /*#__PURE__*/React.createElement("td", null, "AFSVC / VTOS")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "System owner"), /*#__PURE__*/React.createElement("td", null, "Mission Support Command / MSC")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     style: {
       color: 'var(--slate-500)'
     }
-  }, "ISSM"), /*#__PURE__*/React.createElement("td", null, "Leo Christie \xB7 NH-III")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "ISSM"), /*#__PURE__*/React.createElement("td", null, "Jordan Calloway \xB7 NH-III")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     style: {
       color: 'var(--slate-500)'
     }
-  }, "Authorizing Official"), /*#__PURE__*/React.createElement("td", null, "Francisco Salguero \xB7 SES \xB7 HAF AF/A1X")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "Authorizing Official"), /*#__PURE__*/React.createElement("td", null, "Daniel Whitfield \xB7 SES")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     style: {
       color: 'var(--slate-500)'
     }
@@ -1641,11 +1641,11 @@ function SystemDetail({
     className: "mono"
   }, "18 May 2026"), /*#__PURE__*/React.createElement("td", null, "POA&M-2024-029 milestone slipped 4 days"), /*#__PURE__*/React.createElement("td", null, "R. Mendez \xB7 ISSO")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     className: "mono"
-  }, "14 May 2026"), /*#__PURE__*/React.createElement("td", null, "SI-4 control statement approved (AI-assisted)"), /*#__PURE__*/React.createElement("td", null, "L. Christie \xB7 ISSM")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "14 May 2026"), /*#__PURE__*/React.createElement("td", null, "SI-4 control statement approved (AI-assisted)"), /*#__PURE__*/React.createElement("td", null, "J. Calloway \xB7 ISSM")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     className: "mono"
   }, "11 May 2026"), /*#__PURE__*/React.createElement("td", null, "SCA assessment closed \xB7 SAR uploaded"), /*#__PURE__*/React.createElement("td", null, "K. Patel \xB7 SCA")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     className: "mono"
-  }, "02 May 2026"), /*#__PURE__*/React.createElement("td", null, "Continuous monitoring strategy reviewed"), /*#__PURE__*/React.createElement("td", null, "L. Christie \xB7 ISSM")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+  }, "02 May 2026"), /*#__PURE__*/React.createElement("td", null, "Continuous monitoring strategy reviewed"), /*#__PURE__*/React.createElement("td", null, "J. Calloway \xB7 ISSM")), /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
     className: "mono"
   }, "28 Apr 2026"), /*#__PURE__*/React.createElement("td", null, "System registered in RMF Commander pilot tenant"), /*#__PURE__*/React.createElement("td", null, "System"))))));
 }
@@ -1659,13 +1659,13 @@ Object.assign(window, {
 const SAMPLE_DRAFTS = [{
   id: 'd1',
   target: 'AC-12 control statement',
-  system: 'AFSVC-LODGING-API-04',
+  system: 'MSC-LODGING-API-04',
   grounding: 'NIST SP 800-53 r5 · AC-12 · CNSSI 1253',
   body: 'The system terminates user sessions after 15 minutes of inactivity. Re-authentication via CAC/PIV-derived credential is required to resume the session. Background-state sessions are wiped after 5 minutes per the platform mobile baseline.'
 }, {
   id: 'd2',
   target: 'POA&M-2024-029 mitigation language',
-  system: 'AFSVC-LODGING-API-04',
+  system: 'MSC-LODGING-API-04',
   grounding: 'NIST SP 800-53 r5 · IA-5 · Open POA&M-2024-029',
   body: 'Mitigation: implement automated service-account password rotation via HashiCorp Vault dynamic secrets for the four affected accounts (svc-api, svc-batch, svc-replication, svc-monitor). Target: 01 Jul 2026. Interim compensating control: manual rotation every 30 days with documented attestation by ISSO.'
 }, {
@@ -1673,7 +1673,7 @@ const SAMPLE_DRAFTS = [{
   target: 'AO touchpoint summary — May 2026',
   system: 'Portfolio',
   grounding: 'Authorized eMASS dataset · 22 May 2026 snapshot',
-  body: 'Portfolio posture this period: 22 of 26 systems within ATO window of greater than 90 days. One system (AFSVC-MWR-INTRANET-02) at 23 days; renewal package in draft. Four open HIGH POA&Ms across three systems; mitigation plans on schedule. Zero security boundary violations recorded against the RMF Commander pilot.'
+  body: 'Portfolio posture this period: 22 of 26 systems within ATO window of greater than 90 days. One system (MSC-MWR-INTRANET-02) at 23 days; renewal package in draft. Four open HIGH POA&Ms across three systems; mitigation plans on schedule. Zero security boundary violations recorded against the RMF Commander pilot.'
 }];
 function AIAssistant({
   onBack
@@ -1730,7 +1730,7 @@ function AIAssistant({
       padding: '0 10px',
       minWidth: 220
     }
-  }, /*#__PURE__*/React.createElement("option", null, "Target: AC-12 \u2014 AFSVC-LODGING-API-04"), /*#__PURE__*/React.createElement("option", null, "Target: IA-5 \u2014 AFSVC-MWR-INTRANET-02"), /*#__PURE__*/React.createElement("option", null, "Target: AO touchpoint summary")), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("option", null, "Target: AC-12 \u2014 MSC-LODGING-API-04"), /*#__PURE__*/React.createElement("option", null, "Target: IA-5 \u2014 MSC-MWR-INTRANET-02"), /*#__PURE__*/React.createElement("option", null, "Target: AO touchpoint summary")), /*#__PURE__*/React.createElement("input", {
     value: prompt,
     onChange: e => setPrompt(e.target.value),
     placeholder: "Draft a control statement aligned with our 15-minute session policy.",
@@ -1803,7 +1803,7 @@ function AIAssistant({
           color: 'var(--slate-500)',
           marginTop: 6
         }
-      }, "Reviewed by L. Christie \xB7 22 May 2026 09:14 CT \xB7 copy draft text and submit manually into eMASS \xB7 audit log entry written"));
+      }, "Reviewed by J. Calloway \xB7 22 May 2026 09:14 CT \xB7 copy draft text and submit manually into eMASS \xB7 audit log entry written"));
     }
     if (d.state === 'discarded') {
       return /*#__PURE__*/React.createElement("div", {
@@ -2071,12 +2071,12 @@ function QueryScreen() {
   const [answer, setAnswer] = useState(null);
   const SAMPLE = [{
     q: 'Which systems expire within 90 days?',
-    a: '3 systems: AFSVC-MWR-INTRANET-02 (23 days), AFSVC-FOODSVC-POS-07 (67 days), AFSVC-LODGING-API-04 (52 days). Source: eMASS ATO records — sandbox snapshot 05 Jun 2026.'
+    a: '3 systems: MSC-MWR-INTRANET-02 (23 days), MSC-FOODSVC-POS-07 (67 days), MSC-LODGING-API-04 (52 days). Source: eMASS ATO records — sandbox snapshot 05 Jun 2026.'
   }, {
     q: 'How many HIGH POA&Ms are open?',
-    a: '2 HIGH POA&Ms open across the portfolio: POAM-2024-031 (AC-2, due 15 Jun) and POAM-2024-029 (IA-5, due 01 Jul). Both assigned to L. Christie. Source: eMASS POA&M dataset — sandbox snapshot.'
+    a: '2 HIGH POA&Ms open across the portfolio: POAM-2024-031 (AC-2, due 15 Jun) and POAM-2024-029 (IA-5, due 01 Jul). Both assigned to J. Calloway. Source: eMASS POA&M dataset — sandbox snapshot.'
   }, {
-    q: 'What is the scan freshness for AFSVC-MWR-INTRANET-02?',
+    q: 'What is the scan freshness for MSC-MWR-INTRANET-02?',
     a: 'Last ACAS Tenable scan: 11 days ago. Recommended cadence: ≤14 days. Status: advisory threshold not yet breached, but approaching. Source: eMASS test results — sandbox snapshot.'
   }];
   function ask() {
@@ -2272,14 +2272,14 @@ function BriefingsScreen() {
       color: '#5B21B6',
       marginBottom: 12
     }
-  }, "AO Touchpoint Briefing \u2014 May 2026 \xB7 AFSVC-VTOS Portfolio"), /*#__PURE__*/React.createElement("div", {
+  }, "AO Touchpoint Briefing \u2014 May 2026 \xB7 MSC Portfolio"), /*#__PURE__*/React.createElement("div", {
     style: {
       fontSize: 13,
       color: 'var(--slate-800)',
       lineHeight: 1.7,
       marginBottom: 12
     }
-  }, "Portfolio posture this period: 22 of 26 systems within ATO window of greater than 90 days. One system (AFSVC-MWR-INTRANET-02) at 23 days; renewal package in draft. Two open HIGH POA&Ms across two systems; mitigation plans on schedule. Zero security boundary violations recorded against the RMF Commander pilot."), /*#__PURE__*/React.createElement("div", {
+  }, "Portfolio posture this period: 22 of 26 systems within ATO window of greater than 90 days. One system (MSC-MWR-INTRANET-02) at 23 days; renewal package in draft. Two open HIGH POA&Ms across two systems; mitigation plans on schedule. Zero security boundary violations recorded against the RMF Commander pilot."), /*#__PURE__*/React.createElement("div", {
     className: "actions"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn btn-primary"
@@ -2311,19 +2311,19 @@ Object.assign(window, {
 function AuditScreen() {
   const entries = [{
     ts: '05 Jun 2026 12:18 CT',
-    user: 'L. Christie (ISSM)',
+    user: 'J. Calloway (ISSM)',
     action: 'AI draft reviewed — AC-12 control statement',
-    system: 'AFSVC-LODGING-API-04',
+    system: 'MSC-LODGING-API-04',
     result: 'APPROVED'
   }, {
     ts: '05 Jun 2026 12:10 CT',
-    user: 'L. Christie (ISSM)',
+    user: 'J. Calloway (ISSM)',
     action: 'NL Query — "which systems expire within 90 days?"',
     system: 'Portfolio',
     result: 'RESPONDED'
   }, {
     ts: '05 Jun 2026 11:54 CT',
-    user: 'L. Christie (ISSM)',
+    user: 'J. Calloway (ISSM)',
     action: 'Dashboard viewed — portfolio posture',
     system: 'Portfolio',
     result: 'READ'
@@ -2331,23 +2331,23 @@ function AuditScreen() {
     ts: '05 Jun 2026 11:32 CT',
     user: 'R. Mendez (ISSO)',
     action: 'POA&M detail viewed — POAM-2024-027',
-    system: 'AFSVC-LODGING-API-04',
+    system: 'MSC-LODGING-API-04',
     result: 'READ'
   }, {
     ts: '04 Jun 2026 16:44 CT',
-    user: 'L. Christie (ISSM)',
+    user: 'J. Calloway (ISSM)',
     action: 'AI draft discarded — IA-5 mitigation language v2',
-    system: 'AFSVC-MWR-INTRANET-02',
+    system: 'MSC-MWR-INTRANET-02',
     result: 'DISCARDED'
   }, {
     ts: '04 Jun 2026 09:01 CT',
-    user: 'L. Christie (ISSM)',
-    action: 'System detail viewed — AFSVC-FOODSVC-POS-07',
-    system: 'AFSVC-FOODSVC-POS-07',
+    user: 'J. Calloway (ISSM)',
+    action: 'System detail viewed — MSC-FOODSVC-POS-07',
+    system: 'MSC-FOODSVC-POS-07',
     result: 'READ'
   }, {
     ts: '22 May 2026 09:14 CT',
-    user: 'L. Christie (ISSM)',
+    user: 'J. Calloway (ISSM)',
     action: 'AI draft reviewed — AO touchpoint summary May 2026',
     system: 'Portfolio',
     result: 'APPROVED'
@@ -2456,7 +2456,7 @@ function SettingsScreen() {
     className: "eyebrow"
   }, "SESSION"), /*#__PURE__*/React.createElement("span", {
     className: "title"
-  }, "Active session")), [['User', 'L. Christie, NH-III (ISSM)'], ['Role', 'ISSM — portfolio scope'], ['Auth method', 'CAC/PIV-derived credential via Purebred'], ['Session timeout', '15 min inactivity · 5 min background'], ['Data at rest', 'None — session memory only'], ['Environment', 'SANDBOX — mock data, no production eMASS access']].map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+  }, "Active session")), [['User', 'J. Calloway, NH-III (ISSM)'], ['Role', 'ISSM — portfolio scope'], ['Auth method', 'CAC/PIV-derived credential via Purebred'], ['Session timeout', '15 min inactivity · 5 min background'], ['Data at rest', 'None — session memory only'], ['Environment', 'SANDBOX — mock data, no production eMASS access']].map(([k, v]) => /*#__PURE__*/React.createElement("div", {
     key: k,
     style: {
       display: 'flex',
