@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RMF Commander — Demo Instructions</title>
+<style>
+  :root {
+    --navy: #0F2A4A;
+    --slate: #475569;
+    --light: #F1F5F9;
+    --line: #E2E8F0;
+    --ok: #15803D;
+    --crit: #B91C1C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: #1E293B;
+    background: var(--light);
+    line-height: 1.55;
+  }
+  .banner {
+    background: var(--ok);
+    color: #fff;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 4px 0;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 36px 24px 60px; }
+  header.hero {
+    background: var(--navy);
+    color: #fff;
+    border-radius: 10px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+  header.hero h1 { font-size: 24px; letter-spacing: 0.01em; }
+  header.hero p { margin-top: 6px; color: #CBD5E1; font-size: 14px; }
+  .tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    margin-top: 12px;
+  }
+  h2 {
+    font-size: 15px;
+    color: var(--navy);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 30px 0 10px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 12px;
+  }
+  .step { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+  .step:last-child { margin-bottom: 0; }
+  .num {
+    background: var(--navy);
+    color: #fff;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step b { display: block; font-size: 14px; }
+  .step span { font-size: 13px; color: var(--slate); }
+  ul { padding-left: 18px; font-size: 13px; color: var(--slate); }
+  li { margin-bottom: 6px; }
+  .note {
+    border-left: 3px solid var(--ok);
+    background: #F0FDF4;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  footer { margin-top: 34px; font-size: 12px; color: var(--slate); text-align: center; }
+</style>
+</head>
+<body>
+<div class="banner">UNCLASSIFIED — DEMONSTRATION ONLY — ALL DATA FICTITIOUS</div>
+<div class="wrap">
+
+<header class="hero">
+  <h1>RMF Commander — Operator Console</h1>
+  <p>An interactive concept demonstration of AI-assisted RMF portfolio management:
+     continuous ATO visibility, smart alerting, POA&amp;M tracking, and
+     human-gated AI documentation support.</p>
+  <span class="tag">v0.4 PILOT &nbsp;·&nbsp; 5-MINUTE SELF-GUIDED DEMO</span>
+</header>
+
+<h2>To open the demo</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div>
+    <b>Double-click RMF-Commander-Operator-Console.html</b>
+    <span>It opens in your web browser. Nothing to install, no account, no network
+    connection required. Nothing is sent from your computer.</span>
+  </div></div>
+  <div class="step"><div class="num">2</div><div>
+    <b>Look for the gray "DEMO DATA" badge in the top bar</b>
+    <span>It confirms you are viewing built-in sample data. Every system, finding,
+    and name in the demo is fictitious.</span>
+  </div></div>
+</div>
+
+<h2>Suggested 5-minute tour</h2>
+<div class="card">
+  <div class="step"><div class="num">1</div><div>
+    <b>Portfolio dashboard</b>
+    <span>The opening screen shows every system as a tile with a live countdown to
+    ATO expiration, color-coded by urgency (green / amber / red), plus open POA&amp;M
+    counts and scan freshness. This is the "single pane of glass" for an ISSM.</span>
+  </div></div>
+  <div class="step"><div class="num">2</div><div>
+    <b>Click any system tile</b>
+    <span>Opens the system detail page. Use the tabs to see its POA&amp;Ms and its
+    NIST SP 800-53 control compliance status with evidence references.</span>
+  </div></div>
+  <div class="step"><div class="num">3</div><div>
+    <b>Alerts (left sidebar)</b>
+    <span>The smart alert engine: 90/60/30-day ATO warnings, POA&amp;M slips, and
+    stale-scan notices — surfaced automatically instead of tracked in spreadsheets.</span>
+  </div></div>
+  <div class="step"><div class="num">4</div><div>
+    <b>POA&amp;Ms (left sidebar)</b>
+    <span>The portfolio-wide POA&amp;M tracker with severity, owner, and milestone
+    at a glance.</span>
+  </div></div>
+  <div class="step"><div class="num">5</div><div>
+    <b>AI Assistant and Briefings (left sidebar)</b>
+    <span>The AI documentation assistant drafts control statements grounded in
+    NIST SP 800-53 — and every AI output waits for human review before it is used.
+    Briefings generates an executive summary of portfolio risk on demand. The
+    Audit Log shows how every AI interaction is recorded for accountability.</span>
+  </div></div>
+</div>
+
+<h2>What this demonstrates</h2>
+<div class="card">
+  <ul>
+    <li><b>Continuous visibility</b> — ATO status, POA&amp;M posture, and scan freshness for the whole portfolio in one view, instead of scattered spreadsheets.</li>
+    <li><b>Proactive alerting</b> — expirations and slips surface themselves before they become emergencies.</li>
+    <li><b>AI with accountability</b> — drafting help for RMF documentation with a mandatory human-approval gate and a full audit trail.</li>
+  </ul>
+  <div class="note">
+    This same console is already running against a working backend prototype on
+    live data. What you are viewing is the identical interface in its portable,
+    sample-data mode. A live walkthrough is available on request.
+  </div>
+</div>
+
+<footer>
+  Prepared by Leo Christie · RMF Commander concept demonstration ·
+  Questions or a live walkthrough: contact Leo directly
+</footer>
+
+</div>
+</body>
+</html>

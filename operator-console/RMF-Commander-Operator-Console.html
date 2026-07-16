@@ -720,21 +720,24 @@ function Pill({
   }) : null, children);
 }
 
-// Severity helpers
+// Severity helpers (d may be null when live data has no ATO expiration)
 function severityForDays(d) {
+  if (d == null) return 'neu';
   if (d <= 30) return 'crit';
   if (d <= 60) return 'warn';
   return 'ok';
 }
 function labelForDays(d) {
+  if (d == null) return 'NO ATO DATE';
   if (d <= 30) return '30-DAY';
   if (d <= 60) return '60-DAY';
   if (d <= 90) return '90-DAY';
   return 'VALID';
 }
 
-// Padded number
+// Padded number (— when live data has no value)
 function pad3(n) {
+  if (n == null) return '—';
   return String(n).padStart(3, '0');
 }
 
@@ -921,6 +924,50 @@ Object.assign(window, {
   MOCK_CONTROLS
 });
 
+// ===== Data source (dual-mode: live backend vs built-in demo data) =====
+// Served from Flask at /console → fetches /api/console/portfolio (live).
+// Opened as a file (double-click) → fetch fails instantly → demo data.
+const DATA = {
+  systems: MOCK_SYSTEMS,
+  alerts: MOCK_ALERTS,
+  poams: MOCK_POAMS,
+  controls: MOCK_CONTROLS,
+  live: false,
+  user: null
+};
+function controlsForSystem(sysId) {
+  if (!DATA.live) return DATA.controls;
+  return DATA.controls.filter(c => c.systemId === sysId);
+}
+function poamsForSystem(sysId) {
+  if (!DATA.live) return DATA.poams;
+  return DATA.poams.filter(p => p.systemId === sysId);
+}
+async function loadLiveData() {
+  try {
+    const res = await fetch('/api/console/portfolio', {
+      credentials: 'same-origin'
+    });
+    if (!res.ok) return;
+    const d = await res.json();
+    if (!d || !Array.isArray(d.systems) || !d.systems.length) return;
+    DATA.systems = d.systems;
+    DATA.alerts = d.alerts || [];
+    DATA.poams = d.poams || [];
+    DATA.controls = d.controls || [];
+    DATA.user = d.user || null;
+    DATA.live = true;
+  } catch (e) {
+    /* file:// or backend unreachable — stay on demo data */
+  }
+}
+Object.assign(window, {
+  DATA,
+  controlsForSystem,
+  poamsForSystem,
+  loadLiveData
+});
+
 // ===== ClassBanner.jsx =====
 /* ClassBanner — top + bottom classification strip. Fixed. */
 function ClassBanner({
@@ -1036,7 +1083,14 @@ function TopBar({
     name: "chevron-right",
     size: 12,
     color: "var(--slate-400)"
-  }) : null, i === breadcrumb.length - 1 ? /*#__PURE__*/React.createElement("b", null, c) : /*#__PURE__*/React.createElement("span", null, c)))), /*#__PURE__*/React.createElement("div", {
+  }) : null, i === breadcrumb.length - 1 ? /*#__PURE__*/React.createElement("b", null, c) : /*#__PURE__*/React.createElement("span", null, c))), /*#__PURE__*/React.createElement(Pill, {
+    tone: DATA.live ? 'ok' : 'neu',
+    square: true,
+    dot: true,
+    style: {
+      marginLeft: 10
+    }
+  }, DATA.live ? 'LIVE DATA' : 'DEMO DATA')), /*#__PURE__*/React.createElement("div", {
     className: "search"
   }, /*#__PURE__*/React.createElement(Icon, {
     name: "search",
@@ -1258,7 +1312,7 @@ function Dashboard({
     style: {
       marginBottom: 24
     }
-  }, MOCK_SYSTEMS.map(sys => /*#__PURE__*/React.createElement(SystemCard, {
+  }, DATA.systems.map(sys => /*#__PURE__*/React.createElement(SystemCard, {
     key: sys.id,
     sys: sys,
     onClick: () => onOpenSystem(sys)
@@ -1271,7 +1325,7 @@ function Dashboard({
   }, "Smart alerts"), /*#__PURE__*/React.createElement("span", {
     className: "meta"
   }, "90/60/30-day \xB7 POA&M slips \xB7 AI draft ready")), /*#__PURE__*/React.createElement(AlertsFeed, {
-    alerts: MOCK_ALERTS
+    alerts: DATA.alerts
   }));
 }
 Object.assign(window, {
@@ -1290,7 +1344,8 @@ function SystemDetail({
   const sevColor = {
     ok: 'var(--status-ok)',
     warn: 'var(--status-warn)',
-    crit: 'var(--status-crit)'
+    crit: 'var(--status-crit)',
+    neu: 'var(--slate-400)'
   }[sev];
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1442,7 +1497,7 @@ function SystemDetail({
   }, /*#__PURE__*/React.createElement("span", {
     className: "title"
   }, "Recent activity")), /*#__PURE__*/React.createElement(AlertsFeed, {
-    alerts: MOCK_ALERTS.slice(0, 4)
+    alerts: DATA.alerts.slice(0, 4)
   }))), tab === 'poams' && /*#__PURE__*/React.createElement("div", {
     className: "card"
   }, /*#__PURE__*/React.createElement("table", {
@@ -1467,7 +1522,7 @@ function SystemDetail({
     style: {
       width: 100
     }
-  }, "Status"))), /*#__PURE__*/React.createElement("tbody", null, MOCK_POAMS.map(p => /*#__PURE__*/React.createElement("tr", {
+  }, "Status"))), /*#__PURE__*/React.createElement("tbody", null, poamsForSystem(sys.id).map(p => /*#__PURE__*/React.createElement("tr", {
     key: p.id
   }, /*#__PURE__*/React.createElement("td", {
     className: "mono",
@@ -1495,7 +1550,7 @@ function SystemDetail({
     style: {
       width: 200
     }
-  }, "Family"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Evidence"))), /*#__PURE__*/React.createElement("tbody", null, MOCK_CONTROLS.map(c => {
+  }, "Family"), /*#__PURE__*/React.createElement("th", null, "Status"), /*#__PURE__*/React.createElement("th", null, "Evidence"))), /*#__PURE__*/React.createElement("tbody", null, controlsForSystem(sys.id).map(c => {
     const t = {
       compliant: 'ok',
       partial: 'warn',
@@ -1860,7 +1915,7 @@ function AlertsScreen() {
     square: true
   }, "LIVE FEED"))), /*#__PURE__*/React.createElement("div", {
     className: "alerts"
-  }, MOCK_ALERTS.map(a => /*#__PURE__*/React.createElement("div", {
+  }, DATA.alerts.map(a => /*#__PURE__*/React.createElement("div", {
     key: a.id,
     className: "alert-row " + a.tone,
     style: {
@@ -1925,10 +1980,10 @@ function PoamsScreen() {
     className: "page"
   }, "POA&M Tracker"), /*#__PURE__*/React.createElement("div", {
     className: "page-subtitle"
-  }, "Portfolio-wide \u2014 ", MOCK_POAMS.filter(p => p.sev === 'HIGH').length, " HIGH \xB7 ", MOCK_POAMS.filter(p => p.sev === 'MED').length, " MED \xB7 ", MOCK_POAMS.filter(p => p.sev === 'LOW').length, " LOW")), /*#__PURE__*/React.createElement(Pill, {
+  }, "Portfolio-wide \u2014 ", DATA.poams.filter(p => p.sev === 'HIGH').length, " HIGH \xB7 ", DATA.poams.filter(p => p.sev === 'MED').length, " MED \xB7 ", DATA.poams.filter(p => p.sev === 'LOW').length, " LOW")), /*#__PURE__*/React.createElement(Pill, {
     tone: "info",
     square: true
-  }, MOCK_POAMS.length, " ITEMS")), /*#__PURE__*/React.createElement("div", {
+  }, DATA.poams.length, " ITEMS")), /*#__PURE__*/React.createElement("div", {
     style: {
       background: '#fff',
       border: '1px solid var(--slate-200)',
@@ -1947,7 +2002,7 @@ function PoamsScreen() {
       color: '#fff',
       letterSpacing: '0.06em'
     }
-  }, /*#__PURE__*/React.createElement("span", null, "POAM ID"), /*#__PURE__*/React.createElement("span", null, "Finding"), /*#__PURE__*/React.createElement("span", null, "Owner"), /*#__PURE__*/React.createElement("span", null, "Milestone"), /*#__PURE__*/React.createElement("span", null, "Status")), MOCK_POAMS.map((p, i) => /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", null, "POAM ID"), /*#__PURE__*/React.createElement("span", null, "Finding"), /*#__PURE__*/React.createElement("span", null, "Owner"), /*#__PURE__*/React.createElement("span", null, "Milestone"), /*#__PURE__*/React.createElement("span", null, "Status")), DATA.poams.map((p, i) => /*#__PURE__*/React.createElement("div", {
     key: p.id,
     style: {
       display: 'grid',
@@ -2506,7 +2561,7 @@ function App() {
     onNav: id => {
       if (id === 'systems') setScreen('dashboard');else setScreen(id);
     },
-    alertCount: MOCK_ALERTS.filter(a => a.tone === 'crit' || a.tone === 'warn').length
+    alertCount: DATA.alerts.filter(a => a.tone === 'crit' || a.tone === 'warn').length
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'grid',
@@ -2515,7 +2570,7 @@ function App() {
     }
   }, /*#__PURE__*/React.createElement(TopBar, {
     breadcrumb: crumbs,
-    alertCount: MOCK_ALERTS.filter(a => a.tone === 'crit' || a.tone === 'warn').length,
+    alertCount: DATA.alerts.filter(a => a.tone === 'crit' || a.tone === 'warn').length,
     sessionMinutes: sessionMinutes
   }), /*#__PURE__*/React.createElement("main", {
     className: "main"
@@ -2529,7 +2584,10 @@ function App() {
     onBack: back
   }), screen === 'query' && /*#__PURE__*/React.createElement(QueryScreen, null), screen === 'briefings' && /*#__PURE__*/React.createElement(BriefingsScreen, null), screen === 'audit' && /*#__PURE__*/React.createElement(AuditScreen, null), screen === 'settings' && /*#__PURE__*/React.createElement(SettingsScreen, null)))), /*#__PURE__*/React.createElement(ClassBanner, null));
 }
-ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+// Try the live backend first; fall back to the built-in demo data (file://).
+loadLiveData().finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(App, null));
+});
 
 </script>
 </body>
