@@ -2446,6 +2446,165 @@ def me_queue():
 
 
 # ---------------------------------------------------------------------------
+# Operator Console — serves operator-console/RMF-Commander-Operator-Console.html
+# behind the session login and feeds it live portfolio JSON. The same HTML file
+# still works standalone (file://) on its built-in demo data; when served from
+# here it fetches /api/console/portfolio instead.
+# ---------------------------------------------------------------------------
+CONSOLE_HTML_PATH = os.path.normpath(os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "..", "operator-console", "RMF-Commander-Operator-Console.html"))
+
+_CIA_ABBREV = {"low": "LOW", "moderate": "MOD", "mod": "MOD", "high": "HIGH"}
+
+_POAM_SEV = {"CAT I": "HIGH", "CAT II": "MED", "CAT III": "LOW"}
+_POAM_STATUS = {"open": "OPEN", "in_progress": "IN-WORK",
+                "completed": "PENDING CLOSURE", "closed": "CLOSED",
+                "risk_accepted": "RISK ACCEPTED"}
+_CTRL_STATUS = {"implemented": "compliant", "partial": "partial",
+                "partially_implemented": "partial", "planned": "partial"}
+
+
+def _cia_label(s):
+    parts = [(_CIA_ABBREV.get((v or "").strip().lower(), "—"))
+             for v in (s.cia_confidentiality, s.cia_integrity,
+                       s.cia_availability)]
+    return "·".join(parts)
+
+
+def _console_system_row(s, today):
+    """Shape one System row the way the console's MOCK_SYSTEMS shape it."""
+    open_poams = [p for p in s.poams
+                  if p.status not in ("closed", "risk_accepted")]
+    sev = {"high": 0, "med": 0, "low": 0}
+    for p in open_poams:
+        key = _POAM_SEV.get(p.severity, "LOW").lower()
+        sev[key] += 1
+    last_scan = (Scan.query.filter_by(system_id=s.system_id)
+                 .order_by(Scan.scan_date.desc()).first())
+    scan_days = ((today - last_scan.scan_date.date()).days
+                 if last_scan and last_scan.scan_date else None)
+    days_to_ato = ((s.ato_expiration - today).days
+                   if s.ato_expiration else None)
+    return {
+        "id": (s.acronym or s.name),
+        "systemId": s.system_id,
+        "title": s.name,
+        "daysToATO": days_to_ato,
+        "poam": sev,
+        "scanDays": scan_days,
+        "cat": _cia_label(s),
+    }
+
+
+def _console_alerts(rows, today):
+    """Derive the alert feed from live system rows (mirrors MOCK_ALERTS tones)."""
+    alerts = []
+    for r in rows:
+        d = r["daysToATO"]
+        if d is not None and d < 0:
+            alerts.append({"tone": "crit",
+                           "title": f"{r['id']} — ATO expired {-d} days ago",
+                           "meta": "Immediate renewal action required."})
+        elif d is not None and d <= 30:
+            alerts.append({"tone": "crit",
+                           "title": f"{r['id']} — ATO expires in {d} days",
+                           "meta": "Renewal package due now."})
+        elif d is not None and d <= 90:
+            alerts.append({"tone": "warn",
+                           "title": f"{r['id']} — {('60' if d <= 60 else '90')}-day ATO window open",
+                           "meta": f"{d} days to expiration."})
+        if r["scanDays"] is not None and r["scanDays"] > 7:
+            alerts.append({"tone": "warn",
+                           "title": f"{r['id']} — Scan freshness past 7 days",
+                           "meta": f"Last scan {r['scanDays']} days ago."})
+        if (d is None or d > 90) and r["poam"]["high"] == 0 \
+                and (r["scanDays"] is not None and r["scanDays"] <= 7):
+            alerts.append({"tone": "ok",
+                           "title": f"{r['id']} — Continuous monitoring nominal",
+                           "meta": "No HIGH POA&Ms; scans current."})
+    pending_ai = AIInteraction.query.filter_by(
+        review_status="unreviewed").count()
+    if pending_ai:
+        alerts.append({"tone": "ai",
+                       "title": f"{pending_ai} AI interaction(s) awaiting review",
+                       "meta": "Human approval gate — review in the AI audit log."})
+    order = {"crit": 0, "warn": 1, "ai": 2, "ok": 3}
+    alerts.sort(key=lambda a: order.get(a["tone"], 9))
+    stamp = today.strftime("%d %b")
+    return [{"id": i + 1, "time": stamp, **a}
+            for i, a in enumerate(alerts[:12])]
+
+
+@app.route("/api/console/portfolio")
+@login_required
+def api_console_portfolio():
+    """Live data for the Operator Console, in the exact shape of its
+    built-in demo datasets (systems / alerts / poams / controls)."""
+    user = current_user()
+    systems = _all_assigned_systems(user)
+    today = datetime.now(timezone.utc).date()
+
+    rows = [_console_system_row(s, today) for s in systems]
+    sys_label = {s.system_id: (s.acronym or s.name) for s in systems}
+    users = {u.user_id: u.name for u in User.query.all()}
+
+    poams = []
+    for s in systems:
+        for p in s.poams:
+            if p.status in ("closed", "risk_accepted"):
+                continue
+            owner = users.get(s.isso_id) or "Unassigned"
+            poams.append({
+                "id": f"POAM-{p.poam_id[:8].upper()}",
+                "sev": _POAM_SEV.get(p.severity, "LOW"),
+                "title": f"{p.control_nist_id or '—'} — {p.weakness or ''}",
+                "owner": owner,
+                "milestone": (p.scheduled_completion.strftime("%d %b %Y")
+                              if p.scheduled_completion else "—"),
+                "status": _POAM_STATUS.get(p.status, p.status.upper()),
+                "systemId": sys_label[s.system_id],
+            })
+    sev_order = {"HIGH": 0, "MED": 1, "LOW": 2}
+    poams.sort(key=lambda p: sev_order.get(p["sev"], 9))
+
+    controls = []
+    for s in systems:
+        for c in Control.query.filter_by(system_id=s.system_id).all():
+            cat = ControlCatalog.query.get(c.nist_id) if c.nist_id else None
+            evidence = (c.implementation_statement or "")[:80] \
+                or (f"Last reviewed {c.last_reviewed:%d %b %Y}"
+                    if c.last_reviewed else "No evidence recorded")
+            controls.append({
+                "id": c.nist_id or "—",
+                "family": (cat.family_name if cat else c.family) or "—",
+                "status": _CTRL_STATUS.get(c.implementation_status,
+                                           "noncompliant"),
+                "evidence": evidence,
+                "systemId": sys_label[s.system_id],
+            })
+
+    return jsonify({
+        "generatedAt": now().isoformat(),
+        "user": {"name": user.name, "role": user.role_name},
+        "systems": rows,
+        "alerts": _console_alerts(rows, today),
+        "poams": poams,
+        "controls": controls,
+    })
+
+
+@app.route("/console")
+@login_required
+def operator_console():
+    """Serve the Operator Console single-file UI behind the session login."""
+    from flask import send_file
+    if not os.path.exists(CONSOLE_HTML_PATH):
+        abort(404)
+    return send_file(CONSOLE_HTML_PATH)
+
+
+# ---------------------------------------------------------------------------
 # Seed
 # ---------------------------------------------------------------------------
 def _light_migrate():
