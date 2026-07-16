@@ -66,6 +66,29 @@ NL Query, Briefings, Audit Log, and Settings screens still show canned demo cont
 even when served from Flask. Wiring those (especially the AI assistant to
 `/api/ai-chat` and the audit screen to the AIInteraction log) is the natural next step.
 
+**Demo sanitized (2026-07-16):** all real names removed from the console demo data by
+Leo's decision — Air Force Services Center/VTOS → Mission Support Command (MSC),
+AFSVC-* system IDs → MSC-*, Leo Christie → Jordan Calloway (avatar JC),
+Francisco Salguero → Daniel Whitfield. R. Mendez / T. Park were already fictional.
+The stale duplicate `operator-console/rmf-commander-final.html` (still carrying real
+names) was `git rm`'d. The demo stays fictitious permanently; the requirements doc
+keeps real names as authorship only.
+
+**Email delivery gotcha:** McAfee (and likely recipient mail gateways) flags the demo
+zip as HTML smuggling — a false positive triggered by a single HTML file with inlined
+minified JS. Do NOT email the zip as an attachment. Deliver via OneDrive/SharePoint
+share link, live demo, or DoD SAFE.
+
+**Supporting documents reviewed and aligned (2026-07-16):** Leo has four supporting
+docs (not in the repo): `rmf-commander-requirements.docx` (leadership package —
+cloud/IL4 + eMASS API requirements), `RMF_Artifact_Quality_Rubric.docx`,
+`RMF_Engagement_Checklist.docx`, `RMF_Role_Onboarding_Package.docx`. The requirements
+doc was UPDATED (delivered via session outputs) to reference `RMF-Commander-Demo.zip`
+/ `RMF-Commander-Operator-Console.html` instead of the deleted
+`rmf-commander-final.html`, note the demo data is fictitious, and add a sentence in
+§3.3: the console already consumes the same data contract as the planned eMASS read
+endpoints, so eMASS cutover is a backend substitution with no console change.
+
 **Flask app hardening (previous session, still in place):** SECRET_KEY from env,
 debug opt-in, hardened session cookies, upload allowlist + secure_filename, CSRF via
 Flask-WTF (meta tag + AJAX header + global submit-injector), and the restored
@@ -78,16 +101,31 @@ START-HERE.html (open-first instructions: how to launch, the DEMO DATA badge, a
 numbered 5-minute tour, what it demonstrates, and a note that a live-data version
 exists). Zero setup, works offline, all data fictitious.
 
-## Next step candidates (none started)
+## Tracked backlog (none started; roughly priority-ordered)
 
 1. **Wire the remaining console screens to the backend** — AI Assistant → `/api/ai-chat`
    (already has a real Anthropic provider + approval gate), Audit Log → AIInteraction
    data, Briefings → live portfolio metrics.
-2. Section 508 / WCAG accessibility on the console (fixed 1280px width, no ARIA,
+2. **Artifact Quality Rubric → automated validator** (from
+   `RMF_Artifact_Quality_Rubric.docx`): extend `emass_validate` with rubric criteria —
+   hard stops on missing POA&M root cause, missing traceable finding source (STIG ID /
+   scan ID), ISSO listed as fix resource owner, inherited controls without a named
+   provider, control statements missing per-part (a)(b)(c) coverage. The POAM model
+   already has `source`, `root_cause`, `milestones_json`, `residual_risk` fields.
+   Minimum passing 2.5/3.0 per category; any 0 = hard stop.
+3. **Engagement Checklist alert rules** (from `RMF_Engagement_Checklist.docx`): add
+   POA&M >180-days-open escalation to AO as an alert (console + me_queue), and the
+   annual-review trigger 90 days before ATO expiration. Consider folding milestone
+   gate items into the wizard's TASK_CATALOG.
+4. **Retention mismatch fix:** console Briefings/Audit screens say "1-year retention";
+   AIInteraction model documents 3 years (NFR-2.8). Make them agree.
+5. **Role model gap** (from `RMF_Role_Onboarding_Package.docx`): the doc defines ISSE
+   and PM roles; the System model only has isso/issm/sca/ao FKs. Not urgent.
+6. Section 508 / WCAG accessibility on the console (fixed 1280px width, no ARIA,
    unlabeled icons).
-3. Automated tests (none exist).
-4. Split the ~2,800-line `app.py` monolith into blueprints.
-5. Optional demo packaging (one-click .bat, PyInstaller .exe, recorded walkthrough) —
+7. Automated tests (none exist).
+8. Split the ~2,800-line `app.py` monolith into blueprints.
+9. Optional demo packaging (one-click .bat, PyInstaller .exe, recorded walkthrough) —
    only "if interest demands."
 
 ## Environment gotchas for the next session (important)
